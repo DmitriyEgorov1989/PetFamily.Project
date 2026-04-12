@@ -1,0 +1,80 @@
+﻿using CSharpFunctionalExtensions;
+using FluentValidation;
+using MediatR;
+using PetFamily.Core.Application.Extensions;
+using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
+using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
+using PetFamily.Core.Ports;
+using Primitives;
+using Serilog;
+using static Primitives.Error;
+
+namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeletePhotoPets
+{
+    public class DeletePhotoPetsHandler : IRequestHandler<DeletePhotoPetsCommand, Result<string, ErrorList>>
+    {
+        private readonly IVolunteerRepository _volunteerRepository;
+        private readonly IFileStorageProvider _fileStorageProvider;
+        private readonly IValidator<DeletePhotoPetsCommand> _validator;
+        private readonly ILogger _logger;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public DeletePhotoPetsHandler(
+            IVolunteerRepository volunteerRepository,
+            IFileStorageProvider fileStorageProvider,
+            IValidator<DeletePhotoPetsCommand> validator,
+            ILogger logger,
+            IUnitOfWork unitOfWork)
+        {
+            _volunteerRepository = volunteerRepository;
+            _fileStorageProvider = fileStorageProvider;
+            _validator = validator;
+            _logger = logger;
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<Result<string, ErrorList>> Handle(
+            DeletePhotoPetsCommand command, CancellationToken cancellationToken)
+        {
+            var resultValidation =
+                await _validator.ValidateAsync(command, cancellationToken);
+            if (!resultValidation.IsValid)
+            {
+                return resultValidation.ToValidationErrorResponse(command);
+            }
+            _logger.Information(
+                "Start handling {CommandName} with VolunteerId: {VolunteerId} and PetId: {PetId}",
+                nameof(DeletePhotoPetsCommand), command.VolunteerId, command.PetId);
+
+            var volunteerId = VolunteerId.Create(command.VolunteerId).Value;
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var volunteer = await _volunteerRepository.GetByIdAsync(volunteerId, cancellationToken);
+            if (volunteer == null)
+            {
+                return (ErrorList)GeneralErrors.NotFound(nameof(volunteerId));
+            }
+
+            var resultGetPet = volunteer.GetPetById(PetId.Create(command.PetId).Value);
+            if (resultGetPet.IsFailure)
+            {
+                _logger.Error(
+                    "Pet with Id {PetId} not found for VolunteerId {VolunteerId}",
+                    command.PetId, command.VolunteerId);
+                return (ErrorList)resultGetPet.Error;
+            }
+            var pet = resultGetPet.Value;
+
+            var resultDeletePhoto =
+                pet.DeletePetPhotos(PetPhoto.Create(command.FileName).Value);
+
+            cancellationToken.ThrowIfCancellationRequested();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _fileStorageProvider.DeleteFileAync(command.FileName, cancellationToken);
+            _logger.Information("File with name {fileName} delete at pet with id {petId}",
+                command.FileName, command.PetId);
+
+            return command.FileName;
+        }
+    }
+}

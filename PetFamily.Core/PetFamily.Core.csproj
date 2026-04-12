@@ -6,4 +6,23 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="Application\UseCases\Comands\FileCommands\DeleteFile\DeleteFileCommand.cs" />
+    <None Include="Application\UseCases\Comands\VolunteerComands\DeleteVolunteer\DeleteVolunteerCommand.cs" />
+    <None Include="Application\UseCases\Comands\VolunteerComands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />
+    <None Include="Application\UseCases\Comands\VolunteerComands\UpdateMainInfo\UpdateMainInfoVolunteerCommand.cs" />
+    <None Include="Domain\Models\VolunteerAggregate\Entity\Pet\Pet.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.ColoredConsole" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Primitives\Primitives.csproj" />
+  </ItemGroup>
+
 </Project>

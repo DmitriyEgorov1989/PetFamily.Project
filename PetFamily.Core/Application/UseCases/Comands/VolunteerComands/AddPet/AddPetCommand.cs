@@ -1,0 +1,26 @@
+﻿using CSharpFunctionalExtensions;
+using MediatR;
+using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
+using static Primitives.Error;
+
+namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPet
+{
+    public record AddPetCommand(
+    Guid VolunteerId,
+    PetDto Pet) : IRequest<Result<Guid, ErrorList>>;
+
+    public record PetDto(
+    string Name,
+    string Description,
+    PetSpeciesInfoDto SpeciesInfo,
+    string Color,
+    string HealthInfo,
+    AddressDto Address,
+    decimal Weight,
+    int Height,
+    string PhoneNumber,
+    bool IsSterilized,
+    DateTime BirthDate,
+    bool IsVaccined,
+    int PetHelpStatus);
+}
