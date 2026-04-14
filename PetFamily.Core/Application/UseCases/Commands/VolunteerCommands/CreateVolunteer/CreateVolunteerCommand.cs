@@ -3,7 +3,7 @@ using MediatR;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
 using static Primitives.Error;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.CreateVolunteer
+namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer
 {
     public record CreateVolunteerCommand(
         FullNameDto FullName,

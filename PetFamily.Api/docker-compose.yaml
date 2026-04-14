@@ -39,7 +39,6 @@ services:
       - minio-volume:/data
 
 
-
 volumes:
   postgres-data:
   minio-volume:

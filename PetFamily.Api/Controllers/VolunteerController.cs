@@ -5,26 +5,21 @@ using PetFamily.Api.Controllers.Models.VolunteerRequests;
 using PetFamily.Api.Extensions;
 using PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateMainInfo;
 using PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetwork;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPet;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhoto;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.CreateVolunteer;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeletePhotoPets;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeleteVolunteer;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.UpdateHelpRequisites;
+using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
+using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
+using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
 
 namespace PetFamily.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class VolunteerController : ControllerBase
+    public class VolunteerController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public VolunteerController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        private readonly IMediator _mediator = mediator;
 
         [HttpPost("Create")]
         public async Task<ActionResult<Guid>> CreateVolunteerAsync(

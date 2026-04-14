@@ -11,7 +11,7 @@ namespace PetFamily.Core.Domain.Models.SpeciesAggregate.VO
         }
         public Guid Id { get; }
 
-        public static Guid NewId() => Guid.NewGuid();
+        public static BreedId NewId() => new(Guid.NewGuid());
 
         public static Result<BreedId, Error> Create(Guid id)
         {

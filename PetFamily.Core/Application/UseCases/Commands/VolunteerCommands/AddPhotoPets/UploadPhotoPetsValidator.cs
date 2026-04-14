@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using PetFamily.Core.Application.UseCases.Comands.SharedKernelDto;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhoto;
+using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.Core.Extensions.Validations;
 using Primitives;

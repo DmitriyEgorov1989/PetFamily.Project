@@ -1,4 +1,4 @@
-﻿using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPet;
+﻿using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 
 namespace PetFamily.Api.Controllers.Models.VolunteerRequests
 {

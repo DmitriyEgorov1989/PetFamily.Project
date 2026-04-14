@@ -4,7 +4,7 @@ using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Core.Extensions.Validations;
 using Primitives;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.CreateVolunteer
+namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer
 {
     /// <summary>
     /// Класс валидации с помощью FluenValidation волонтера

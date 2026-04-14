@@ -3,8 +3,8 @@ using FluentValidation;
 using MediatR;
 using PetFamily.Core.Application.Extensions;
 using PetFamily.Core.Application.UseCases.Comands.SharedKernelDto;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhoto;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
+using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.Core.Ports;
@@ -65,20 +65,20 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhotoP
                 return (ErrorList)resultGetPet.Error;
             }
 
-            var resultUploadPatsPhoto =
+            var resultUploadPathsPhoto =
                 await UploadPhotoInStorageAsync(command.FileDtos, cancellationToken);
-            if (resultUploadPatsPhoto.IsFailure)
-                return (ErrorList)resultUploadPatsPhoto.Error;
+            if (resultUploadPathsPhoto.IsFailure)
+                return (ErrorList)resultUploadPathsPhoto.Error;
 
             var listUploadPhoto =
-                resultUploadPatsPhoto.Value.Select(p =>
+                resultUploadPathsPhoto.Value.Select(p =>
                 {
                     var photo = PetPhoto.Create(p.Size, p.PathStorage).Value;
                     return photo;
                 });
             var pet = resultGetPet.Value;
 
-            pet.UpdatePetPhotos(listUploadPhoto);
+            pet.UploadPetPhotos(listUploadPhoto);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

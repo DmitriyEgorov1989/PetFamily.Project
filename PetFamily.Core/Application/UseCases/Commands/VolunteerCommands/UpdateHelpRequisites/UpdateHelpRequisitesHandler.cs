@@ -2,6 +2,7 @@
 using FluentValidation;
 using MediatR;
 using PetFamily.Core.Application.Extensions;
+using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.UpdateHelpRequisites;
 using PetFamily.Core.Domain.Models.SharedKernel.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Core.Ports;
@@ -9,7 +10,7 @@ using Primitives;
 using Serilog;
 using static Primitives.Error;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.UpdateHelpRequisites
+namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.UpdateHelpRequisites
 {
     public class UpdateHelpRequisitesHandler :
         IRequestHandler<UpdateHelpRequisitesCommand, UnitResult<ErrorList>>
@@ -17,11 +18,17 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.UpdateHel
         private readonly IVolunteerRepository _volunteerRepository;
         private readonly ILogger _logger;
         private readonly IValidator<UpdateHelpRequisitesCommand> _validator;
-        public UpdateHelpRequisitesHandler(IVolunteerRepository volunteerRepository, ILogger logger, IValidator<UpdateHelpRequisitesCommand> validator)
+        private readonly IUnitOfWork _unitOfWork;
+        public UpdateHelpRequisitesHandler(
+            IVolunteerRepository volunteerRepository,
+            ILogger logger,
+            IValidator<UpdateHelpRequisitesCommand> validator,
+            IUnitOfWork unitOfWork)
         {
             _volunteerRepository = volunteerRepository;
             _logger = logger;
             _validator = validator;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<UnitResult<ErrorList>> Handle(
@@ -56,8 +63,8 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.UpdateHel
             volunteer.UpdateHelpRequisites(helpRequisites);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _volunteerRepository.SaveAsync(cancellationToken);
-            _logger.Information("Main info user with id {id} updates succes", volunteerId);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            _logger.Information("Main info user with id {id} updates success", volunteerId);
 
             return UnitResult.Success<ErrorList>();
         }

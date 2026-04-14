@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 using PetFamily.Core.Domain.Models.PetAggregate;
 using PetFamily.Core.Domain.Models.SharedKernel.VO;
 using PetFamily.Core.Domain.Models.SpeciesAggregate.VO;

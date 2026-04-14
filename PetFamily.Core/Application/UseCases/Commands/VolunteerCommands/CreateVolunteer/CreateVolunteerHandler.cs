@@ -9,7 +9,7 @@ using Primitives;
 using Serilog;
 using static Primitives.Error;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.CreateVolunteer
+namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer
 {
     /// <summary>
     /// Handler для создания волантера
@@ -68,7 +68,7 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.CreateVol
         /// </summary>
         /// <param name="request">прихидящие данные</param>
         /// <returns>Модель волонтера либо Error</returns>
-        private Result<PetFamily.Core.Domain.Models.VolunteerAggregate.Volunteer, Error> MapTo(CreateVolunteerCommand request)
+        private Result<Domain.Models.VolunteerAggregate.Volunteer, Error> MapTo(CreateVolunteerCommand request)
         {
             var fullName = FullName.Create(
                 request.FullName.FirstName,
@@ -85,9 +85,9 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.CreateVol
             {
                 return SocialNetwork.Create(s.Name, s.Link).Value;
             }));
-
-            var resultCreateVolunteer = PetFamily.Core.Domain.Models.VolunteerAggregate.Volunteer.Create(
-                VolunteerId.NewId(),
+            var volunteerId = VolunteerId.NewId();
+            var resultCreateVolunteer = Domain.Models.VolunteerAggregate.Volunteer.Create(
+                volunteerId,
                 fullName,
                 email,
                 request.Description,

@@ -16,15 +16,19 @@ namespace PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateMainInfo
         private readonly ILogger _logger;
         private readonly IVolunteerRepository _volunteerRepository;
         private readonly IValidator<UpdateMainInfoVolunteerCommand> _validator;
+        private readonly IUnitOfWork _unitOfWork;
 
         public UpdateMainInfoVolunteerHandler(
             IVolunteerRepository volunteerRepository,
             ILogger logger,
-            IValidator<UpdateMainInfoVolunteerCommand> validator)
+            IValidator<UpdateMainInfoVolunteerCommand> validator,
+            IUnitOfWork unitOfWork)
+
         {
             _volunteerRepository = volunteerRepository;
             _logger = logger;
             _validator = validator;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<UnitResult<ErrorList>> Handle(
@@ -69,8 +73,8 @@ namespace PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateMainInfo
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _volunteerRepository.SaveAsync(cancellationToken);
-            _logger.Information("Main info user with id {id} updates succes", volunteerId);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            _logger.Information("Main info user with id {id} updates success", volunteerId);
 
             return UnitResult.Success<ErrorList>();
         }

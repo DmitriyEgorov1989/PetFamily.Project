@@ -7,10 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Application\UseCases\Comands\FileCommands\DeleteFile\DeleteFileCommand.cs" />
-    <None Include="Application\UseCases\Comands\VolunteerComands\DeleteVolunteer\DeleteVolunteerCommand.cs" />
-    <None Include="Application\UseCases\Comands\VolunteerComands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />
-    <None Include="Application\UseCases\Comands\VolunteerComands\UpdateMainInfo\UpdateMainInfoVolunteerCommand.cs" />
+    <None Include="Application\UseCases\Commands\FileCommands\DeleteFile\DeleteFileCommand.cs" />
+    <None Include="Application\UseCases\Commands\VolunteerCommands\DeleteVolunteer\DeleteVolunteerCommand.cs" />
+    <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />
+    <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateMainInfo\UpdateMainInfoVolunteerCommand.cs" />
     <None Include="Domain\Models\VolunteerAggregate\Entity\Pet\Pet.cs" />
   </ItemGroup>
 

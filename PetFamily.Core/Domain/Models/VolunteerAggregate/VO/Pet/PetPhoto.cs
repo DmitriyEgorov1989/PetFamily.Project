@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet
 {
-    public record PetPhoto
+    public class PetPhoto : ValueObject
     {
         private const long MAX_SIZE = 5 * 1024 * 1024;
 
@@ -31,6 +31,11 @@ namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet
                 return GeneralErrors.ValueIsInvalid(nameof(pathStorage));
 
             return new PetPhoto(pathStorage);
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return PathStorage;
         }
     }
 }

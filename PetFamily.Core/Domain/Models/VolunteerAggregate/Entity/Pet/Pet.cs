@@ -61,6 +61,10 @@ namespace PetFamily.Core.Domain.Models.PetAggregate
         /// </summary>
         public string Name { get; private set; }
         /// <summary>
+        /// Позиция питомца у волонтера
+        /// </summary>
+        public Position Position { get; private set; }
+        /// <summary>
         /// Общее описание
         /// </summary>      
         public string Description { get; private set; }
@@ -200,8 +204,12 @@ namespace PetFamily.Core.Domain.Models.PetAggregate
                 _ => PetHelpStatus.Unknown
             };
         }
-
-        public UnitResult<Error> UpdatePetPhotos(IEnumerable<PetPhoto> photos)
+        /// <summary>
+        /// Добавдение фото пиоомца
+        /// </summary>
+        /// <param name="photos">список фото</param>
+        /// <returns>Success or Error</returns>
+        public UnitResult<Error> UploadPetPhotos(IEnumerable<PetPhoto> photos)
         {
             if (photos == null || !photos.Any())
                 return GeneralErrors.ValueIsInvalid(nameof(photos));
@@ -210,7 +218,11 @@ namespace PetFamily.Core.Domain.Models.PetAggregate
 
             return UnitResult.Success<Error>();
         }
-
+        /// <summary>
+        /// Удаление фото пиоомца
+        /// </summary>
+        /// <param name="petPhoto">название фото</param>
+        /// <returns>Success or Error</returns>
         public UnitResult<Error> DeletePetPhotos(PetPhoto petPhoto)
         {
             if (petPhoto == null)
@@ -220,5 +232,42 @@ namespace PetFamily.Core.Domain.Models.PetAggregate
 
             return UnitResult.Success<Error>();
         }
+        /// <summary>
+        /// Изменение позиции питомца на одну вперед
+        /// </summary>
+        /// <returns>Sucess or Error</returns>
+        public UnitResult<Error> MoveForward()
+        {
+            var newPosition = Position.Forward();
+            if (newPosition.IsFailure)
+                return newPosition.Error;
+            SetPosition(newPosition.Value);
+            return UnitResult.Success<Error>();
+        }
+        /// <summary>
+        /// Изменение позиции питомца на одну назад
+        /// </summary>
+        /// <returns>Sucess or Error</returns>
+        public UnitResult<Error> MoveBackward()
+        {
+            var newPosition = Position.Backward();
+            if (newPosition.IsFailure)
+                return newPosition.Error;
+            SetPosition(newPosition.Value);
+            return UnitResult.Success<Error>();
+        }
+        /// <summary>
+        /// Изменение позиции питомца
+        /// </summary>
+        /// <param name="newPosition">Новая позиция</param>
+        public void MoveToNewPosition(Position newPosition) =>
+            Position = newPosition;
+        /// <summary>
+        /// Установка позиции питомца при его создании. 
+        /// Позиция устанавливается в конец списка питомцев волонтера, то есть на последнюю позицию.
+        /// </summary>
+        /// <param name="position">Позиция питомца</param>
+        public void SetPosition(Position position) =>
+            Position = position;
     }
 }

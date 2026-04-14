@@ -15,12 +15,18 @@ namespace PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetw
         private readonly IVolunteerRepository _volunteerRepository;
         private readonly ILogger _logger;
         private readonly IValidator<UpdateSocialNetworkCommand> _validator;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateSocialNetworkHandler(IVolunteerRepository volunteerRepository, ILogger logger, IValidator<UpdateSocialNetworkCommand> validator)
+        public UpdateSocialNetworkHandler(
+            IVolunteerRepository volunteerRepository,
+            ILogger logger,
+            IValidator<UpdateSocialNetworkCommand> validator,
+            IUnitOfWork unitOfWork)
         {
             _volunteerRepository = volunteerRepository;
             _logger = logger;
             _validator = validator;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<UnitResult<ErrorList>> Handle(
@@ -52,8 +58,8 @@ namespace PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetw
             volunteer.UpdateSocialNetworks(socialNetWorks);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _volunteerRepository.SaveAsync(cancellationToken);
-            _logger.Information("Main info user with id {id} updates succes", volunteerId);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            _logger.Information("Main info user with id {id} updates success", volunteerId);
 
             return UnitResult.Success<ErrorList>();
         }
