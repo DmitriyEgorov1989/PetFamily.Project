@@ -29,19 +29,19 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhotoP
     {
         public CreateFileDtoValidator()
         {
-            RuleFor(d => d.ContentType)
+            RuleFor(d => d.FileData.ContentType)
                 .NotEmpty()
                 .NotNull()
-                .WithError(GeneralErrors.ValueIsRequired(nameof(CreateFileDto.ContentType)));
+                .WithError(GeneralErrors.ValueIsRequired(nameof(CreateFileDto.FileData.ContentType)));
 
-            RuleFor(d => d.FileName)
+            RuleFor(d => d.FileData.FileName)
                 .NotEmpty()
                 .NotNull()
                 .Must(f =>
                 {
                     return !string.IsNullOrWhiteSpace(Path.GetExtension(f));
                 })
-                .WithError(GeneralErrors.ValueIsRequired(nameof(CreateFileDto.FileName)));
+                .WithError(GeneralErrors.ValueIsRequired(nameof(CreateFileDto.FileData.FileName)));
 
             RuleFor(d => d)
                 .Must(dto =>
@@ -50,7 +50,7 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhotoP
                    return false;
 
                var sizePhoto = dto.Stream.Length;
-               var extension = Path.GetExtension(dto.FileName);
+               var extension = Path.GetExtension(dto.FileData.FileName);
 
                var result = PetPhoto.Create(sizePhoto, extension);
 

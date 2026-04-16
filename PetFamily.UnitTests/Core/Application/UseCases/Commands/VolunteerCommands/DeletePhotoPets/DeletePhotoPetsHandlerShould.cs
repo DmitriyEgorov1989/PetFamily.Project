@@ -48,7 +48,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerComma
                              .Returns(Task.FromResult(
                                        new ValidationResult()));
             _fileStorageProvider
-                .DeleteFileAync(petPhoto.PathStorage, Arg.Any<CancellationToken>())
+                .DeleteFileAsync(petPhoto.PathStorage, Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(UnitResult.Success<Error>()));
 
             var command = new DeletePhotoPetsCommand((Guid)volunteer.Id, (Guid)pet.Id, petPhoto.PathStorage);
@@ -66,7 +66,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerComma
             result.IsSuccess.Should().BeTrue();
             pet.Photos.ListPetPhotos.Count.Should().Be(0);
             await _fileStorageProvider.Received(1)
-                 .DeleteFileAync(petPhoto.PathStorage, Arg.Any<CancellationToken>());
+                 .DeleteFileAsync(petPhoto.PathStorage, Arg.Any<CancellationToken>());
             await _unitOfWork.Received(1)
                 .SaveChangesAsync(Arg.Any<CancellationToken>());
         }

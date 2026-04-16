@@ -4,7 +4,6 @@ using MediatR;
 using PetFamily.Core.Application.Extensions;
 using PetFamily.Core.Application.UseCases.Comands.SharedKernelDto;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
-using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.Core.Ports;
@@ -12,7 +11,7 @@ using Primitives;
 using Serilog;
 using static Primitives.Error;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhotoPets
+namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets
 {
     public class UploadPhotoPetsHandler : IRequestHandler<UploadPhotoPetsCommand, Result<Guid, ErrorList>>
     {
@@ -23,19 +22,22 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhotoP
         private readonly IValidator<UploadPhotoPetsCommand> _validator;
         private readonly ILogger _logger;
         private readonly IUnitOfWork _unitOfWork;
+        public readonly IMessageQueueService<IEnumerable<PetPhotoDto>> _queueService;
 
         public UploadPhotoPetsHandler(
             IValidator<UploadPhotoPetsCommand> validator,
             IVolunteerRepository volunteerRepository,
             IFileStorageProvider fileStorageProvider,
             ILogger logger,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IMessageQueueService<IEnumerable<PetPhotoDto>> queueService)
         {
             _volunteerRepository = volunteerRepository;
             _fileStorageProvider = fileStorageProvider;
             _validator = validator;
             _logger = logger;
             _unitOfWork = unitOfWork;
+            _queueService = queueService;
         }
 
         public async Task<Result<Guid, ErrorList>> Handle(
@@ -65,20 +67,21 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhotoP
                 return (ErrorList)resultGetPet.Error;
             }
 
+            var pet = resultGetPet.Value;
+
             var resultUploadPathsPhoto =
                 await UploadPhotoInStorageAsync(command.FileDtos, cancellationToken);
             if (resultUploadPathsPhoto.IsFailure)
+            {
                 return (ErrorList)resultUploadPathsPhoto.Error;
-
-            var listUploadPhoto =
+            }
+            var listUploadPhotos =
                 resultUploadPathsPhoto.Value.Select(p =>
                 {
                     var photo = PetPhoto.Create(p.Size, p.PathStorage).Value;
                     return photo;
-                });
-            var pet = resultGetPet.Value;
-
-            pet.UploadPetPhotos(listUploadPhoto);
+                }).ToList();
+            pet.UploadPetPhotos(listUploadPhotos);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -86,38 +89,43 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhotoP
         }
 
         private async Task<Result<List<PetPhotoDto>, Error>> UploadPhotoInStorageAsync(
-            List<CreateFileDto> fileDtos, CancellationToken cancellationToken)
+            List<CreateFileDto> listPhotos, CancellationToken cancellationToken)
         {
+            List<PetPhotoDto> listDtoUploadPhotos = new();
             try
             {
                 var semaphoreSlim = new SemaphoreSlim(RATE_LIMITE_THREAD);
 
                 _logger.Information("Start uploading {Count} photos to storage with rate limit of {RateLimit} threads",
-                    fileDtos.Count, RATE_LIMITE_THREAD);
-
-                var uploadTasks = fileDtos.Select(async file =>
+                    listPhotos.Count, RATE_LIMITE_THREAD);
+                var uploadTasks = listPhotos.Select(async file =>
                 {
                     try
                     {
-                        semaphoreSlim.Wait();
-                        var resultUploadPhoto = await _fileStorageProvider.UploadAsync(file, cancellationToken);
-                        if (resultUploadPhoto.IsFailure)
+                        await semaphoreSlim.WaitAsync(cancellationToken);
+
+                        var resultUploadPhotos = await _fileStorageProvider.UploadAsync(file, cancellationToken);
+
+                        if (resultUploadPhotos.IsFailure)
                         {
                             _logger.Error("Failed to upload photo {FileName} to storage: {ErrorMessage}",
-                                file.FileName, resultUploadPhoto.Error.Message);
+                                file.FileData.FileName, resultUploadPhotos.Error.Message);
 
-                            return GeneralErrors.InternalServerError
-                            ($"Failed to upload photo {file.FileName} to storage: " +
-                            $"{resultUploadPhoto.Error.Message}");
+                            return UnitResult.Failure(GeneralErrors.InternalServerError
+                            ($"Failed to upload photo {file.FileData.FileName} to storage: " +
+                             $"{resultUploadPhotos.Error.Message}"));
                         }
-                        return resultUploadPhoto;
+                        var petPhotoDto = new PetPhotoDto(file.Stream.Length, resultUploadPhotos.Value);
+                        listDtoUploadPhotos.Add(petPhotoDto);
+                        return UnitResult.Success<Error>();
                     }
                     catch (Exception ex)
                     {
                         _logger.Error(ex,
-                            "Exception occurred while uploading photo {FileName} to storage", file.FileName);
+                            "Exception occurred while uploading photo {FileName} to storage",
+                            file.FileData.FileName);
                         return GeneralErrors.InternalServerError(
-                            $"Exception occurred while uploading photo {file.FileName} to storage: {ex.Message}");
+                            $"Exception occurred while uploading photo {file.FileData.FileName} to storage: {ex.Message}");
                     }
                     finally
                     {
@@ -130,20 +138,21 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhotoP
                 {
                     if (result.IsFailure)
                     {
+                        if (!listDtoUploadPhotos.Any())
+                            await _queueService.WriteAsync(listDtoUploadPhotos, cancellationToken);
                         _logger.Error("One or more photos failed to upload to storage");
                         return result.Error;
                     }
                 }
-
-                _logger.Information("Successfully uploaded {Count} photos to storage", fileDtos.Count);
-                var petPhotos = resultUploadPhotos.Select(r => r.Value).ToList();
-                return petPhotos;
+                _logger.Information("Successfully uploaded {Count} photos to storage", listPhotos.Count);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error uploading photos to storage");
                 return GeneralErrors.InternalServerError(ex.Message);
             }
+            _logger.Information("All files download Success");
+            return listDtoUploadPhotos;
         }
     }
 }

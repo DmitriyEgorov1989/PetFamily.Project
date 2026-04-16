@@ -9,72 +9,68 @@ using Primitives;
 using Serilog;
 using static Primitives.Error;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeletePhotoPets
+namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeletePhotoPets;
+
+public class DeletePhotoPetsHandler : IRequestHandler<DeletePhotoPetsCommand, Result<string, ErrorList>>
 {
-    public class DeletePhotoPetsHandler : IRequestHandler<DeletePhotoPetsCommand, Result<string, ErrorList>>
+    private readonly IFileStorageProvider _fileStorageProvider;
+    private readonly ILogger _logger;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IValidator<DeletePhotoPetsCommand> _validator;
+    private readonly IVolunteerRepository _volunteerRepository;
+
+    public DeletePhotoPetsHandler(
+        IVolunteerRepository volunteerRepository,
+        IFileStorageProvider fileStorageProvider,
+        IValidator<DeletePhotoPetsCommand> validator,
+        ILogger logger,
+        IUnitOfWork unitOfWork)
     {
-        private readonly IVolunteerRepository _volunteerRepository;
-        private readonly IFileStorageProvider _fileStorageProvider;
-        private readonly IValidator<DeletePhotoPetsCommand> _validator;
-        private readonly ILogger _logger;
-        private readonly IUnitOfWork _unitOfWork;
+        _volunteerRepository = volunteerRepository;
+        _fileStorageProvider = fileStorageProvider;
+        _validator = validator;
+        _logger = logger;
+        _unitOfWork = unitOfWork;
+    }
 
-        public DeletePhotoPetsHandler(
-            IVolunteerRepository volunteerRepository,
-            IFileStorageProvider fileStorageProvider,
-            IValidator<DeletePhotoPetsCommand> validator,
-            ILogger logger,
-            IUnitOfWork unitOfWork)
+    public async Task<Result<string, ErrorList>> Handle(
+        DeletePhotoPetsCommand command, CancellationToken cancellationToken)
+    {
+        var resultValidation =
+            await _validator.ValidateAsync(command, cancellationToken);
+        if (!resultValidation.IsValid) return resultValidation.ToValidationErrorResponse(command);
+
+        _logger.Information(
+            "Start handling {CommandName} with VolunteerId: {VolunteerId} and PetId: {PetId}",
+            nameof(DeletePhotoPetsCommand), command.VolunteerId, command.PetId);
+
+        var volunteerId = VolunteerId.Create(command.VolunteerId).Value;
+
+        cancellationToken.ThrowIfCancellationRequested();
+        var volunteer = await _volunteerRepository.GetByIdAsync(volunteerId, cancellationToken);
+        if (volunteer == null)
+            return (ErrorList)GeneralErrors.NotFound(nameof(volunteerId));
+
+        var resultGetPet = volunteer.GetPetById(PetId.Create(command.PetId).Value);
+        if (resultGetPet.IsFailure)
         {
-            _volunteerRepository = volunteerRepository;
-            _fileStorageProvider = fileStorageProvider;
-            _validator = validator;
-            _logger = logger;
-            _unitOfWork = unitOfWork;
+            _logger.Error(
+                "Pet with Id {PetId} not found for VolunteerId {VolunteerId}",
+                command.PetId, command.VolunteerId);
+            return (ErrorList)resultGetPet.Error;
         }
 
-        public async Task<Result<string, ErrorList>> Handle(
-            DeletePhotoPetsCommand command, CancellationToken cancellationToken)
-        {
-            var resultValidation =
-                await _validator.ValidateAsync(command, cancellationToken);
-            if (!resultValidation.IsValid)
-            {
-                return resultValidation.ToValidationErrorResponse(command);
-            }
-            _logger.Information(
-                "Start handling {CommandName} with VolunteerId: {VolunteerId} and PetId: {PetId}",
-                nameof(DeletePhotoPetsCommand), command.VolunteerId, command.PetId);
+        var pet = resultGetPet.Value;
 
-            var volunteerId = VolunteerId.Create(command.VolunteerId).Value;
+        var resultDeletePhoto =
+            pet.DeletePetPhotos(PetPhoto.Create(command.FileName).Value);
 
-            cancellationToken.ThrowIfCancellationRequested();
-            var volunteer = await _volunteerRepository.GetByIdAsync(volunteerId, cancellationToken);
-            if (volunteer == null)
-            {
-                return (ErrorList)GeneralErrors.NotFound(nameof(volunteerId));
-            }
+        cancellationToken.ThrowIfCancellationRequested();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _fileStorageProvider.DeleteFileAsync(command.FileName, cancellationToken);
+        _logger.Information("File with name {fileName} delete at pet with id {petId}",
+            command.FileName, command.PetId);
 
-            var resultGetPet = volunteer.GetPetById(PetId.Create(command.PetId).Value);
-            if (resultGetPet.IsFailure)
-            {
-                _logger.Error(
-                    "Pet with Id {PetId} not found for VolunteerId {VolunteerId}",
-                    command.PetId, command.VolunteerId);
-                return (ErrorList)resultGetPet.Error;
-            }
-            var pet = resultGetPet.Value;
-
-            var resultDeletePhoto =
-                pet.DeletePetPhotos(PetPhoto.Create(command.FileName).Value);
-
-            cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            await _fileStorageProvider.DeleteFileAync(command.FileName, cancellationToken);
-            _logger.Information("File with name {fileName} delete at pet with id {petId}",
-                command.FileName, command.PetId);
-
-            return command.FileName;
-        }
+        return command.FileName;
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Args;
 using PetFamily.Core.Application.UseCases.Comands.SharedKernelDto;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
 using PetFamily.Core.Ports;
 using PetFamily.Infrastructure.Adapters.Minio.ExceptionHandling;
 using PetFamily.Infrastructure.Options;
@@ -27,40 +26,39 @@ namespace PetFamily.Infrastructure.Adapters.Minio
             _bucketName = minioOptions.Value.DefaultBucket;
         }
 
-        public async Task<Result<PetPhotoDto, Error>> UploadAsync(
-            CreateFileDto fileDto, CancellationToken cancellationToken)
+        public async Task<Result<string, Error>> UploadAsync(
+            CreateFileDto file, CancellationToken cancellationToken)
         {
             try
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                await OrIfBucketNotFoundCreateAsync(cancellationToken);
 
-                await OrIfBucketNotFoundCreateAsync();
-
-                var extension = Path.GetExtension(fileDto.FileName);
+                var extension = Path.GetExtension(file.FileData.FileName);
 
                 var path = Guid.NewGuid() + extension;
 
                 var putObjectArgs = new PutObjectArgs()
                                       .WithBucket(_bucketName)
-                                      .WithStreamData(fileDto.Stream)
-                                      .WithObjectSize(fileDto.Stream.Length)
+                                      .WithStreamData(file.Stream)
+                                      .WithObjectSize(file.Stream.Length)
                                       .WithObject(path)
-                                      .WithContentType(fileDto.ContentType);
+                                      .WithContentType(file.FileData.ContentType);
 
                 await _minioClient.PutObjectAsync(putObjectArgs, cancellationToken);
 
-                _logger.Information("File with name {name} dowload", path);
-                return new PetPhotoDto(fileDto.Stream.Length, path);
+                cancellationToken.ThrowIfCancellationRequested();
+                _logger.Information("File download in storage with path {name}", path);
+                return Result.Success<string, Error>(path);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.ToError().Message);
+                _logger.Error(ex, "Failed to upload file to storage");
 
                 return ex.ToError();
             }
         }
 
-        public async Task<Result<string, Error>> GetPresignedUrlAync(
+        public async Task<Result<string, Error>> GetPresignedUrlAsync(
             string fileName, CancellationToken cancellationToken)
         {
             try
@@ -76,7 +74,7 @@ namespace PetFamily.Infrastructure.Adapters.Minio
 
                 var presignedUrl = await _minioClient.PresignedGetObjectAsync(args);
 
-                _logger.Information("Get presigned Url sucess");
+                _logger.Information("Get presigned Url success");
                 return presignedUrl;
 
             }
@@ -87,7 +85,7 @@ namespace PetFamily.Infrastructure.Adapters.Minio
             }
         }
 
-        public async Task<UnitResult<Error>> DeleteFileAync(
+        public async Task<UnitResult<Error>> DeleteFileAsync(
             string fileName, CancellationToken cancellationToken)
         {
             try
@@ -100,7 +98,7 @@ namespace PetFamily.Infrastructure.Adapters.Minio
                                  .WithBucket(_bucketName)
                                  .WithObject(fileName);
 
-                await _minioClient.RemoveObjectAsync(args);
+                await _minioClient.RemoveObjectAsync(args, cancellationToken);
 
                 _logger.Information("File with name {fileName} remove", fileName);
                 return UnitResult.Success<Error>();
@@ -117,12 +115,12 @@ namespace PetFamily.Infrastructure.Adapters.Minio
 
             cancellationToken.ThrowIfCancellationRequested();
             var existBucket =
-               await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(_bucketName));
+               await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(_bucketName), cancellationToken);
 
             if (!existBucket)
             {
                 _logger.Information("Bucket does not exist,create bucket with name {name}", _bucketName);
-                await _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(_bucketName));
+                await _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(_bucketName), cancellationToken);
             }
         }
 
@@ -134,7 +132,7 @@ namespace PetFamily.Infrastructure.Adapters.Minio
                 var args = new StatObjectArgs()
                                   .WithBucket(_bucketName)
                                   .WithObject(fileName);
-                await _minioClient.StatObjectAsync(args);
+                await _minioClient.StatObjectAsync(args, cancellationToken);
 
                 return UnitResult.Success<Error>();
             }

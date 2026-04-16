@@ -25,7 +25,7 @@ namespace PetFamily.Core.Application.UseCases.Queries.Files.GetPresignedUrl
                 return GeneralErrors.ValueIsInvalid(nameof(request));
 
             var resultGetPresignedUrl =
-                await _fileStorageProvider.GetPresignedUrlAync(request.FileName, cancellationToken);
+                await _fileStorageProvider.GetPresignedUrlAsync(request.FileName, cancellationToken);
 
             if (resultGetPresignedUrl.IsFailure)
                 return resultGetPresignedUrl.Error;

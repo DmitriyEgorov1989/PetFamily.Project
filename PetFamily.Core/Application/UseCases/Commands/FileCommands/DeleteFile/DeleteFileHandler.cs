@@ -23,7 +23,7 @@ namespace PetFamily.Core.Application.UseCases.Comands.FileCommands.DeleteFile
                 return UnitResult.Failure(GeneralErrors.ValueIsInvalid(nameof(request)));
 
             var resultDeleteFile =
-                await _fileStorageProvider.DeleteFileAync(request.FileName, cancellationToken);
+                await _fileStorageProvider.DeleteFileAsync(request.FileName, cancellationToken);
 
             if (resultDeleteFile.IsFailure)
                 return UnitResult.Failure(resultDeleteFile.Error);

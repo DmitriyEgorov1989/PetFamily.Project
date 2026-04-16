@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet
 {
@@ -8,6 +9,11 @@ namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet
     /// </summary>
     public class Position : ValueObject
     {
+        [ExcludeFromCodeCoverage]
+        private Position()
+        {
+        }
+
         /// <summary>
         /// ctr
         /// </summary>

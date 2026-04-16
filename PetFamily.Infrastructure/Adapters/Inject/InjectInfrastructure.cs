@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
+using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
 using PetFamily.Core.Ports;
+using PetFamily.Infrastructure.Adapters.MessageQueues;
 using PetFamily.Infrastructure.Adapters.Minio;
+using PetFamily.Infrastructure.Adapters.Minio.BackgroundServices;
 using PetFamily.Infrastructure.Adapters.Postgres;
 using PetFamily.Infrastructure.Adapters.Postgres.BackgroundJobs;
 using PetFamily.Infrastructure.Adapters.Postgres.Repository;
@@ -18,6 +21,8 @@ namespace PetFamily.Infrastructure.Adapters.Inject
             services.AddScoped<IVolunteerRepository, VolonteerRepository>();
             services.AddScoped<IFileStorageProvider, MinioService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddHostedService<FilesCleanupJob>();
+            services.AddSingleton<IMessageQueueService<IEnumerable<PetPhotoDto>>, FilesCleanupMessageQueue>();
 
             services.Configure<QuartzJobOptions>(
                 configuration.GetSection(QuartzJobOptions.SECTION_NAME));

@@ -19,15 +19,17 @@ namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet
         {
             if (size > MAX_SIZE)
                 return GeneralErrors.InvalidSize(nameof(size));
-            if (pathStorage == null)
+            if (string.IsNullOrWhiteSpace(pathStorage))
                 return GeneralErrors.ValueIsInvalid(nameof(pathStorage));
 
-            return new PetPhoto(pathStorage);
+            var path = Guid.NewGuid() + pathStorage;
+
+            return new PetPhoto(path);
         }
         public static Result<PetPhoto, Error> Create(string pathStorage)
         {
 
-            if (pathStorage == null)
+            if (string.IsNullOrWhiteSpace(pathStorage))
                 return GeneralErrors.ValueIsInvalid(nameof(pathStorage));
 
             return new PetPhoto(pathStorage);

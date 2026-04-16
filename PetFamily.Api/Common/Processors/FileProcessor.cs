@@ -10,7 +10,7 @@ namespace PetFamily.Api.Common.Processors
             foreach (var file in files)
             {
                 var stream = file.OpenReadStream();
-                var fileDto = new CreateFileDto(stream, file.FileName, file.ContentType);
+                var fileDto = new CreateFileDto(stream, new FileData(file.FileName, file.ContentType));
                 _createFileDtos.Add(fileDto);
             }
             return _createFileDtos;

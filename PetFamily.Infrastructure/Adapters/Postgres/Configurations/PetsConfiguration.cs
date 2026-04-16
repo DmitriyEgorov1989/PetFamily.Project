@@ -146,6 +146,12 @@ namespace PetFamily.Infrastructure.Adapters.Postgres.Configurations
                             VolunteerId.Create(value).Value)
                     .IsRequired();
 
+            builder.Property(p => p.Position)
+                .HasColumnName("position")
+                .HasConversion(p => p.Number, value =>
+                    Position.Create(value).Value)
+                .IsRequired();
+
             builder.HasOne(p => p.VolunteerNavigation)
                    .WithMany(v => v.Pets)
                    .HasForeignKey(v => v.VolunteerId)

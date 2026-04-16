@@ -33,7 +33,7 @@ namespace PetFamily.Core.Application.UseCases.Comands.FileCommands.UploadFiles
                 {
                     semaphoreSlim.Wait();
                     await _fileStorageProvider.UploadAsync(file, cancellationToken);
-                    return file.FileName;
+                    return file.FileData.FileName;
                 }
                 finally
                 {

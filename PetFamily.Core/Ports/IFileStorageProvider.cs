@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.Core.Application.UseCases.Comands.SharedKernelDto;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
 using Primitives;
 
 namespace PetFamily.Core.Ports
@@ -15,8 +14,8 @@ namespace PetFamily.Core.Ports
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns>Sucess or Failure</returns>
-        Task<UnitResult<Error>> DeleteFileAync(
+        /// <returns>Success or Failure</returns>
+        Task<UnitResult<Error>> DeleteFileAsync(
             string fileName, CancellationToken cancellationToken = default);
         /// <summary>
         /// Получение presigned url для загрузки файла, по имени файла, которое было возвращено при загрузки.
@@ -24,16 +23,16 @@ namespace PetFamily.Core.Ports
         /// <param name="fileName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Presigned URL or Error</returns>
-        Task<Result<string, Error>> GetPresignedUrlAync(
+        Task<Result<string, Error>> GetPresignedUrlAsync(
             string fileName, CancellationToken cancellationToken = default);
         /// <summary>
-        /// Загрузка файло в хранилище,
+        /// Загрузка файлов в хранилище,
         /// возвращает имя в хранилище, которое может отличаться от имени файла на диске
         /// </summary>
         /// <param name="fileDto"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>string filePath or Error </returns>
-        Task<Result<PetPhotoDto, Error>> UploadAsync(
-            CreateFileDto fileDto, CancellationToken cancellationToken = default);
+        Task<Result<string, Error>> UploadAsync(
+            CreateFileDto file, CancellationToken cancellationToken = default);
     }
 }

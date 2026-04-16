@@ -86,6 +86,10 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("phone_number");
 
+                    b.Property<int>("Position")
+                        .HasColumnType("integer")
+                        .HasColumnName("position");
+
                     b.Property<Guid>("VolunteerId")
                         .HasColumnType("uuid")
                         .HasColumnName("volunteer_id");
@@ -289,7 +293,30 @@ namespace PetFamily.Infrastructure.Migrations
                             b1.Navigation("ListHelpRequisites");
                         });
 
-                    b.OwnsOne("PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet.PetPhotos", "Photos", b1 =>
+                    b.OwnsOne("PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet.PetSpeciesInfo", "SpeciesInfo", b1 =>
+                        {
+                            b1.Property<Guid>("PetId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("pet_id");
+
+                            b1.Property<Guid>("BreedId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("breed_id");
+
+                            b1.Property<Guid>("SpecieId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("species_id");
+
+                            b1.HasKey("PetId");
+
+                            b1.ToTable("pets");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PetId")
+                                .HasConstraintName("fK_pets_pets_pet_id");
+                        });
+
+                    b.OwnsOne("PetPhotos", "Photos", b1 =>
                         {
                             b1.Property<Guid>("PetId")
                                 .HasColumnType("uuid");
@@ -330,29 +357,6 @@ namespace PetFamily.Infrastructure.Migrations
                                 });
 
                             b1.Navigation("ListPetPhotos");
-                        });
-
-                    b.OwnsOne("PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet.PetSpeciesInfo", "SpeciesInfo", b1 =>
-                        {
-                            b1.Property<Guid>("PetId")
-                                .HasColumnType("uuid")
-                                .HasColumnName("pet_id");
-
-                            b1.Property<Guid>("BreedId")
-                                .HasColumnType("uuid")
-                                .HasColumnName("breed_id");
-
-                            b1.Property<Guid>("SpecieId")
-                                .HasColumnType("uuid")
-                                .HasColumnName("species_id");
-
-                            b1.HasKey("PetId");
-
-                            b1.ToTable("pets");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PetId")
-                                .HasConstraintName("fK_pets_pets_pet_id");
                         });
 
                     b.Navigation("PetHelpRequisites")

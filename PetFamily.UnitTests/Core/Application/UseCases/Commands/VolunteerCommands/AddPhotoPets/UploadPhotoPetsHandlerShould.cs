@@ -4,7 +4,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Comands.SharedKernelDto;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhotoPets;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
 using PetFamily.Core.Domain.Models.PetAggregate;
@@ -32,6 +31,8 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
         private readonly ILogger _logger =
             Substitute.For<ILogger>();
         private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+        public readonly IMessageQueueService<IEnumerable<PetPhotoDto>> _queueService =
+            Substitute.For<IMessageQueueService<IEnumerable<PetPhotoDto>>>();
 
         private readonly UploadPhotoPetsHandler _handler;
 
@@ -42,7 +43,8 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
                 _volunteerRepository,
                 _fileStorageProvider,
                  _logger,
-                 _unitOfWork);
+                 _unitOfWork,
+                _queueService);
         }
         /// <summary>
         /// Проверяет при добавлении фото,что фото добавилось 
@@ -56,7 +58,6 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
             var volunteer = ExistedVolunteer().Value;
             var pet = ExictedPet();
             volunteer.AddPet(pet);
-            var petPhotoDto = new PetPhotoDto(100, "testPath.jpg");
 
             _volunteerRepository
                              .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())
@@ -67,18 +68,19 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
                                        new ValidationResult()));
             _fileStorageProvider
                 .UploadAsync(Arg.Any<CreateFileDto>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(Result.Success<PetPhotoDto, Error>(petPhotoDto)));
+                .Returns(Task.FromResult(Result.Success<string, Error>("upload")));
+            _queueService.WriteAsync(Arg.Any<IEnumerable<PetPhotoDto>>(), Arg.Any<CancellationToken>())
+                .Returns(Task.FromResult);
 
-
-            var createFileDto = new CreateFileDto(new MemoryStream(), petPhotoDto.PathStorage, "jpg");
+            var createFileDto = new CreateFileDto(new MemoryStream(), new FileData("testName", "jpg"));
             var command = new UploadPhotoPetsCommand((Guid)volunteer.Id, (Guid)pet.Id, [createFileDto]);
 
             //act
-            var result = await _handler.Handle(command, new CancellationToken());
+            var result = await _handler.Handle(command, CancellationToken.None);
 
             //assert
             result.IsSuccess.Should().BeTrue();
-            pet.Photos.ListPetPhotos[0].PathStorage.Should().Be(petPhotoDto.PathStorage);
+            pet.Photos.ListPetPhotos[0].Should().NotBeNull();
             result.Value.Should().Be((Guid)pet.Id);
             await _fileStorageProvider.Received(1)
                  .UploadAsync(Arg.Any<CreateFileDto>(), Arg.Any<CancellationToken>());
