@@ -3,7 +3,7 @@ using FluentValidation;
 using MediatR;
 using PetFamily.Core.Application.Extensions;
 using PetFamily.Core.Application.UseCases.Comands.SharedKernelDto;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
+using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.Core.Ports;
@@ -63,7 +63,7 @@ namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhot
             if (resultGetPet.IsFailure)
             {
                 _logger.Error(
-                    "Pet with Id {PetId} not found for VolunteerId {VolunteerId}", command.PetId, command.VolunteerId);
+                    "Pet with VolunteerId {PetId} not found for VolunteerId {VolunteerId}", command.PetId, command.VolunteerId);
                 return (ErrorList)resultGetPet.Error;
             }
 

@@ -55,7 +55,7 @@ public class DeletePhotoPetsHandler : IRequestHandler<DeletePhotoPetsCommand, Re
         if (resultGetPet.IsFailure)
         {
             _logger.Error(
-                "Pet with Id {PetId} not found for VolunteerId {VolunteerId}",
+                "Pet with VolunteerId {PetId} not found for VolunteerId {VolunteerId}",
                 command.PetId, command.VolunteerId);
             return (ErrorList)resultGetPet.Error;
         }

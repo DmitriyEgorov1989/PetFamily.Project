@@ -2,7 +2,7 @@ using Microsoft.OpenApi.Models;
 using PetFamily.Api.Middlewares;
 using PetFamily.Core.Application.Inject;
 using PetFamily.Infrastructure.Adapters.Inject;
-using PetFamily.Infrastructure.Adapters.Postgres;
+using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase;
 using Serilog;
 
 namespace PetFamily.Api

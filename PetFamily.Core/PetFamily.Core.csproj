@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Ports\IVolunteerRepositoryForWrite.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Application\UseCases\Commands\FileCommands\DeleteFile\DeleteFileCommand.cs" />
     <None Include="Application\UseCases\Commands\VolunteerCommands\DeleteVolunteer\DeleteVolunteerCommand.cs" />
     <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
+using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Ports;
 using Serilog;
 

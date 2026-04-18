@@ -2,8 +2,8 @@
 using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
+using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Core.Ports;
 using Serilog;
@@ -43,7 +43,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
             var handler = new CreateVolunteerHandler(_volunteerRepository, _logger, _validator);
 
             //act
-            var result = await handler.Handle(command, new CancellationToken());
+            var result = await handler.Handle(command, CancellationToken.None);
 
             //assert
             result.IsSuccess.Should().BeTrue();

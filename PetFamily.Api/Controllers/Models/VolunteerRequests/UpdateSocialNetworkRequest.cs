@@ -1,4 +1,4 @@
-﻿using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
+﻿using PetFamily.Core.Application.UseCases.CommonDto;
 
 namespace PetFamily.Api.Controllers.Models.VolunteerRequests
 {

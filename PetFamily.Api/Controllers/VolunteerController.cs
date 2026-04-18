@@ -5,13 +5,14 @@ using PetFamily.Api.Controllers.Models.VolunteerRequests;
 using PetFamily.Api.Extensions;
 using PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateMainInfo;
 using PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetwork;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeletePhotoPets;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeleteVolunteer;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.UpdateHelpRequisites;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
+using PetFamily.Core.Application.UseCases.CommonDto;
+using PetFamily.Core.Application.UseCases.Queries.GetAllVolunteers;
 
 namespace PetFamily.Api.Controllers
 {
@@ -158,6 +159,16 @@ namespace PetFamily.Api.Controllers
                 await _mediator.Send(deletePetPhotoCommand, cancellationToken);
 
             return resultResponse.ToResponseErrorOrResult();
+        }
+
+        [HttpGet("all")]
+        public async Task<ActionResult<GetAllVolunteersResponse>> GetAllAsync(
+            CancellationToken cancellationToken)
+        {
+            var result =
+                await _mediator.Send(new GetAllVolunteersQuery(), cancellationToken);
+
+            return result.ToResponseErrorOrResult();
         }
     }
 }

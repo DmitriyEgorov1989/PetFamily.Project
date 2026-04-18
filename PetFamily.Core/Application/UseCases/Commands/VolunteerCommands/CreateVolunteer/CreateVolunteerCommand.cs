@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
+using PetFamily.Core.Application.UseCases.CommonDto;
 using static Primitives.Error;
 
 namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer

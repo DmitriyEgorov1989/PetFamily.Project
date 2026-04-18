@@ -13,7 +13,7 @@ namespace PetFamily.Api.Extensions
         /// </summary>
         /// <typeparam name="T">Какой то обьект</typeparam>
         /// <param name="result">Хранится либо успешный резульат либо ошибка</param>
-        /// <returns>Возращаем либо ок,либо список ошибок</returns>
+        /// <returns>Возращаем либо обьект,либо список ошибок</returns>
         public static ActionResult<T> ToResponseErrorOrResult<T>(this Result<T, ErrorList> result)
         {
             if (result.IsSuccess)

@@ -1,94 +1,147 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Minio;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
+using Npgsql;
+using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Ports;
+using PetFamily.Core.Ports.DataBaseForRead;
 using PetFamily.Infrastructure.Adapters.MessageQueues;
 using PetFamily.Infrastructure.Adapters.Minio;
 using PetFamily.Infrastructure.Adapters.Minio.BackgroundServices;
-using PetFamily.Infrastructure.Adapters.Postgres;
-using PetFamily.Infrastructure.Adapters.Postgres.BackgroundJobs;
-using PetFamily.Infrastructure.Adapters.Postgres.Repository;
+using PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.Common.TypeHandlers;
+using PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.ConnectionFactory;
+using PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.Repository;
+using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase;
+using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.BackgroundJobs;
+using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.Repository;
 using PetFamily.Infrastructure.Options;
 using Quartz;
 
-namespace PetFamily.Infrastructure.Adapters.Inject
+namespace PetFamily.Infrastructure.Adapters.Inject;
+
+public static class InjectInfrastructure
 {
-    public static class InjectInfrastructure
+    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        services.AddDataBaseForWrite(configuration)
+            .AddDataBaseForRead(configuration)
+            .AddMinioService(configuration)
+            .AddQuartzJob(configuration);
+
+        DapperTypeHandlerRegistration.AddDapperTypeHandlers();
+
+        services.AddHostedService<FilesCleanupJob>();
+        services.AddSingleton<IMessageQueueService<IEnumerable<PetPhotoDto>>, FilesCleanupMessageQueue>();
+    }
+
+    /// <summary>
+    ///     Регистрация минио сервиса
+    /// </summary>
+    /// <param name="services">Интерфейс DI</param>
+    /// <param name="configuration">Конфигурация приложения</param>
+    /// <exception cref="ArgumentNullException">Error if not found options</exception>
+    private static IServiceCollection AddMinioService(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<MinioOptions>(
+            configuration.GetSection(MinioOptions.SECTION_NAME));
+
+        var options = configuration.GetSection(MinioOptions.SECTION_NAME)
+                          .Get<MinioOptions>()
+                      ?? throw new ArgumentNullException("Error get options minio");
+
+        services.AddMinio(configuration =>
         {
-            services.AddScoped<IVolunteerRepository, VolonteerRepository>();
-            services.AddScoped<IFileStorageProvider, MinioService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddHostedService<FilesCleanupJob>();
-            services.AddSingleton<IMessageQueueService<IEnumerable<PetPhotoDto>>, FilesCleanupMessageQueue>();
+            configuration.WithCredentials(options.Login, options.Password)
+                .WithSSL(false)
+                .WithEndpoint(options.ConnectionString)
+                .Build();
+        });
+        services.AddScoped<IFileStorageProvider, MinioService>();
+        return services;
+    }
 
-            services.Configure<QuartzJobOptions>(
-                configuration.GetSection(QuartzJobOptions.SECTION_NAME));
+    /// <summary>
+    ///     Регистраци Quartz job сервиса
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configure"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    private static IServiceCollection AddQuartzJob(
+        this IServiceCollection services
+        , IConfiguration configure)
+    {
+        var options = configure.GetSection(QuartzJobOptions.SECTION_NAME).Get<QuartzJobOptions>()
+                      ?? throw new ArgumentNullException(nameof(configure));
 
-            AddMinioService(services, configuration);
-        }
-
-        /// <summary>
-        /// Регистрация минио сервиса
-        /// </summary>
-        /// <param name="services">интерфейс DI</param>
-        /// <param name="configuration"></param>
-        /// <exception cref="ArgumentNullException">Error if not found options</exception>
-        private static void AddMinioService(this IServiceCollection services, IConfiguration configuration)
+        services.AddQuartz(q =>
         {
-            services.Configure<MinioOptions>(
-             configuration.GetSection(MinioOptions.SECTION_NAME));
+            var jobKey = new JobKey(options.HardDeleteVolunteerIdentity);
 
-            var options = configuration.GetSection(MinioOptions.SECTION_NAME)
-                                       .Get<MinioOptions>()
-                                       ?? throw new ArgumentNullException("Error get options minio");
+            q.AddJob<HardDeleteVolunteerByTimeJob>(opts =>
+                opts.WithIdentity(jobKey));
 
-            services.AddMinio(configuration =>
+            q.AddTrigger(opts =>
             {
-                configuration.WithCredentials(options.Login, options.Password)
-                         .WithSSL(false)
-                         .WithEndpoint(options.ConnectionString)
-                         .Build();
+                opts.ForJob(jobKey)
+                    .WithIdentity(options.HardDeleteVolunteerTrigger)
+                    .WithCronSchedule(options.CronShedule);
             });
-        }
+        });
 
-        /// <summary>
-        /// Регистраци Quartz job сервиса
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configure"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        private static IServiceCollection AddQuartzJob(
-            this IServiceCollection services
-            , IConfiguration configure)
+        services.AddQuartzHostedService(q => { q.WaitForJobsToComplete = true; });
+
+        return services;
+    }
+
+    /// <summary>
+    ///     Регистрация сервисов базы данных для записи
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configure"></param>
+    /// <returns></returns>
+    private static IServiceCollection AddDataBaseForWrite
+        (this IServiceCollection services, IConfiguration configure)
+    {
+        services.Configure<DataBaseOptions>(
+            configure.GetSection(DataBaseOptions.SECTION_NAME));
+
+        services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
-            var options = configure.GetSection(QuartzJobOptions.SECTION_NAME).Get<QuartzJobOptions>()
-                ?? throw new ArgumentNullException(nameof(configure));
+            var dbOptions = sp.GetRequiredService<
+                Microsoft.Extensions.Options.IOptions<DataBaseOptions>>().Value;
 
-            services.AddQuartz(q =>
-            {
-                var jobKey = new JobKey(options.HardDeleteVolunteerIdentity);
+            if (string.IsNullOrWhiteSpace(dbOptions.ConnectionString))
+                throw new InvalidOperationException("Database connection string is missing.");
 
-                q.AddJob<HardDeleteVolunteerByTimeJob>(opts =>
-                    opts.WithIdentity(jobKey));
+            options.UseNpgsql(dbOptions.ConnectionString);
+            options.UseCamelCaseNamingConvention();
+            options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+        });
+        services.AddScoped<IVolunteerRepository, VolonteerRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-                q.AddTrigger(opts =>
-                {
-                    opts.ForJob(jobKey)
-                        .WithIdentity(options.HardDeleteVolunteerTrigger)
-                        .WithCronSchedule(options.CronShedule);
-                });
-            });
+        return services;
+    }
 
-            services.AddQuartzHostedService(q =>
-            {
-                q.WaitForJobsToComplete = true;
-            });
+    /// <summary>
+    ///     Регистрация бд ждя чтения
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configure"></param>
+    /// <returns></returns>
+    private static IServiceCollection AddDataBaseForRead
+        (this IServiceCollection services, IConfiguration configure)
+    {
+        var options = configure.GetSection(DataBaseOptions.SECTION_NAME)
+            .Get<DataBaseOptions>();
 
-            return services;
-        }
+        var dataSource = new NpgsqlDataSourceBuilder(options.ConnectionString).Build();
+        services.AddSingleton(dataSource);
+        services.AddScoped<IReadRepository, ReadRepository>();
+        services.AddSingleton<IDbConnectionFactory, NpgSqlConnectionFactory>();
+        return services;
     }
 }

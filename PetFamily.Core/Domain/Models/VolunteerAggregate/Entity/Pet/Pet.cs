@@ -125,7 +125,7 @@ namespace PetFamily.Core.Domain.Models.PetAggregate
         /// </summary>
         public Volunteer VolunteerNavigation { get; private set; }
         /// <summary>
-        /// Id волантера за которым закреплено животное
+        /// VolunteerId волантера за которым закреплено животное
         /// </summary>
         public VolunteerId VolunteerId { get; private set; }
         /// <summary>

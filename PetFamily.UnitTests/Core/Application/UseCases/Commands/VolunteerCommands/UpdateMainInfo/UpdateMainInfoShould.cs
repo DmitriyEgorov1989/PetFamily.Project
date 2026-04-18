@@ -2,7 +2,7 @@
 using FluentValidation;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetwork;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.ComonDto;
+using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Domain.Models.SharedKernel.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
@@ -53,11 +53,9 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
 
             //assert
             result.IsSuccess.Should().BeTrue();
-            volunteer.SocialNetworks
-                .ListSocialNetworks[0]
+            volunteer.SocialNetworks.ToList()[0]
                 .Name.Should().Be(newSocialNetworkDto.Name);
-            volunteer.SocialNetworks
-                .ListSocialNetworks[0]
+            volunteer.SocialNetworks.ToList()[0]
                 .Link.Should().Be(newSocialNetworkDto.Link);
             await _validator.Received(1).ValidateAsync(Arg.Any<UpdateSocialNetworkCommand>(),
                 Arg.Any<CancellationToken>());

@@ -28,4 +28,8 @@
     <ProjectReference Include="..\PetFamily.Infrastructure\PetFamily.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Models\VolunteerRequests\Queries\" />
+  </ItemGroup>
+
 </Project>

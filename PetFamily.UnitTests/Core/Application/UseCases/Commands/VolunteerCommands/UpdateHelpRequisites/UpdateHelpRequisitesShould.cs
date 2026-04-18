@@ -52,11 +52,9 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
 
             //assert
             result.IsSuccess.Should().BeTrue();
-            volunteer.HelpRequisites
-                .ListHelpRequisites[0]
+            volunteer.HelpRequisites.ToList()[0]
                 .Name.Should().Be(newHelpRequisiteDto.Name);
-            volunteer.HelpRequisites
-                .ListHelpRequisites[0]
+            volunteer.HelpRequisites.ToList()[0]
                 .Description.Should().Be(newHelpRequisiteDto.Description);
             await _validator.Received(1).ValidateAsync(Arg.Any<UpdateHelpRequisitesCommand>(),
                 Arg.Any<CancellationToken>());

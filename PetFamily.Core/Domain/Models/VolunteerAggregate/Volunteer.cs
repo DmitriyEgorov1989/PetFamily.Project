@@ -38,8 +38,8 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
         Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
-        HelpRequisites = helpRequisites;
-        SocialNetworks = socialNetworks;
+        HelpRequisites = helpRequisites.ListHelpRequisites;
+        SocialNetworks = socialNetworks.ListSocialNetworks;
     }
 
     /// <summary>
@@ -63,19 +63,19 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
     public Experience Experience { get; private set; }
 
     /// <summary>
-    ///     номер телефона для связи
+    /// номер телефона для связи
     /// </summary>
     public PhoneNumber PhoneNumber { get; private set; }
 
     /// <summary>
     ///     Список социальных сетей
     /// </summary>
-    public SocialNetworks SocialNetworks { get; private set; }
+    public IReadOnlyCollection<SocialNetwork> SocialNetworks { get; private set; }
 
     /// <summary>
     ///     Список реквизитов для помощи
     /// </summary>
-    public HelpRequisites? HelpRequisites { get; private set; }
+    public IReadOnlyCollection<HelpRequisite> HelpRequisites { get; private set; }
 
     /// <summary>
     ///     Список питомцев волонтера
@@ -256,12 +256,12 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
 
     public void UpdateSocialNetworks(SocialNetworks socialNetworks)
     {
-        SocialNetworks = socialNetworks;
+        SocialNetworks = socialNetworks.ListSocialNetworks;
     }
 
     public void UpdateHelpRequisites(HelpRequisites helpRequisites)
     {
-        HelpRequisites = helpRequisites;
+        HelpRequisites = helpRequisites.ListHelpRequisites;
     }
 
     /// <summary>

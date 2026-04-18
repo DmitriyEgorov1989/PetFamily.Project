@@ -30,7 +30,7 @@ namespace PetFamily.Core.Domain.Models.SpeciesAggregate.Entity
         public string Name { get; private set; }
 
         /// <summary>
-        /// Id типа животного
+        /// VolunteerId типа животного
         /// </summary>
         public SpeciesId SpeciesId { get; private set; }
 
