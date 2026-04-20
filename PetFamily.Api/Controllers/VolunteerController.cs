@@ -14,6 +14,7 @@ using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPet
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
 using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
+using PetFamily.Core.Application.UseCases.Queries.GetVolunteerById;
 
 namespace PetFamily.Api.Controllers
 {
@@ -162,7 +163,7 @@ namespace PetFamily.Api.Controllers
             return resultResponse.ToResponseErrorOrResult();
         }
 
-        [HttpGet("all-with-pagination")]
+        [HttpGet("{all-with-pagination}")]
         public async Task<ActionResult<GetAllVolunteersWithPaginationResponse>> GetAllWithPaginationAsync(
             [FromQuery] GetAllVolunteersWithPaginationRequest request,
             CancellationToken cancellationToken)
@@ -170,6 +171,18 @@ namespace PetFamily.Api.Controllers
             var result =
                 await _mediator.Send(
                    request.ToQuery(), cancellationToken);
+
+            return result.ToResponseErrorOrResult();
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<GetVolunteerByIdResponse>> GetVolunteerByIdAsync(
+            [FromRoute] Guid id,
+            CancellationToken cancellationToken)
+        {
+            var result =
+                await _mediator.Send(
+                    new GetVolunteerByIdQuery(id), cancellationToken);
 
             return result.ToResponseErrorOrResult();
         }

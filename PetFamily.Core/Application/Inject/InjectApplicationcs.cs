@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Core.Extensions.Validations;
 using System.Reflection;
 
 namespace PetFamily.Core.Application.Inject
@@ -13,7 +12,7 @@ namespace PetFamily.Core.Application.Inject
             {
                 c.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
             });
-            services.AddValidatorsFromAssemblyContaining(typeof(CustomValidation));
+            services.AddValidatorsFromAssemblyContaining(typeof(InjectApplicationcs));
 
         }
     }

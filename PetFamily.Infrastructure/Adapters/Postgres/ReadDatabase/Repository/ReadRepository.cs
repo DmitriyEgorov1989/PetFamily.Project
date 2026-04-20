@@ -10,23 +10,6 @@ namespace PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.Repository;
 
 public class ReadRepository : IReadRepository
 {
-    private const string SQL =
-        """
-        SELECT 
-            v.volunteer_id as VolunteerId,
-            v.first_name as FirstName,
-            v.middle_name as MiddleName,
-            v.last_name as LastName,
-            v.email,
-            v.description,
-            v.experience,
-            v.phone_number as PhoneNumber,
-            v.help_requisites as HelpRequisites,
-            v.social_networks as SocialNetworks from volunteers as v
-        where v.is_delete = false
-        offset @OffSet rows
-        fetch next @PageSize rows only;
-        """;
 
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly ILogger _logger;
@@ -40,6 +23,23 @@ public class ReadRepository : IReadRepository
     public async Task<Result<IEnumerable<VolunteerDto>, Error>> GetAllVolunteersWithPaginationAsync(
         int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
+        const string SQL =
+            """
+            SELECT 
+                v.volunteer_id as VolunteerId,
+                v.first_name as FirstName,
+                v.middle_name as MiddleName,
+                v.last_name as LastName,
+                v.email,
+                v.description,
+                v.experience,
+                v.phone_number as PhoneNumber,
+                v.help_requisites as HelpRequisites,
+                v.social_networks as SocialNetworks from volunteers as v
+            where v.is_delete = false
+            offset @OffSet rows
+            fetch next @PageSize rows only;
+            """;
         try
         {
             var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
@@ -66,6 +66,44 @@ public class ReadRepository : IReadRepository
         {
             _logger.Error(ex, "Error from Get Volunteers");
             return new Error("error.get.volunteers", ex.Message, ErrorType.InternalServerError);
+        }
+    }
+
+    public async Task<Result<Maybe<VolunteerDto>, Error>> GetVolunteerById(Guid volunteerId,
+        CancellationToken cancellationToken = default)
+    {
+        const string sql =
+            """
+            SELECT 
+                           v.volunteer_id as VolunteerId,
+                           v.first_name as FirstName,
+                           v.middle_name as MiddleName,
+                           v.last_name as LastName,
+                           v.email,
+                           v.description,
+                           v.experience,
+                           v.phone_number as PhoneNumber,
+                           v.help_requisites as HelpRequisites,
+                           v.social_networks as SocialNetworks from volunteers as v
+                       where v.is_delete = false AND v.volunteer_id = @VolunteerId
+                       limit 1;
+            """;
+        try
+        {
+            var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
+            var parameters = new DynamicParameters();
+            parameters.Add("@VolunteerId", volunteerId, DbType.Guid);
+
+            var command = new CommandDefinition(sql, parameters, cancellationToken: cancellationToken);
+
+            var volunteer = await connection.QueryFirstOrDefaultAsync<VolunteerDto>(command);
+
+            return Maybe<VolunteerDto>.From(volunteer);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error from Get Volunteer bu Id");
+            return new Error("error.get.volunteer", ex.Message, ErrorType.InternalServerError);
         }
     }
 }

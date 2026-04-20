@@ -13,7 +13,7 @@ using PetFamily.Core.Ports;
 using Serilog;
 using Xunit;
 
-namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerCommands.AddPet
+namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.AddPet
 {
     public class AddPetHandlerShould
     {
@@ -30,7 +30,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerComma
 
             _volunteerRepository
                 .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult<Volunteer>(volunteer));
+                .Returns(Task.FromResult(volunteer));
 
             _validator.ValidateAsync(Arg.Any<AddPetCommand>(), Arg.Any<CancellationToken>())
                              .Returns(Task.FromResult(
@@ -50,7 +50,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerComma
         }
 
         [Fact]
-        public async Task BeAddPetIfValidationSucessReturnSucessAndGuidPet()
+        public async Task BeAddPetIfValidationSuccessReturnSuccessAndGuidPet()
         {
             //arrange
             var volunteer = ExistedVolunteer().Value;
@@ -58,7 +58,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerComma
 
             _volunteerRepository
                 .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult<Volunteer>(volunteer));
+                .Returns(Task.FromResult(volunteer));
 
             _validator.ValidateAsync(Arg.Any<AddPetCommand>(), Arg.Any<CancellationToken>())
                              .Returns(Task.FromResult(new ValidationResult()));
@@ -68,7 +68,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerComma
             ;
             //act
 
-            var result = await handler.Handle(command, new CancellationToken());
+            var result = await handler.Handle(command, CancellationToken.None);
 
             //assert
             result.IsSuccess.Should().BeTrue();
