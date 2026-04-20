@@ -1,7 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Api.Common.Processors;
-using PetFamily.Api.Controllers.Models.VolunteerRequests;
+using PetFamily.Api.Controllers.Models.Volunteers.ReadModels;
+using PetFamily.Api.Controllers.Models.Volunteers.WriteModels.VolunteerRequests;
 using PetFamily.Api.Extensions;
 using PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateMainInfo;
 using PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetwork;
@@ -12,7 +13,7 @@ using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
 using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Application.UseCases.Queries.GetAllVolunteers;
+using PetFamily.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
 
 namespace PetFamily.Api.Controllers
 {
@@ -161,12 +162,14 @@ namespace PetFamily.Api.Controllers
             return resultResponse.ToResponseErrorOrResult();
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<GetAllVolunteersResponse>> GetAllAsync(
+        [HttpGet("all-with-pagination")]
+        public async Task<ActionResult<GetAllVolunteersWithPaginationResponse>> GetAllWithPaginationAsync(
+            [FromQuery] GetAllVolunteersWithPaginationRequest request,
             CancellationToken cancellationToken)
         {
             var result =
-                await _mediator.Send(new GetAllVolunteersQuery(), cancellationToken);
+                await _mediator.Send(
+                   request.ToQuery(), cancellationToken);
 
             return result.ToResponseErrorOrResult();
         }

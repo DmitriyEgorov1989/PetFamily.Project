@@ -6,6 +6,6 @@ namespace PetFamily.Core.Ports.DataBaseForRead;
 
 public interface IReadRepository
 {
-    Task<Result<IEnumerable<VolunteerDto>, Error>> GetAllVolunteersAsync(
-        CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<VolunteerDto>, Error>> GetAllVolunteersWithPaginationAsync(
+        int page, int pageSize, CancellationToken cancellationToken = default);
 }

@@ -3,7 +3,7 @@ using MediatR;
 using PetFamily.Core.Application.UseCases.CommonDto;
 using static Primitives.Error;
 
-namespace PetFamily.Api.Controllers.Models.VolunteerRequests
+namespace PetFamily.Api.Controllers.Models.Volunteers.WriteModels.VolunteerRequests
 {
     public record CreateVolunteerRequest(
         FullNameDto FullName,
