@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Dapper;
-using PetFamily.Core.Application.UseCases.ComonDto;
+using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Ports.DataBaseForRead;
 using Primitives;
 using Serilog;

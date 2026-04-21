@@ -2,7 +2,6 @@
 using FluentValidation;
 using MediatR;
 using PetFamily.Core.Application.Extensions;
-using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 using PetFamily.Core.Domain.Models.PetAggregate;
 using PetFamily.Core.Domain.Models.SharedKernel.VO;
 using PetFamily.Core.Domain.Models.SpeciesAggregate.VO;
@@ -13,7 +12,7 @@ using Primitives;
 using Serilog;
 using static Primitives.Error;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPet
+namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet
 {
     public class AddPetHandler : IRequestHandler<AddPetCommand, Result<Guid, ErrorList>>
     {
@@ -92,7 +91,9 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPet
                 dto.BirthDate,
                 dto.IsVaccined,
                 Pet.ToHelpStatus(dto.PetHelpStatus),
-                HelpRequisites.Create(null),
+                HelpRequisites.Create(
+                    dto.HelpRequisites.Select(
+                        hr => HelpRequisite.Create(hr.Name, hr.Description).Value)),
                 PetPhotos.Create(null),
                 id);
 

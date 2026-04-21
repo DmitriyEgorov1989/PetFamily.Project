@@ -4,6 +4,7 @@ using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.UpdateHelpRequisites;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.UpdateHelpRequisites;
+using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Domain.Models.SharedKernel.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;

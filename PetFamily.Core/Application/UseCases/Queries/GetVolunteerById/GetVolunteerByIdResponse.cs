@@ -1,4 +1,4 @@
-﻿using PetFamily.Core.Application.UseCases.ComonDto;
+﻿using PetFamily.Core.Application.UseCases.CommonDto;
 
 namespace PetFamily.Core.Application.UseCases.Queries.GetVolunteerById;
 

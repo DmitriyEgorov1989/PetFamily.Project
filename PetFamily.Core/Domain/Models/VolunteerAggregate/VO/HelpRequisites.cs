@@ -19,7 +19,7 @@ namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO
         }
         public List<HelpRequisite> ListHelpRequisites { get; }
 
-        public static HelpRequisites Create(IEnumerable<HelpRequisite>? list)
+        public static HelpRequisites Create(IEnumerable<HelpRequisite> list)
         {
             if (list == null || !list.Any())
                 return HelpRequisites.Empty();

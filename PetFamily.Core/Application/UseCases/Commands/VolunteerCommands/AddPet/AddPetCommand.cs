@@ -22,4 +22,5 @@ public record PetDto(
     bool IsSterilized,
     DateTime BirthDate,
     bool IsVaccined,
-    int PetHelpStatus);
+    int PetHelpStatus,
+    HelpRequisiteDto[] HelpRequisites);

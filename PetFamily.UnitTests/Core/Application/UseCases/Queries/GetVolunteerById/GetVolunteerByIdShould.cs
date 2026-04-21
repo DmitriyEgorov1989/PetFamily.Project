@@ -4,7 +4,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Application.UseCases.ComonDto;
 using PetFamily.Core.Application.UseCases.Queries.GetVolunteerById;
 using PetFamily.Core.Ports.DataBaseForRead;
 using Primitives;

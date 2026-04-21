@@ -13,7 +13,7 @@ using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260418133339_Init")]
+    [Migration("20260421090016_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -79,6 +79,11 @@ namespace PetFamily.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
+
+                    b.Property<string>("PetHelpRequisites")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("help_requisites");
 
                     b.Property<int>("PetHelpStatus")
                         .HasColumnType("integer")
@@ -255,56 +260,6 @@ namespace PetFamily.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fK_pets_volunteers_volunteer_id");
 
-                    b.OwnsOne("PetFamily.Core.Domain.Models.VolunteerAggregate.VO.HelpRequisites", "PetHelpRequisites", b1 =>
-                        {
-                            b1.Property<Guid>("PetId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("PetId");
-
-                            b1.ToTable("pets");
-
-                            b1.ToJson("help_requisites");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PetId")
-                                .HasConstraintName("fK_pets_pets_pet_id");
-
-                            b1.OwnsMany("PetFamily.Core.Domain.Models.SharedKernel.VO.HelpRequisite", "ListHelpRequisites", b2 =>
-                                {
-                                    b2.Property<Guid>("HelpRequisitesPetId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<int>("__synthesizedOrdinal")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer");
-
-                                    b2.Property<string>("Description")
-                                        .IsRequired()
-                                        .HasMaxLength(1000)
-                                        .HasColumnType("character varying(1000)")
-                                        .HasColumnName("description_help_requisite");
-
-                                    b2.Property<string>("Name")
-                                        .IsRequired()
-                                        .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)")
-                                        .HasColumnName("name_help_requisite");
-
-                                    b2.HasKey("HelpRequisitesPetId", "__synthesizedOrdinal");
-
-                                    b2.ToTable("pets");
-
-                                    b2.ToJson("help_requisites");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("HelpRequisitesPetId")
-                                        .HasConstraintName("fK_pets_pets_HelpRequisitesPetId");
-                                });
-
-                            b1.Navigation("ListHelpRequisites");
-                        });
-
                     b.OwnsOne("PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet.PetSpeciesInfo", "SpeciesInfo", b1 =>
                         {
                             b1.Property<Guid>("PetId")
@@ -370,9 +325,6 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.Navigation("ListPetPhotos");
                         });
-
-                    b.Navigation("PetHelpRequisites")
-                        .IsRequired();
 
                     b.Navigation("Photos")
                         .IsRequired();

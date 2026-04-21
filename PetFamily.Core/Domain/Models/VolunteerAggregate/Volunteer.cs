@@ -63,7 +63,7 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
     public Experience Experience { get; private set; }
 
     /// <summary>
-    /// номер телефона для связи
+    ///     номер телефона для связи
     /// </summary>
     public PhoneNumber PhoneNumber { get; private set; }
 
@@ -284,6 +284,11 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
         return UnitResult.Success<Error>();
     }
 
+    /// <summary>
+    ///     Получение питомца по Id,который находится в аггрегате волонтера
+    /// </summary>
+    /// <param name="petId">Id питомца</param>
+    /// <returns>Результат выполнения операции</returns>
     public Result<Pet, Error> GetPetById(PetId petId)
     {
         var pet = _pets.FirstOrDefault(p => p.Id == petId);
@@ -318,6 +323,54 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
                 .Select(p => p.MoveBackward())
                 .ToList();
         pet.SetPosition(newPosition);
+        return UnitResult.Success<Error>();
+    }
+
+    /// <summary>
+    ///     Метод для обновления информации о питомце,который находится в аггрегате волонтера,по его Id
+    /// </summary>
+    /// <param name="petId">Id питомца</param>
+    /// <param name="name">Имя питомца</param>
+    /// <param name="description">Описание питомца</param>
+    /// <param name="color">Цвет питомца</param>
+    /// <param name="city">Город питомца</param>
+    /// <param name="region">Регион питомца</param>
+    /// <param name="house">Дом питомца</param>
+    /// <param name="weight">Вес питомца</param>
+    /// <param name="height">Рост питомца</param>
+    /// <param name="isSterilized">Стерилизован ли питомец</param>
+    /// <param name="birthdate">Дата рождения питомца</param>
+    /// <param name="isVacined">Вакцинирован ли питомец</param>
+    /// <returns>Результат выполнения операции</returns>
+    public UnitResult<Error> UpdatePetInfo(PetId petId,
+        string? name,
+        string? description,
+        string? color,
+        string? city,
+        string? region,
+        string? house,
+        decimal? weight,
+        int? height,
+        bool? isSterilized,
+        DateTime? birthdate,
+        bool? isVacined)
+    {
+        var resultGetpet = GetPetById(petId);
+        if (resultGetpet.IsFailure)
+            return UnitResult.Failure(GeneralErrors.NotFound(nameof(petId)));
+
+        var pet = resultGetpet.Value;
+        pet.UpdateInfo(
+            name,
+            description,
+            color, city,
+            region,
+            house,
+            weight,
+            height,
+            isSterilized,
+            birthdate,
+            isVacined);
         return UnitResult.Success<Error>();
     }
 

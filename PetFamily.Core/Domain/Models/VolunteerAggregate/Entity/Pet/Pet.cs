@@ -51,7 +51,7 @@ namespace PetFamily.Core.Domain.Models.PetAggregate
             BirthDate = birthDate;
             IsVaccined = isVaccined;
             PetHelpStatus = helpStatus;
-            PetHelpRequisites = petHelpRequisites;
+            PetHelpRequisites = petHelpRequisites.ListHelpRequisites;
             CreatedOtc = DateTime.UtcNow;
             Photos = petPhotos;
             VolunteerId = volunteerId;
@@ -115,7 +115,7 @@ namespace PetFamily.Core.Domain.Models.PetAggregate
         /// <summary>
         /// Реквизиты помощи - корм, лекарства, передержка и т.д.
         /// </summary>
-        public HelpRequisites PetHelpRequisites { get; private set; }
+        public IReadOnlyCollection<HelpRequisite> PetHelpRequisites { get; private set; }
         /// <summary>
         /// Дата и время создания карточки животного в системе (в формате UTC)
         /// </summary>
@@ -176,6 +176,56 @@ namespace PetFamily.Core.Domain.Models.PetAggregate
                            weight, height, phoneNumber, isSterilized, birthDate, isVaccined, helpStatus, petHelpRequisite, photos, volunteerId);
         }
 
+        public void UpdateInfo(
+            string? name,
+            string? description,
+            string? color,
+            string? city,
+            string? region,
+            string? house,
+            decimal? weight,
+            int? height,
+            bool? isSterilized,
+            DateTime? birthdate,
+            bool? isVacined)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+                Name = name;
+            if (!string.IsNullOrWhiteSpace(description))
+                Description = description;
+            if (!string.IsNullOrWhiteSpace(color))
+                Color = Color.Create(color).Value;
+
+            AddressUpdate(city, region, house);
+
+            if (weight is not null)
+                Weight = weight.Value;
+            if (isSterilized is not null)
+                IsSterilized = isSterilized.Value;
+            if (birthdate is not null)
+                BirthDate = birthdate.Value;
+            if (isVacined is not null)
+                isVacined = isVacined.Value;
+        }
+
+        private void AddressUpdate(string? city, string? region, string? house)
+        {
+            var newCity = string.IsNullOrWhiteSpace(city)
+                ? Address.City
+                : city;
+
+            var newRegion = string.IsNullOrWhiteSpace(region)
+                ? Address.Region
+                : region;
+
+            var newHouse = string.IsNullOrWhiteSpace(house)
+                ? Address.House
+                : house;
+
+            var result = Address.Create(newCity, newRegion, newHouse);
+            Address = result.Value;
+
+        }
         public void Delete()
         {
             IsDelete = true;

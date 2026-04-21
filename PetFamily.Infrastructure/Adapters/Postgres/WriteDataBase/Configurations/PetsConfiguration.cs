@@ -5,6 +5,7 @@ using PetFamily.Core.Domain.Models.SharedKernel.VO;
 using PetFamily.Core.Domain.Models.SpeciesAggregate.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
+using System.Text.Json;
 
 namespace PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.Configurations
 {
@@ -75,24 +76,12 @@ namespace PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.Configuration
                  .IsRequired();
             });
 
-            builder.OwnsOne(p => p.PetHelpRequisites, hb =>
-            {
-                hb.ToJson("help_requisites");
-
-                hb.OwnsMany(h => h.ListHelpRequisites, hb =>
-                {
-                    hb.Property(h => h.Name)
-                       .HasColumnName("name_help_requisite")
-                      .HasMaxLength(HelpRequisite.MAX_LENGTH_NAME)
-                      .IsRequired();
-
-                    hb.Property(h => h.Description)
-                       .HasColumnName("description_help_requisite")
-                       .HasMaxLength(HelpRequisite.MAX_LENGTH_DESCRIPTION)
-                       .IsRequired();
-
-                });
-            });
+            builder.Property(p => p.PetHelpRequisites)
+                .HasConversion(hr => JsonSerializer.Serialize(hr, JsonSerializerOptions.Default),
+                    value => JsonSerializer.Deserialize<List<HelpRequisite>>(
+                        value, JsonSerializerOptions.Default) ?? new List<HelpRequisite>())
+                .HasColumnName("help_requisites")
+                .HasColumnType("jsonb");
 
             builder.OwnsOne(p => p.Photos, hb =>
             {

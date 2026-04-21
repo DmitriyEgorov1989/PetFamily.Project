@@ -9,7 +9,6 @@ using PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetwork;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeletePhotoPets;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeleteVolunteer;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.UpdateHelpRequisites;
-using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
 using PetFamily.Core.Application.UseCases.CommonDto;
@@ -117,7 +116,7 @@ namespace PetFamily.Api.Controllers
             [FromBody] AddPetRequest request,
             CancellationToken cancellationToken)
         {
-            var command = new AddPetCommand(id, request.Pet);
+            var command = request.ToCommand(id);
 
             var result =
                 await _mediator.Send(command, cancellationToken);
@@ -185,6 +184,20 @@ namespace PetFamily.Api.Controllers
                     new GetVolunteerByIdQuery(id), cancellationToken);
 
             return result.ToResponseErrorOrResult();
+        }
+
+        [HttpPatch("{id:guid}/include/{petId:guid}")]
+        public async Task<ActionResult> UpdatePetAsync(
+            [FromRoute] Guid id,
+            [FromRoute] Guid petId,
+            [FromBody] UpdatePetRequest request,
+            CancellationToken cancellationToken)
+        {
+            var command = request.ToCommand(petId, id);
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return result.ToResponseOkOrError();
         }
     }
 }

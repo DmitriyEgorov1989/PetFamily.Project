@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Primitives;
+using System.Text.Json.Serialization;
 
 namespace PetFamily.Core.Domain.Models.SharedKernel.VO
 {
@@ -9,6 +10,7 @@ namespace PetFamily.Core.Domain.Models.SharedKernel.VO
         public const int MAX_LENGTH_DESCRIPTION = 1000;
         private HelpRequisite() { }
 
+        [JsonConstructor]
         private HelpRequisite(string name, string description)
         {
             Name = name;

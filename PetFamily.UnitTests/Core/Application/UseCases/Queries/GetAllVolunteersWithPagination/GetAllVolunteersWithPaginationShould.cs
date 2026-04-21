@@ -3,7 +3,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Application.UseCases.ComonDto;
 using PetFamily.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
 using PetFamily.Core.Ports.DataBaseForRead;
 using Serilog;

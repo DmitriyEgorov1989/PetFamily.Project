@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using PetFamily.Core.Application.UseCases.ComonDto;
+using PetFamily.Core.Application.UseCases.CommonDto;
 using Primitives;
 
 namespace PetFamily.Core.Ports.DataBaseForRead;

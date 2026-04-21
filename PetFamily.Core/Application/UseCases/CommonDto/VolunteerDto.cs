@@ -1,6 +1,4 @@
-﻿using PetFamily.Core.Application.UseCases.CommonDto;
-
-namespace PetFamily.Core.Application.UseCases.ComonDto;
+﻿namespace PetFamily.Core.Application.UseCases.CommonDto;
 
 public class VolunteerDto
 {

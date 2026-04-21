@@ -3,7 +3,6 @@ using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPet;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Domain.Models.SharedKernel.VO;
@@ -12,6 +11,7 @@ using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Core.Ports;
 using Serilog;
 using Xunit;
+using PetDto = PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet.PetDto;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.AddPet
 {
@@ -42,7 +42,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
             //act
             var command = new AddPetCommand((Guid)volunteer.Id, pet);
             var handler = new AddPetHandler(_logger, _volunteerRepository, _validator);
-            var result = await handler.Handle(command, new CancellationToken());
+            var result = await handler.Handle(command, CancellationToken.None);
 
             //assert
             result.IsFailure.Should().BeTrue();
@@ -65,9 +65,8 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
 
             var command = new AddPetCommand((Guid)volunteer.Id, pet);
             var handler = new AddPetHandler(_logger, _volunteerRepository, _validator);
-            ;
-            //act
 
+            //act
             var result = await handler.Handle(command, CancellationToken.None);
 
             //assert
@@ -80,7 +79,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
         {
             return Volunteer.Create(
                 VolunteerId.NewId(),
-                FullName.Create("ivan", "ivanivich", "ivanov").Value,
+                FullName.Create("ivan", "ivanovich", "ivanov").Value,
                 Email.Create("diman@mail.ru").Value,
                 "description",
                 Experience.Create(5).Value,
@@ -104,7 +103,8 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
                 true,
                 DateTime.UtcNow,
                 true,
-                1);
+                1,
+                Array.Empty<HelpRequisiteDto>());
         }
     }
 }

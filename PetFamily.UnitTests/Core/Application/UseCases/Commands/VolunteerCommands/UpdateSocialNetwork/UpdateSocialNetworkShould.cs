@@ -3,6 +3,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateMainInfo;
+using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Domain.Models.SharedKernel.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
