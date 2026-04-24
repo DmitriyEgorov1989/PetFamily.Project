@@ -12,7 +12,7 @@ namespace PetFamily.UnitTests.Core.Domain.Models.VolunteerAggregate.Entity
     public class PetShould
     {
         [Fact]
-        public void BeUpdatePetPhotosReturnSucess()
+        public void BeUpdatePetPhotosReturnIsSucсess()
         {
             //arrange
             var pet = CreateTestPet();
@@ -23,7 +23,7 @@ namespace PetFamily.UnitTests.Core.Domain.Models.VolunteerAggregate.Entity
 
             //assert
             result.IsSuccess.Should().BeTrue();
-            pet.Photos.ListPetPhotos[0].Should().Be(petPhoto1);
+            pet.Photos.ToList()[0].Should().Be(petPhoto1);
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace PetFamily.UnitTests.Core.Domain.Models.VolunteerAggregate.Entity
 
             //assert
             result.IsSuccess.Should().BeTrue();
-            pet.Photos.ListPetPhotos.Count.Should().Be(0);
+            pet.Photos.ToList().Count.Should().Be(0);
         }
 
 
@@ -61,7 +61,6 @@ namespace PetFamily.UnitTests.Core.Domain.Models.VolunteerAggregate.Entity
                 true,
                 PetHelpStatus.OnTreatment,
                 HelpRequisites.Create(null),
-                null,
                 VolunteerId.NewId()).Value;
         }
     }

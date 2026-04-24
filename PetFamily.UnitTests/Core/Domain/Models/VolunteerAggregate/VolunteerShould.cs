@@ -186,7 +186,6 @@ namespace PetFamily.UnitTests.Core.Domain.Models.VolunteerAggregate
                 true,
                 PetHelpStatus.OnTreatment,
                 HelpRequisites.Create(null),
-                null,
                 VolunteerId.NewId()).Value;
         }
     }

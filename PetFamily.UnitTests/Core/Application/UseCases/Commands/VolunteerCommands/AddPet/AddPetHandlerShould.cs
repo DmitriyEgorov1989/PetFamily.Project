@@ -11,7 +11,7 @@ using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Core.Ports;
 using Serilog;
 using Xunit;
-using PetDto = PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet.PetDto;
+using PetWriteDto = PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet.PetWriteDto;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.AddPet
 {
@@ -88,9 +88,9 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
                 SocialNetworks.Create(null)).Value;
         }
 
-        private Maybe<PetDto> ExistedPetDto()
+        private Maybe<PetWriteDto> ExistedPetDto()
         {
-            return new PetDto(
+            return new PetWriteDto(
                 "test",
                 "description",
                 new PetSpeciesInfoDto(Guid.NewGuid(), Guid.NewGuid()),

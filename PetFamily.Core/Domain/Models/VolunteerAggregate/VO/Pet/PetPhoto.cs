@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet
 {
@@ -13,7 +14,15 @@ namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet
         private PetPhoto(string pathStorage)
         {
             PathStorage = pathStorage;
+            IsMain = false;
         }
+        [JsonConstructor]
+        private PetPhoto(string pathStorage, bool isMain)
+        {
+            PathStorage = pathStorage;
+            IsMain = isMain;
+        }
+        public bool IsMain { get; }
         public string PathStorage { get; }
         public static Result<PetPhoto, Error> Create(long size, string pathStorage)
         {
@@ -39,5 +48,19 @@ namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet
         {
             yield return PathStorage;
         }
+        /// <summary>
+        /// Ставит эту фотографию главной,
+        /// если она не является таковой.
+        /// Если же она уже главная, то ничего не происходит.
+        /// </summary>
+        public PetPhoto MakeMain()
+            => new PetPhoto(PathStorage, true);
+
+        /// <summary>
+        /// Убирает статус главной фотографии,
+        /// если она таковой является.
+        /// </summary>
+        public PetPhoto RemoveMain()
+            => new PetPhoto(PathStorage);
     }
 }

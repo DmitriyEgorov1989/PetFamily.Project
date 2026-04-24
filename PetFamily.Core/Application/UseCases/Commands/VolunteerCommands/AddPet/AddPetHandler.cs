@@ -39,14 +39,14 @@ namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet
 
             var volunteerId = VolunteerId.Create(command.VolunteerId).Value;
 
-            var volunteer = await _volunteerRepository.GetByIdAsync(volunteerId);
+            var volunteer = await _volunteerRepository.GetByIdAsync(volunteerId, cancellationToken);
             if (volunteer is null)
             {
                 _logger.Information("Volunteer with id {id} not found", volunteerId);
                 return (ErrorList)GeneralErrors.NotFound(nameof(volunteerId));
             }
 
-            var resultCreateNewPet = ToMap(volunteerId, command.Pet);
+            var resultCreateNewPet = ToMap(volunteerId, command.PetWrite);
             if (resultCreateNewPet.IsFailure)
                 return (ErrorList)resultCreateNewPet.Error;
             var newPet = resultCreateNewPet.Value;
@@ -54,53 +54,52 @@ namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet
             volunteer.AddPet(newPet);
             await _volunteerRepository.SaveAsync(cancellationToken);
             _logger.Information(
-                "Volunteer with id {volunteerId} success aded new pet with id{petId}", volunteerId, newPet.Id);
+                "Volunteer with id {volunteerId} success added new pet with id{petId}", volunteerId, newPet.Id);
 
             return (Guid)newPet.Id;
         }
 
-        private Result<Pet, Error> ToMap(VolunteerId id, PetDto dto)
+        private Result<Pet, Error> ToMap(VolunteerId id, PetWriteDto writeDto)
         {
             var petId = PetId.NewId();
 
-            var color = Color.Create(dto.Color).Value;
+            var color = Color.Create(writeDto.Color).Value;
 
             var petSpecieInfo = PetSpeciesInfo.Create(
-                   SpeciesId.Create(dto.SpeciesInfo.SpecieId).Value,
-                   BreedId.Create(dto.SpeciesInfo.BreedId).Value).Value;
+                   SpeciesId.Create(writeDto.SpeciesInfo.SpecieId).Value,
+                   BreedId.Create(writeDto.SpeciesInfo.BreedId).Value).Value;
 
-            var healthInfo = HealthInfo.Create(dto.HealthInfo).Value;
+            var healthInfo = HealthInfo.Create(writeDto.HealthInfo).Value;
 
             var address =
-                Address.Create(dto.Address.City, dto.Address.Region, dto.Address.House).Value;
+                Address.Create(writeDto.Address.City, writeDto.Address.Region, writeDto.Address.House).Value;
 
-            var phoneNumber = PhoneNumber.Create(dto.PhoneNumber).Value;
+            var phoneNumber = PhoneNumber.Create(writeDto.PhoneNumber).Value;
 
             var resultCreatePet = Pet.Create(
                 petId,
-                dto.Name,
-                dto.Description,
+                writeDto.Name,
+                writeDto.Description,
                 petSpecieInfo,
                 color,
                 healthInfo,
                 address,
-                dto.Weight,
-                dto.Height,
+                writeDto.Weight,
+                writeDto.Height,
                 phoneNumber,
-                dto.IsSterilized,
-                dto.BirthDate,
-                dto.IsVaccined,
-                Pet.ToHelpStatus(dto.PetHelpStatus),
+                writeDto.IsSterilized,
+                writeDto.BirthDate,
+                writeDto.IsVaccined,
+                Pet.ToHelpStatus(writeDto.PetHelpStatus),
                 HelpRequisites.Create(
-                    dto.HelpRequisites.Select(
+                    writeDto.HelpRequisites.Select(
                         hr => HelpRequisite.Create(hr.Name, hr.Description).Value)),
-                PetPhotos.Create(null),
                 id);
 
             if (resultCreatePet.IsFailure)
                 return resultCreatePet.Error;
 
-            _logger.Information("Pet create sucess with id {petId}", petId);
+            _logger.Information("PetWrite create sucess with id {petId}", petId);
             return resultCreatePet;
         }
     }

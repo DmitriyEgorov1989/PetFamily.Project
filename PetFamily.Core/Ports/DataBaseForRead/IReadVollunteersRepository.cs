@@ -4,7 +4,7 @@ using Primitives;
 
 namespace PetFamily.Core.Ports.DataBaseForRead;
 
-public interface IReadRepository
+public interface IReadVollunteersRepository
 {
     Task<Result<IEnumerable<VolunteerDto>, Error>> GetAllVolunteersWithPaginationAsync(
         int page, int pageSize, CancellationToken cancellationToken = default);

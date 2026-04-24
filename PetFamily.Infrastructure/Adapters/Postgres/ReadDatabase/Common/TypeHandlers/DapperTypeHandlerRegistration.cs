@@ -9,5 +9,6 @@ public static class DapperTypeHandlerRegistration
     {
         SqlMapper.AddTypeHandler(new JsonTypeHandler<HelpRequisiteDto[]>());
         SqlMapper.AddTypeHandler(new JsonTypeHandler<SocialNetworkDto[]>());
+        SqlMapper.AddTypeHandler(new JsonTypeHandler<PetPhotoDto[]>());
     }
 }

@@ -2,8 +2,8 @@
 
 namespace PetFamily.Api.Controllers.Models.Volunteers.WriteModels.VolunteerRequests
 {
-    public record AddPetRequest(PetDto Pet)
+    public record AddPetRequest(PetWriteDto PetWrite)
     {
-        public AddPetCommand ToCommand(Guid VolunteerId) => new(VolunteerId, Pet);
+        public AddPetCommand ToCommand(Guid VolunteerId) => new(VolunteerId, PetWrite);
     }
 }

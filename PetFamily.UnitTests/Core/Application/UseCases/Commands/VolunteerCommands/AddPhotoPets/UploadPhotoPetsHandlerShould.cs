@@ -80,7 +80,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
 
             //assert
             result.IsSuccess.Should().BeTrue();
-            pet.Photos.ListPetPhotos[0].Should().NotBeNull();
+            pet.Photos.ToList()[0].Should().NotBeNull();
             result.Value.Should().Be((Guid)pet.Id);
             await _fileStorageProvider.Received(1)
                  .UploadAsync(Arg.Any<CreateFileDto>(), Arg.Any<CancellationToken>());
@@ -117,7 +117,6 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerComman
                 true,
                 PetHelpStatus.OnTreatment,
                 HelpRequisites.Create(null),
-                null,
                 VolunteerId.NewId()).Value;
         }
     }

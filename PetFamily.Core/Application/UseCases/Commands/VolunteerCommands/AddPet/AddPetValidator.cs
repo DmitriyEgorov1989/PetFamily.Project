@@ -16,7 +16,7 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPet
         {
             RuleFor(c => c.VolunteerId).MustBeValueObject(VolunteerId.Create);
 
-            RuleFor(c => c.Pet.Name).Custom((value, context) =>
+            RuleFor(c => c.PetWrite.Name).Custom((value, context) =>
             {
                 if (string.IsNullOrEmpty(value) || value.Length < 3)
                 {
@@ -25,7 +25,7 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPet
                     context.AddFailure(error.Serialize());
                 }
             });
-            RuleFor(c => c.Pet.Description).Custom((value, context) =>
+            RuleFor(c => c.PetWrite.Description).Custom((value, context) =>
             {
                 if (string.IsNullOrEmpty(value) || value.Length < 10)
                 {
@@ -34,7 +34,7 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPet
                     context.AddFailure(error.Serialize());
                 }
             });
-            RuleFor(c => c.Pet.SpeciesInfo).Custom((value, context) =>
+            RuleFor(c => c.PetWrite.SpeciesInfo).Custom((value, context) =>
             {
                 if (BreedId.Create(value.BreedId).IsFailure
                 || SpeciesId.Create(value.SpecieId).IsFailure)
@@ -44,21 +44,21 @@ namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPet
                     context.AddFailure(error.Serialize());
                 }
             });
-            RuleFor(c => c.Pet.Color).MustBeValueObject(Color.Create);
-            RuleFor(c => c.Pet.HealthInfo).MustBeValueObject(HealthInfo.Create);
-            RuleFor(c => c.Pet.Address)
+            RuleFor(c => c.PetWrite.Color).MustBeValueObject(Color.Create);
+            RuleFor(c => c.PetWrite.HealthInfo).MustBeValueObject(HealthInfo.Create);
+            RuleFor(c => c.PetWrite.Address)
                 .MustBeValueObject(a => Address.Create(a.City, a.Region, a.House));
-            RuleFor(c => c.Pet.Weight).
+            RuleFor(c => c.PetWrite.Weight).
                 GreaterThan(0)
                 .WithError(GeneralErrors.ValueIsInvalid(nameof(Pet.Weight)));
-            RuleFor(c => c.Pet.Height).
+            RuleFor(c => c.PetWrite.Height).
                 GreaterThan(0)
                 .WithError(GeneralErrors.ValueIsInvalid(nameof(Pet.Height)));
-            RuleFor(c => c.Pet.PhoneNumber).MustBeValueObject(PhoneNumber.Create);
-            RuleFor(c => c.Pet.BirthDate)
+            RuleFor(c => c.PetWrite.PhoneNumber).MustBeValueObject(PhoneNumber.Create);
+            RuleFor(c => c.PetWrite.BirthDate)
                 .NotEqual(default(DateTime))
                  .WithError(GeneralErrors.ValueIsInvalid(nameof(Pet.BirthDate)));
-            RuleFor(c => c.Pet.PetHelpStatus).
+            RuleFor(c => c.PetWrite.PetHelpStatus).
                 GreaterThan(0)
                 .WithError(GeneralErrors.ValueIsInvalid(nameof(Pet.PetHelpStatus)));
 

@@ -8,13 +8,13 @@ using System.Data;
 
 namespace PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.Repository;
 
-public class ReadRepository : IReadRepository
+public class VolunteersRepository : IReadVollunteersRepository
 {
 
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly ILogger _logger;
 
-    public ReadRepository(IDbConnectionFactory connectionFactory, ILogger logger)
+    public VolunteersRepository(IDbConnectionFactory connectionFactory, ILogger logger)
     {
         _connectionFactory = connectionFactory;
         _logger = logger;

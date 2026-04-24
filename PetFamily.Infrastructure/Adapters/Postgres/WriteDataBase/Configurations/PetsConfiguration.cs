@@ -83,17 +83,15 @@ namespace PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.Configuration
                 .HasColumnName("help_requisites")
                 .HasColumnType("jsonb");
 
-            builder.OwnsOne(p => p.Photos, hb =>
-            {
-                hb.ToJson("photos");
+            builder.Ignore(p => p.Photos);
 
-                hb.OwnsMany(h => h.ListPetPhotos, hb =>
-                {
-                    hb.Property(h => h.PathStorage)
-                       .HasColumnName("paths_in_storage")
-                      .IsRequired();
-                });
-            });
+            builder.Property<List<PetPhoto>>("_photos")
+                .HasColumnName("photos")
+                .HasColumnType("jsonb")
+                .HasConversion(
+                    photos => JsonSerializer.Serialize(photos, JsonSerializerOptions.Default),
+                    value => JsonSerializer.Deserialize<List<PetPhoto>>(value, JsonSerializerOptions.Default)
+                             ?? new List<PetPhoto>());
 
             builder.Property(p => p.Weight)
                 .IsRequired();
@@ -125,7 +123,7 @@ namespace PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.Configuration
                 value => Pet.ToHelpStatus(value))
                 .IsRequired();
 
-            builder.Property(p => p.CreatedOtc)
+            builder.Property(p => p.CreatedUtc)
                 .HasColumnName("created_otc")
                 .IsRequired();
 

@@ -88,10 +88,10 @@ namespace PetFamily.Infrastructure.Migrations
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     is_delete = table.Column<bool>(type: "boolean", nullable: false),
                     date_delete = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    photos = table.Column<string>(type: "jsonb", nullable: false),
                     city = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     house = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    region = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    photos = table.Column<string>(type: "jsonb", nullable: false)
+                    region = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {

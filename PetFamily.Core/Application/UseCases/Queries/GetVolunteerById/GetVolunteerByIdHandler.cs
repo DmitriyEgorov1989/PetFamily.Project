@@ -13,11 +13,11 @@ public class GetVolunteerByIdHandler :
     IRequestHandler<GetVolunteerByIdQuery, Result<GetVolunteerByIdResponse, ErrorList>>
 {
     private readonly ILogger _logger;
-    private readonly IReadRepository _readRepository;
+    private readonly IReadVollunteersRepository _readRepository;
     private readonly IValidator<GetVolunteerByIdQuery> _validator;
 
     public GetVolunteerByIdHandler(
-        IReadRepository readRepository,
+        IReadVollunteersRepository readRepository,
         ILogger logger,
         IValidator<GetVolunteerByIdQuery> validator)
     {

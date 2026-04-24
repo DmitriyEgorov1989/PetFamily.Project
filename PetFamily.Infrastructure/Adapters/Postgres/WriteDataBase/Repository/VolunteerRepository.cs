@@ -5,10 +5,10 @@ using PetFamily.Core.Ports;
 
 namespace PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.Repository
 {
-    public class VolonteerRepository : IVolunteerRepository
+    public class VolunteerRepository : IVolunteerRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        public VolonteerRepository(ApplicationDbContext dbContext)
+        public VolunteerRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -27,14 +27,15 @@ namespace PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.Repository
         {
             return await _dbContext.Volunteers
                                 .Where(v => v.IsDelete)
-                                .Include(v => v.Pets).ToListAsync();
+                                .Include(v => v.Pets)
+                                .ToListAsync(cancellationToken);
         }
 
         public async Task<Volunteer> GetByIdAsync(VolunteerId volunteerId, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Volunteers.
-                                     Include(v => v.Pets).ThenInclude(p => p.Photos)
-                                     .FirstOrDefaultAsync(v => v.Id == volunteerId);
+                                     Include(v => v.Pets)
+                                     .FirstOrDefaultAsync(v => v.Id == volunteerId, cancellationToken);
         }
 
         public async Task SaveAsync(CancellationToken cancellationToken = default)
@@ -44,8 +45,9 @@ namespace PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.Repository
 
         public async Task DeleteAsync(VolunteerId id, CancellationToken cancellationToken = default)
         {
-            await _dbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == id);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.Volunteers
+                .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

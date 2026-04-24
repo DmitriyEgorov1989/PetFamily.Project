@@ -7,9 +7,9 @@ namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 
 public record AddPetCommand(
     Guid VolunteerId,
-    PetDto Pet) : IRequest<Result<Guid, ErrorList>>;
+    PetWriteDto PetWrite) : IRequest<Result<Guid, ErrorList>>;
 
-public record PetDto(
+public record PetWriteDto(
     string Name,
     string Description,
     PetSpeciesInfoDto SpeciesInfo,

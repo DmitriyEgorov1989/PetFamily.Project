@@ -95,7 +95,6 @@ public class UpdatePetShould
             true,
             PetHelpStatus.FoundHome,
             HelpRequisites.Create(null),
-            PetPhotos.Create(null),
             VolunteerId.NewId()
         ).Value;
     }

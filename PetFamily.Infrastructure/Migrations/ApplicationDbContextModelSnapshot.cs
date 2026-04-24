@@ -38,7 +38,7 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("color");
 
-                    b.Property<DateTime>("CreatedOtc")
+                    b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_otc");
 
@@ -102,6 +102,11 @@ namespace PetFamily.Infrastructure.Migrations
                     b.Property<decimal>("Weight")
                         .HasColumnType("numeric")
                         .HasColumnName("weight");
+
+                    b.Property<string>("_photos")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("photos");
 
                     b.ComplexProperty<Dictionary<string, object>>("Address", "PetFamily.Core.Domain.Models.PetAggregate.Pet.Address#Address", b1 =>
                         {
@@ -279,52 +284,6 @@ namespace PetFamily.Infrastructure.Migrations
                                 .HasForeignKey("PetId")
                                 .HasConstraintName("fK_pets_pets_pet_id");
                         });
-
-                    b.OwnsOne("PetPhotos", "Photos", b1 =>
-                        {
-                            b1.Property<Guid>("PetId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("PetId");
-
-                            b1.ToTable("pets");
-
-                            b1.ToJson("photos");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PetId")
-                                .HasConstraintName("fK_pets_pets_pet_id");
-
-                            b1.OwnsMany("PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet.PetPhoto", "ListPetPhotos", b2 =>
-                                {
-                                    b2.Property<Guid>("PetPhotosPetId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<int>("__synthesizedOrdinal")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer");
-
-                                    b2.Property<string>("PathStorage")
-                                        .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("paths_in_storage");
-
-                                    b2.HasKey("PetPhotosPetId", "__synthesizedOrdinal");
-
-                                    b2.ToTable("pets");
-
-                                    b2.ToJson("photos");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("PetPhotosPetId")
-                                        .HasConstraintName("fK_pets_pets_PetPhotosPetId");
-                                });
-
-                            b1.Navigation("ListPetPhotos");
-                        });
-
-                    b.Navigation("Photos")
-                        .IsRequired();
 
                     b.Navigation("SpeciesInfo")
                         .IsRequired();

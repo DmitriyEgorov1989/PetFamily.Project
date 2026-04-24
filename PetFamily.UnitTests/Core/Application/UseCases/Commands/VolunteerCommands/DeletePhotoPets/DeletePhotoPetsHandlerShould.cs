@@ -16,7 +16,7 @@ using Primitives;
 using Serilog;
 using Xunit;
 
-namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerCommands.DeletePhotoPets
+namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.DeletePhotoPets
 {
     public class DeletePhotoPetsHandlerShould
     {
@@ -38,7 +38,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerComma
             volunteer.AddPet(pet);
             var petPhoto = PetPhoto.Create("testPath.jpg").Value;
             pet.UploadPetPhotos([petPhoto]);
-            pet.Photos.ListPetPhotos.Count.Should().Be(1);
+            pet.Photos.ToList().Count.Should().Be(1);
 
             _volunteerRepository
                              .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())
@@ -64,7 +64,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerComma
 
             //assert
             result.IsSuccess.Should().BeTrue();
-            pet.Photos.ListPetPhotos.Count.Should().Be(0);
+            pet.Photos.ToList().Count.Should().Be(0);
             await _fileStorageProvider.Received(1)
                  .DeleteFileAsync(petPhoto.PathStorage, Arg.Any<CancellationToken>());
             await _unitOfWork.Received(1)
@@ -102,7 +102,6 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Commnands.VolunteerComma
                 true,
                 PetHelpStatus.OnTreatment,
                 HelpRequisites.Create(null),
-                null,
                 VolunteerId.NewId()).Value;
         }
     }

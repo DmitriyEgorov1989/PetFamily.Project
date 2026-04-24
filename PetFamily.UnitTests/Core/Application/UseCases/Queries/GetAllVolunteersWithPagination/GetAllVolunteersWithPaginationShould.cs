@@ -12,7 +12,7 @@ namespace PetFamily.UnitTests.Core.Application.UseCases.Queries.GetAllVolunteers
 {
     public class GetAllVolunteersWithPaginationShould
     {
-        private readonly IReadRepository _readRepository = Substitute.For<IReadRepository>();
+        private readonly IReadVollunteersRepository _readRepository = Substitute.For<IReadVollunteersRepository>();
         private readonly ILogger _logger = Substitute.For<ILogger>();
 
         private readonly IValidator<GetAllVolunteersWithPaginationQuery> _validator =

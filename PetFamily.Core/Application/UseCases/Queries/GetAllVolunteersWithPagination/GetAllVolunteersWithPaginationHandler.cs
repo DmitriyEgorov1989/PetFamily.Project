@@ -10,12 +10,12 @@ namespace PetFamily.Core.Application.UseCases.Queries.GetAllVolunteersWithPagina
 
 public class GetAllVolunteersWithPaginationHandler : IRequestHandler<GetAllVolunteersWithPaginationQuery, Result<GetAllVolunteersWithPaginationResponse, ErrorList>>
 {
-    private readonly IReadRepository _readRepository;
+    private readonly IReadVollunteersRepository _readRepository;
     private readonly ILogger _logger;
     private readonly IValidator<GetAllVolunteersWithPaginationQuery> _validator;
 
     public GetAllVolunteersWithPaginationHandler(
-        IReadRepository readRepository,
+        IReadVollunteersRepository readRepository,
         ILogger logger, IValidator<GetAllVolunteersWithPaginationQuery> validator)
     {
         _readRepository = readRepository;

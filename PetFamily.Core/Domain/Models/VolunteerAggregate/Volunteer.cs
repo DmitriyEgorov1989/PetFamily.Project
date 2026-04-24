@@ -285,6 +285,26 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
     }
 
     /// <summary>
+    ///     Метод удаления питомца из аггрегата волонтера по Id,
+    ///     с последующим изменением позиций остальных питомцев
+    /// </summary>
+    /// <param name="petId">Id питомца</param>
+    /// <returns>Результат выполнения операции</returns>
+    public UnitResult<Error> DeletePet(PetId petId)
+    {
+        var resultGetPet = GetPetById(petId);
+        if (resultGetPet.IsFailure)
+            return UnitResult.Failure(
+                GeneralErrors.NotFound(nameof(petId)));
+
+        var petDeleted = resultGetPet.Value;
+        _pets.Remove(petDeleted);
+        CorrectedPositionPetsBeforeDelete(petDeleted);
+
+        return UnitResult.Success<Error>();
+    }
+
+    /// <summary>
     ///     Получение питомца по Id,который находится в аггрегате волонтера
     /// </summary>
     /// <param name="petId">Id питомца</param>
@@ -324,6 +344,13 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
                 .ToList();
         pet.SetPosition(newPosition);
         return UnitResult.Success<Error>();
+    }
+
+    public void CorrectedPositionPetsBeforeDelete(Pet petDeleted)
+    {
+        Pets.Where(p => p.Position.Number > petDeleted.Position.Number)
+            .Select(p => p.MoveBackward())
+            .ToList();
     }
 
     /// <summary>
@@ -374,6 +401,13 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
         return UnitResult.Success<Error>();
     }
 
+    /// <summary>
+    ///     Проверка новой позиции питомца на выход за пределы допустимых значений,
+    ///     в случае если позиция выходит за пределы,
+    ///     то возвращает последнюю позицию питомца в списке
+    /// </summary>
+    /// <param name="newPosition"></param>
+    /// <returns></returns>
     private Result<Position, Error> AdjustNewPositionIfOutOfRange(Position newPosition)
     {
         if (!_pets.Any())
@@ -386,5 +420,45 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
             return lastPosition;
 
         return newPosition;
+    }
+
+    /// <summary>
+    ///     Установка главной фотографии питомца,
+    ///     который находится в аггрегате волонтера,по его Id
+    /// </summary>
+    /// <param name="petId">id питомца</param>
+    /// <param name="pathStorage">путь к фотографии</param>
+    /// <returns>Результат выполнения операции</returns>
+    public UnitResult<Error> MakeMainPhotoPet(PetId petId, string pathStorage)
+    {
+        var resultGetPet = GetPetById(petId);
+
+        if (resultGetPet.IsFailure)
+            return UnitResult.Failure(
+                GeneralErrors.NotFound(nameof(petId)));
+
+        var pet = resultGetPet.Value;
+
+        var resultSetMainPhoto = pet.SetMainPhoto(pathStorage);
+        if (resultSetMainPhoto.IsFailure)
+            return resultSetMainPhoto.Error;
+
+        return UnitResult.Success<Error>();
+    }
+
+    public UnitResult<Error> ChangeStatusPet(PetId petId, PetHelpStatus petHelpStatus)
+    {
+        if (petHelpStatus == PetHelpStatus.Unknown)
+            return GeneralErrors.ValueIsInvalid(nameof(petHelpStatus));
+        var resultGetPet = GetPetById(petId);
+
+        if (resultGetPet.IsFailure)
+            return UnitResult.Failure(
+                GeneralErrors.NotFound(nameof(petId)));
+
+        var pet = resultGetPet.Value;
+
+        pet.ChangeStatus(petHelpStatus);
+        return UnitResult.Success<Error>();
     }
 }

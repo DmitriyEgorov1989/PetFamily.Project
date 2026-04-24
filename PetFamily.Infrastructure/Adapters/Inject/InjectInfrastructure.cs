@@ -13,6 +13,7 @@ using PetFamily.Infrastructure.Adapters.Minio.BackgroundServices;
 using PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.Common.TypeHandlers;
 using PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.ConnectionFactory;
 using PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.Repository;
+using PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.Repository.Pets;
 using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase;
 using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.BackgroundJobs;
 using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.Repository;
@@ -120,7 +121,7 @@ public static class InjectInfrastructure
             options.UseCamelCaseNamingConvention();
             options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
         });
-        services.AddScoped<IVolunteerRepository, VolonteerRepository>();
+        services.AddScoped<IVolunteerRepository, VolunteerRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
@@ -140,7 +141,9 @@ public static class InjectInfrastructure
 
         var dataSource = new NpgsqlDataSourceBuilder(options.ConnectionString).Build();
         services.AddSingleton(dataSource);
-        services.AddScoped<IReadRepository, ReadRepository>();
+        services.AddScoped<IReadVollunteersRepository, VolunteersRepository>();
+        services.AddScoped<IPetsReadRepository, PetsRepository>();
+        services.AddScoped<PetsQueryBuilder>();
         services.AddSingleton<IDbConnectionFactory, NpgSqlConnectionFactory>();
         return services;
     }
