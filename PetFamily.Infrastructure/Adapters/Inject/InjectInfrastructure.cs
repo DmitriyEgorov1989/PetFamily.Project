@@ -1,12 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Minio;
 using Npgsql;
 using PetFamily.Core.Application.UseCases.CommonDto;
+using PetFamily.Core.Domain.Models.AccountAggregate;
 using PetFamily.Core.Ports;
 using PetFamily.Core.Ports.DataBaseForRead;
+using PetFamily.Infrastructure.Adapters.Jwt;
 using PetFamily.Infrastructure.Adapters.MessageQueues;
 using PetFamily.Infrastructure.Adapters.Minio;
 using PetFamily.Infrastructure.Adapters.Minio.BackgroundServices;
@@ -27,9 +31,11 @@ public static class InjectInfrastructure
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDataBaseForWrite(configuration)
+            .AddAuthentificationWithJwt(configuration)
             .AddDataBaseForRead(configuration)
             .AddMinioService(configuration)
-            .AddQuartzJob(configuration);
+            .AddQuartzJob(configuration)
+            .AddIdentityService();
 
         DapperTypeHandlerRegistration.AddDapperTypeHandlers();
 
@@ -121,8 +127,21 @@ public static class InjectInfrastructure
             options.UseCamelCaseNamingConvention();
             options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
         });
+
         services.AddScoped<IVolunteerRepository, VolunteerRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddDbContext<AccountDbContext>((sp, options) =>
+        {
+            var dbOptions = sp.GetRequiredService<
+                Microsoft.Extensions.Options.IOptions<DataBaseOptions>>().Value;
+
+            if (string.IsNullOrWhiteSpace(dbOptions.ConnectionString))
+                throw new InvalidOperationException("Database connection string is missing.");
+
+            options.UseNpgsql(dbOptions.ConnectionString);
+            options.UseCamelCaseNamingConvention();
+            options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+        });
 
         return services;
     }
@@ -145,6 +164,52 @@ public static class InjectInfrastructure
         services.AddScoped<IPetsReadRepository, PetsRepository>();
         services.AddScoped<PetsQueryBuilder>();
         services.AddSingleton<IDbConnectionFactory, NpgSqlConnectionFactory>();
+        return services;
+    }
+
+    private static IServiceCollection AddAuthentificationWithJwt(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<JwtOptions>(
+            configuration.GetSection(JwtOptions.SECTION_NAME));
+        services.AddScoped<ITokenProvider, JwtTokenProvider>();
+
+        var jwtOptions = configuration.GetSection(JwtOptions.SECTION_NAME)
+            .Get<JwtOptions>();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
+                    IssuerSigningKey =
+                        new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                            System.Text.Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
+                };
+            });
+        return services;
+    }
+
+    private static IServiceCollection AddIdentityService(this IServiceCollection services)
+    {
+        services.AddIdentity<User, Role>(options =>
+        {
+            // Password settings
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequiredLength = 8;
+            // User settings
+            options.User.RequireUniqueEmail = true;
+        })
+        .AddEntityFrameworkStores<AccountDbContext>()
+        .AddDefaultTokenProviders(); ;
         return services;
     }
 }

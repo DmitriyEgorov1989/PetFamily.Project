@@ -11,6 +11,7 @@
         CollectionIsTooSmall,
         CollectionIsTooLarge,
         InternalServerError,
+        IdentityUser,
         Authorization,
         Failure,
         Conflict

@@ -36,11 +36,35 @@ namespace PetFamily.Api
                 {
                     Title = "PetFamily.Api",
                     Version = "v1",
-                    Description = "API для взаимодействия волнтеров и питомцев"
+                    Description = "API для взаимодействия волонтеров и питомцев"
+                });
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. " +
+                                  "\r\n\r\n Enter 'Bearer'[space] and then your token in the text input below." +
+                                  "\r\n\r\nExample: \"Bearer token\""
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
                 });
             });
 
-            // Add services to the container.
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -61,7 +85,7 @@ namespace PetFamily.Api
             app.UseExceptionHandling();
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

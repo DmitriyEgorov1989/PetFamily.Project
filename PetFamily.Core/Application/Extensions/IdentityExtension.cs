@@ -1,0 +1,20 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Primitives;
+using static Primitives.Error;
+
+namespace PetFamily.Core.Application.Extensions;
+
+public static class IdentityExtension
+{
+    public static ErrorList ToErrorList(this IdentityResult identityResult)
+    {
+        if (identityResult.Errors.Any())
+        {
+            var errors = identityResult.Errors.Select(e =>
+                GeneralErrors.IdentityUser(e.Code, e.Description)).ToList();
+            return new ErrorList(errors);
+        }
+
+        return new ErrorList([]);
+    }
+}

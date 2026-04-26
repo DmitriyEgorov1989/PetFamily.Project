@@ -61,6 +61,12 @@ public static class GeneralErrors
             "collection.is.too.small",
             $"The collection must contain {min} items or more. It contains {current} items.", ErrorType.CollectionIsTooSmall);
     }
+    public static Error IdentityUser(string code, string description)
+    {
+        return new Error(
+            code,
+            description, ErrorType.IdentityUser);
+    }
 
     public static Error CollectionIsTooLarge(int max, int current)
     {
@@ -72,5 +78,11 @@ public static class GeneralErrors
     public static Error InternalServerError(string message)
     {
         return new Error("internal.server.error", message, ErrorType.InternalServerError);
+    }
+    public static Error InvalidCredentials()
+    {
+        return new Error("invalid.password.or.login",
+            "Invalid password or login",
+            ErrorType.IdentityUser);
     }
 }

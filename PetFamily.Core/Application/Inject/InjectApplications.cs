@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace PetFamily.Core.Application.Inject
 {
-    public static class InjectApplicationcs
+    public static class InjectApplications
     {
         public static void AddApplication(this IServiceCollection services)
         {
@@ -12,8 +12,9 @@ namespace PetFamily.Core.Application.Inject
             {
                 c.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
             });
-            services.AddValidatorsFromAssemblyContaining(typeof(InjectApplicationcs));
+            services.AddValidatorsFromAssemblyContaining(typeof(InjectApplications));
 
         }
+
     }
 }
