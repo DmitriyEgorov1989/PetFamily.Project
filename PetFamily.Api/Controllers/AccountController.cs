@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Api.Controllers.Models.Accounts;
 using PetFamily.Api.Extensions;
@@ -16,6 +17,13 @@ public class AccountController : ControllerBase
         _mediator = mediator;
     }
 
+    [Authorize]
+    [HttpGet]
+    public ActionResult Test()
+    {
+        return Ok("test");
+    }
+
     [HttpPatch("registration")]
     public async Task<ActionResult<Guid>> RegistrationAsync(
         [FromBody] RegistrationUserRequest request,
@@ -24,6 +32,7 @@ public class AccountController : ControllerBase
         var result = await _mediator.Send(request.ToCommand(), cancellationToken);
         return result.ToResponseErrorOrResult();
     }
+
 
     [HttpPatch("login")]
     public async Task<ActionResult<string>> LoginAsync(

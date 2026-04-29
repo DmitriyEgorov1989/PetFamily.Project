@@ -31,11 +31,11 @@ public static class InjectInfrastructure
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDataBaseForWrite(configuration)
+            .AddIdentityService()
             .AddAuthentificationWithJwt(configuration)
             .AddDataBaseForRead(configuration)
             .AddMinioService(configuration)
-            .AddQuartzJob(configuration)
-            .AddIdentityService();
+            .AddQuartzJob(configuration);
 
         DapperTypeHandlerRegistration.AddDapperTypeHandlers();
 
@@ -176,7 +176,13 @@ public static class InjectInfrastructure
 
         var jwtOptions = configuration.GetSection(JwtOptions.SECTION_NAME)
             .Get<JwtOptions>();
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
