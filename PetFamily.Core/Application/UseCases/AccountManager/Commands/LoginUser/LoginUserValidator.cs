@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
 
-namespace PetFamily.Core.Application.UseCases.AccountManager.Commands.LoginUser
+namespace PetFamily.Core.Application.UseCases.AccountManager.Commands.LoginUser;
+
+public class LoginUserValidator : AbstractValidator<LoginUserCommand>
 {
-    public class LoginUserValidator : AbstractValidator<LoginUserCommand>
-    {
-    }
 }

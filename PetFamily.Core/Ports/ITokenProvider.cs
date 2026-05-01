@@ -1,9 +1,8 @@
 ﻿using PetFamily.Core.Domain.Models.AccountAggregate;
 
-namespace PetFamily.Core.Ports
+namespace PetFamily.Core.Ports;
+
+public interface ITokenProvider
 {
-    public interface ITokenProvider
-    {
-        string GenerateAccessToken(User user);
-    }
+    string GenerateAccessToken(User user);
 }

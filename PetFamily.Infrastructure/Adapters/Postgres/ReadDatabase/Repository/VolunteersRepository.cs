@@ -1,8 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Dapper;
-using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Ports.DataBaseForRead;
-using Primitives;
+using PetFamily.SharedKernel.Errors;
 using Serilog;
 using System.Data;
 
@@ -10,7 +8,6 @@ namespace PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.Repository;
 
 public class VolunteersRepository : IReadVollunteersRepository
 {
-
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly ILogger _logger;
 
@@ -53,12 +50,10 @@ public class VolunteersRepository : IReadVollunteersRepository
                 await connection.QueryAsync<VolunteerDto>(command);
 
             if (volunteers is null || !volunteers.Any())
-            {
                 _logger.Information(
                     "No volunteers found for page {PageNumber} with page size {PageSize}",
                     pageNumber,
                     pageSize);
-            }
 
             return Result.Success<IEnumerable<VolunteerDto>, Error>(volunteers);
         }

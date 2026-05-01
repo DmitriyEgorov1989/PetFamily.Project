@@ -1,59 +1,58 @@
 ﻿using PetFamily.Api.Response;
 
-namespace PetFamily.Api.Middlewares
+namespace PetFamily.Api.Middlewares;
+
+public class ExceptionHandlingMiddleware
 {
-    public class ExceptionHandlingMiddleware
+    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+    private readonly RequestDelegate _next;
+
+    public ExceptionHandlingMiddleware
+    (RequestDelegate next,
+        ILogger<ExceptionHandlingMiddleware> logger)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+        _next = next;
+        _logger = logger;
+    }
 
-        public ExceptionHandlingMiddleware
-            (RequestDelegate next,
-            ILogger<ExceptionHandlingMiddleware> logger)
+    public async Task InvokeAsync(HttpContext httpContext)
+    {
+        try
         {
-            _next = next;
-            _logger = logger;
+            await _next(httpContext);
         }
-
-        public async Task InvokeAsync(HttpContext httpContext)
+        catch (Exception ex)
         {
-            try
-            {
-                await _next(httpContext);
-            }
-            catch (Exception ex)
-            {
-                await HandleExceptionAsync(httpContext, ex);
-            }
-        }
-
-        private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
-        {
-            _logger.LogError(exception, "An unexpected error occurred.");
-
-            var (statuscode, responseError) = exception switch
-            {
-                UnauthorizedAccessException _ => (
-                StatusCodes.Status401Unauthorized,
-                new ResponseError("user.not.authorized", exception.Message, null)),
-                _ => (
-                StatusCodes.Status500InternalServerError,
-                new ResponseError("internal.server.error", exception.Message, null))
-            };
-            var envelope = Envelope.Errors([responseError]);
-
-            httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = statuscode;
-
-            await httpContext.Response.WriteAsJsonAsync(envelope);
+            await HandleExceptionAsync(httpContext, ex);
         }
     }
 
-    public static class ExceptionHandling
+    private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
     {
-        public static void UseExceptionHandling(this IApplicationBuilder builder)
+        _logger.LogError(exception, "An unexpected error occurred.");
+
+        var (statuscode, responseError) = exception switch
         {
-            builder.UseMiddleware<ExceptionHandlingMiddleware>();
-        }
+            UnauthorizedAccessException _ => (
+                StatusCodes.Status401Unauthorized,
+                new ResponseError("user.not.authorized", exception.Message, null)),
+            _ => (
+                StatusCodes.Status500InternalServerError,
+                new ResponseError("internal.server.error", exception.Message, null))
+        };
+        var envelope = Envelope.Errors([responseError]);
+
+        httpContext.Response.ContentType = "application/json";
+        httpContext.Response.StatusCode = statuscode;
+
+        await httpContext.Response.WriteAsJsonAsync(envelope);
+    }
+}
+
+public static class ExceptionHandling
+{
+    public static void UseExceptionHandling(this IApplicationBuilder builder)
+    {
+        builder.UseMiddleware<ExceptionHandlingMiddleware>();
     }
 }

@@ -2,19 +2,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace PetFamily.Core.Application.Inject
+namespace PetFamily.Core.Application.Inject;
+
+public static class InjectApplications
 {
-    public static class InjectApplications
+    public static void AddApplication(this IServiceCollection services)
     {
-        public static void AddApplication(this IServiceCollection services)
-        {
-            services.AddMediatR(c =>
-            {
-                c.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
-            });
-            services.AddValidatorsFromAssemblyContaining(typeof(InjectApplications));
-
-        }
-
+        services.AddMediatR(c => { c.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()); });
+        services.AddValidatorsFromAssemblyContaining(typeof(InjectApplications));
     }
 }

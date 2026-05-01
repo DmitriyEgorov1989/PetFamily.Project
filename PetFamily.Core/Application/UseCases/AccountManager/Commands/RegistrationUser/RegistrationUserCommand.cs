@@ -1,9 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
-using MediatR;
-using static Primitives.Error;
+using static PetFamily.SharedKernel.Errors.Error;
 
 namespace PetFamily.Core.Application.UseCases.AccountManager.Commands.RegistrationUser;
 
 public record RegistrationUserCommand(
-    string Email, string UserName, string Password)
+    string Email,
+    string UserName,
+    string Password)
     : IRequest<Result<Guid, ErrorList>>;

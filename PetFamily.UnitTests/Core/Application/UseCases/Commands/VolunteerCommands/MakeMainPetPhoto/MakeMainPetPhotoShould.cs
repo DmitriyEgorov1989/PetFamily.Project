@@ -3,16 +3,14 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
-using PetFamily.Core.Domain.Models.PetAggregate;
-using PetFamily.Core.Domain.Models.SharedKernel.VO;
-using PetFamily.Core.Domain.Models.SpeciesAggregate.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.Enum;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.Core.Ports;
+using PetFamily.SharedKernel.DomainModels.Ids;
+using PetFamily.SharedKernel.DomainModels.VO;
 using Serilog;
 using Xunit;
+using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPetPhoto;
 
@@ -46,7 +44,8 @@ public class MakeMainPetPhotoShould
         var pet = ExistedPet();
         var photo1 = PetPhoto.Create(100, "shdghs).jpg").Value;
         var photo2 = PetPhoto.Create(100, "photo2.jpg").Value;
-        var photo3 = PetPhoto.Create(100, "photo3.jpg").Value; ;
+        var photo3 = PetPhoto.Create(100, "photo3.jpg").Value;
+        ;
         photo1 = photo1.MakeMain();
         pet.UploadPetPhotos([photo1, photo2, photo3]);
         volunteer.AddPet(pet);

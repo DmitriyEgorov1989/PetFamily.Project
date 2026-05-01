@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Application\UseCases\Commands\VolunteerCommands\DeleteVolunteer\DeleteVolunteerCommand.cs" />
+    <Compile Remove="Application\UseCases\Commands\VolunteerCommands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />
+    <Compile Remove="Application\UseCases\Commands\VolunteerCommands\UpdateMainInfo\UpdateMainInfoVolunteerCommand.cs" />
+    <Compile Remove="Domain\Models\VolunteerAggregate\Entity\Pet\Pet.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Application\UseCases\Commands\VolunteerCommands\DeleteVolunteer\DeleteVolunteerCommand.cs" />
+    <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />
+    <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateMainInfo\UpdateMainInfoVolunteerCommand.cs" />
+    <None Include="Domain\Models\VolunteerAggregate\Entity\Pet\Pet.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSharpFunctionalExtensions" Version="3.7.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="MediatR" Version="14.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\PetFamily.SharedKernel\PetFamily.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>

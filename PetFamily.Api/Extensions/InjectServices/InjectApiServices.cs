@@ -1,7 +1,5 @@
-﻿namespace PetFamily.Api.Extensions.InjectServices
-{
-    public static class InjectApiServices
-    {
+﻿namespace PetFamily.Api.Extensions.InjectServices;
 
-    }
+public static class InjectApiServices
+{
 }

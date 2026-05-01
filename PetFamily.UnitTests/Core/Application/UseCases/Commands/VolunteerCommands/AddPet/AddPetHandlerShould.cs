@@ -3,108 +3,107 @@ using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
-using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Domain.Models.SharedKernel.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Core.Ports;
+using PetFamily.SharedKernel.DomainModels.Ids;
+using PetFamily.SharedKernel.DomainModels.VO;
 using Serilog;
 using Xunit;
+using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
 using PetWriteDto = PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet.PetWriteDto;
 
-namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.AddPet
+namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
+
+public class AddPetHandlerShould
 {
-    public class AddPetHandlerShould
+    private readonly ILogger _logger = Substitute.For<ILogger>();
+    private readonly IValidator<AddPetCommand> _validator = Substitute.For<IValidator<AddPetCommand>>();
+    private readonly IVolunteerRepository _volunteerRepository = Substitute.For<IVolunteerRepository>();
+
+    [Fact]
+    public async Task BeAddPetIfValidationFailedReturnErrorList()
     {
-        private readonly ILogger _logger = Substitute.For<ILogger>();
-        private readonly IVolunteerRepository _volunteerRepository = Substitute.For<IVolunteerRepository>();
-        private readonly IValidator<AddPetCommand> _validator = Substitute.For<IValidator<AddPetCommand>>();
+        //arrange
+        var volunteer = ExistedVolunteer().Value;
+        var pet = ExistedPetDto().Value;
 
-        [Fact]
-        public async Task BeAddPetIfValidationFailedReturnErrorList()
-        {
-            //arrange
-            var volunteer = ExistedVolunteer().Value;
-            var pet = ExistedPetDto().Value;
+        _volunteerRepository
+            .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(volunteer));
 
-            _volunteerRepository
-                .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(volunteer));
+        _validator.ValidateAsync(Arg.Any<AddPetCommand>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(
+                new ValidationResult(new[]
+                {
+                    new ValidationFailure("Name", "Name is required")
+                })));
 
-            _validator.ValidateAsync(Arg.Any<AddPetCommand>(), Arg.Any<CancellationToken>())
-                             .Returns(Task.FromResult(
-                                       new ValidationResult(new[]
-                                       {
-                                         new ValidationFailure("Name", "Name is required")
-                                       })));
+        //act
+        var command = new AddPetCommand((Guid)volunteer.Id, pet);
+        var handler = new AddPetHandler(_logger, _volunteerRepository, _validator);
+        var result = await handler.Handle(command, CancellationToken.None);
 
-            //act
-            var command = new AddPetCommand((Guid)volunteer.Id, pet);
-            var handler = new AddPetHandler(_logger, _volunteerRepository, _validator);
-            var result = await handler.Handle(command, CancellationToken.None);
+        //assert
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().NotBeNull();
+    }
 
-            //assert
-            result.IsFailure.Should().BeTrue();
-            result.Error.Should().NotBeNull();
-        }
+    [Fact]
+    public async Task BeAddPetIfValidationSuccessReturnSuccessAndGuidPet()
+    {
+        //arrange
+        var volunteer = ExistedVolunteer().Value;
+        var pet = ExistedPetDto().Value;
 
-        [Fact]
-        public async Task BeAddPetIfValidationSuccessReturnSuccessAndGuidPet()
-        {
-            //arrange
-            var volunteer = ExistedVolunteer().Value;
-            var pet = ExistedPetDto().Value;
+        _volunteerRepository
+            .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(volunteer));
 
-            _volunteerRepository
-                .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(volunteer));
+        _validator.ValidateAsync(Arg.Any<AddPetCommand>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new ValidationResult()));
 
-            _validator.ValidateAsync(Arg.Any<AddPetCommand>(), Arg.Any<CancellationToken>())
-                             .Returns(Task.FromResult(new ValidationResult()));
+        var command = new AddPetCommand((Guid)volunteer.Id, pet);
+        var handler = new AddPetHandler(_logger, _volunteerRepository, _validator);
 
-            var command = new AddPetCommand((Guid)volunteer.Id, pet);
-            var handler = new AddPetHandler(_logger, _volunteerRepository, _validator);
+        //act
+        var result = await handler.Handle(command, CancellationToken.None);
 
-            //act
-            var result = await handler.Handle(command, CancellationToken.None);
+        //assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().Be((Guid)volunteer.Pets.ToList()[0].Id);
+        volunteer.Pets.Count.Should().Be(1);
+    }
 
-            //assert
-            result.IsSuccess.Should().BeTrue();
-            result.Value.Should().Be((Guid)volunteer.Pets.ToList()[0].Id);
-            volunteer.Pets.Count.Should().Be(1);
-        }
+    private Maybe<Volunteer> ExistedVolunteer()
+    {
+        return Volunteer.Create(
+            VolunteerId.NewId(),
+            FullName.Create("ivan", "ivanovich", "ivanov").Value,
+            Email.Create("diman@mail.ru").Value,
+            "description",
+            Experience.Create(5).Value,
+            PhoneNumber.Create("89258761315").Value,
+            HelpRequisites.Create(null),
+            SocialNetworks.Create(null)).Value;
+    }
 
-        private Maybe<Volunteer> ExistedVolunteer()
-        {
-            return Volunteer.Create(
-                VolunteerId.NewId(),
-                FullName.Create("ivan", "ivanovich", "ivanov").Value,
-                Email.Create("diman@mail.ru").Value,
-                "description",
-                Experience.Create(5).Value,
-                PhoneNumber.Create("89258761315").Value,
-                HelpRequisites.Create(null),
-                SocialNetworks.Create(null)).Value;
-        }
-
-        private Maybe<PetWriteDto> ExistedPetDto()
-        {
-            return new PetWriteDto(
-                "test",
-                "description",
-                new PetSpeciesInfoDto(Guid.NewGuid(), Guid.NewGuid()),
-                "test",
-                "test",
-                new AddressDto("testCity", "testRegion", "testHouse"),
-                10,
-                5,
-                "89258761315",
-                true,
-                DateTime.UtcNow,
-                true,
-                1,
-                Array.Empty<HelpRequisiteDto>());
-        }
+    private Maybe<PetWriteDto> ExistedPetDto()
+    {
+        return new PetWriteDto(
+            "test",
+            "description",
+            new PetSpeciesInfoDto(Guid.NewGuid(), Guid.NewGuid()),
+            "test",
+            "test",
+            new AddressDto("testCity", "testRegion", "testHouse"),
+            10,
+            5,
+            "89258761315",
+            true,
+            DateTime.UtcNow,
+            true,
+            1,
+            Array.Empty<HelpRequisiteDto>());
     }
 }

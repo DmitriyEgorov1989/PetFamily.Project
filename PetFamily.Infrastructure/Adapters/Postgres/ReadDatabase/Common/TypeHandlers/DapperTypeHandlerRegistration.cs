@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using PetFamily.Core.Application.UseCases.CommonDto;
 
 namespace PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.Common.TypeHandlers;
 

@@ -4,16 +4,14 @@ using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
 using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Domain.Models.PetAggregate;
-using PetFamily.Core.Domain.Models.SharedKernel.VO;
-using PetFamily.Core.Domain.Models.SpeciesAggregate.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.Enum;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.Core.Ports;
+using PetFamily.SharedKernel.DomainModels.Ids;
+using PetFamily.SharedKernel.DomainModels.VO;
 using Serilog;
 using Xunit;
+using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
 
@@ -21,12 +19,16 @@ public class UpdatePetShould
 {
     private readonly ILogger _logger =
         Substitute.For<ILogger>();
+
     private readonly IUnitOfWork _unitOfWork =
         Substitute.For<IUnitOfWork>();
+
     private readonly IValidator<UpdatePetCommand> _validator =
         Substitute.For<IValidator<UpdatePetCommand>>();
+
     private readonly IVolunteerRepository _volunteerRepository =
         Substitute.For<IVolunteerRepository>();
+
     [Fact]
     public async Task BeSucessDataOrFieldIsNotNull()
     {
@@ -61,7 +63,7 @@ public class UpdatePetShould
             null,
             null,
             null
-            );
+        );
         var handler =
             new UpdatePetHandler(_volunteerRepository, _logger, _validator, _unitOfWork);
         //act
@@ -98,6 +100,7 @@ public class UpdatePetShould
             VolunteerId.NewId()
         ).Value;
     }
+
     private Volunteer ExistedVolunteer()
     {
         return Volunteer.Create(

@@ -1,50 +1,55 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.Core.Domain.Models.SpeciesAggregate.Entity;
-using PetFamily.Core.Domain.Models.SpeciesAggregate.VO;
-using Primitives;
+using PetFamily.SharedKernel.DomainModels;
+using PetFamily.SharedKernel.DomainModels.Ids;
+using PetFamily.SharedKernel.Errors;
 using System.Diagnostics.CodeAnalysis;
 
-namespace PetFamily.Core.Domain.Models.Species
+namespace PetFamily.Core.Domain.Models.Species;
+
+/// <summary>
+///     Аггрегат вид животного
+/// </summary>
+public class Species : Aggregate<SpeciesId>
 {
-    /// <summary>
-    /// Аггрегат вид животного
-    /// </summary>
-    public class Species : Aggregate<SpeciesId>
+    private readonly List<Breed> _breeds = new();
+
+    [ExcludeFromCodeCoverage]
+    private Species()
     {
-        private readonly List<Breed> _breeds = new();
+    }
 
-        [ExcludeFromCodeCoverage]
-        private Species() { }
-        private Species(SpeciesId id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
-        /// <summary>
-        /// Название вида(например кошка,собака)
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// список пород у данного вида
-        /// </summary>
-        public IReadOnlyCollection<Breed> Breeds => _breeds;
+    private Species(SpeciesId id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
 
-        public static Result<Species, Error> Create(SpeciesId speciesId, string name, List<Breed>? breeds = null)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                return GeneralErrors.ValueIsInvalid(nameof(name));
+    /// <summary>
+    ///     Название вида(например кошка,собака)
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
+    ///     список пород у данного вида
+    /// </summary>
+    public IReadOnlyCollection<Breed> Breeds => _breeds;
+
+    public static Result<Species, Error> Create(SpeciesId speciesId, string name, List<Breed>? breeds = null)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return GeneralErrors.ValueIsInvalid(nameof(name));
 
 
-            return new Species(speciesId, name);
-        }
+        return new Species(speciesId, name);
+    }
 
-        public UnitResult<Error> Add(Breed breed)
-        {
-            if (breed == null)
-                return UnitResult.Failure(GeneralErrors.ValueIsInvalid(nameof(breed)));
+    public UnitResult<Error> Add(Breed breed)
+    {
+        if (breed == null)
+            return UnitResult.Failure(GeneralErrors.ValueIsInvalid(nameof(breed)));
 
-            _breeds.Add(breed);
-            return UnitResult.Success<Error>();
-        }
+        _breeds.Add(breed);
+        return UnitResult.Success<Error>();
     }
 }

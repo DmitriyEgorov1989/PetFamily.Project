@@ -1,6 +1,5 @@
 ﻿using Minio.Exceptions;
-using Primitives;
-using MinioExceptions = Minio.Exceptions;
+using PetFamily.SharedKernel.Errors;
 
 namespace PetFamily.Infrastructure.Adapters.Minio.ExceptionHandling;
 
@@ -11,25 +10,25 @@ public static class MinioExceptionHandler
         return ex switch
         {
             //доступ
-            MinioExceptions.AuthorizationException =>
+            AuthorizationException =>
                 new Error("minio.auth", "Authorization failed", ErrorType.Authorization),
 
-            MinioExceptions.AccessDeniedException =>
+            AccessDeniedException =>
                 new Error("minio.access.denied", "Access denied", ErrorType.Authorization),
 
             //bucket
-            MinioExceptions.InvalidBucketNameException =>
+            InvalidBucketNameException =>
                 new Error("minio.bucket.invalid", "Invalid bucket name", ErrorType.Validation),
 
-            MinioExceptions.BucketNotFoundException =>
+            BucketNotFoundException =>
                 new Error("minio.bucket.notfound", "Bucket not found", ErrorType.NotFound),
 
             //object / file
-            MinioExceptions.InvalidObjectNameException =>
+            InvalidObjectNameException =>
                 new Error("minio.object.invalid", "Invalid object name", ErrorType.Validation),
 
-            MinioExceptions.ConnectionException =>
-           new Error("minio.error.connect", "Error connect", ErrorType.Failure),
+            ConnectionException =>
+                new Error("minio.error.connect", "Error connect", ErrorType.Failure),
 
             FileNotFoundException =>
                 new Error("minio.file.notfound", "File not found", ErrorType.NotFound),
@@ -39,7 +38,7 @@ public static class MinioExceptionHandler
                 new Error("minio.disposed", "Stream already disposed", ErrorType.Failure),
 
             ObjectNotFoundException =>
-                            new Error("minio.object.notfound", "Object Not Found", ErrorType.NotFound),
+                new Error("minio.object.notfound", "Object Not Found", ErrorType.NotFound),
 
             NotSupportedException =>
                 new Error("minio.notsupported", "Operation not supported", ErrorType.Failure),
@@ -48,7 +47,7 @@ public static class MinioExceptionHandler
                 new Error("minio.invalid.operation", "Invalid operation", ErrorType.Failure),
 
             ArgumentException =>
-               new Error("minio.invalid.argument", "Invalid argument", ErrorType.ValueIsInvalid),
+                new Error("minio.invalid.argument", "Invalid argument", ErrorType.ValueIsInvalid),
 
             // fallback
             _ =>

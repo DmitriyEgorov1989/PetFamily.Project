@@ -1,8 +1,6 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Api.Controllers.Models.Accounts;
-using PetFamily.Api.Extensions;
 
 namespace PetFamily.Api.Controllers;
 

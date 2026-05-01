@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Minio;
 using Npgsql;
-using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Domain.Models.AccountAggregate;
 using PetFamily.Core.Ports;
-using PetFamily.Core.Ports.DataBaseForRead;
 using PetFamily.Infrastructure.Adapters.Jwt;
 using PetFamily.Infrastructure.Adapters.MessageQueues;
 using PetFamily.Infrastructure.Adapters.Minio;
@@ -23,6 +23,7 @@ using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.BackgroundJobs;
 using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase.Repository;
 using PetFamily.Infrastructure.Options;
 using Quartz;
+using System.Text;
 
 namespace PetFamily.Infrastructure.Adapters.Inject;
 
@@ -118,7 +119,7 @@ public static class InjectInfrastructure
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             var dbOptions = sp.GetRequiredService<
-                Microsoft.Extensions.Options.IOptions<DataBaseOptions>>().Value;
+                IOptions<DataBaseOptions>>().Value;
 
             if (string.IsNullOrWhiteSpace(dbOptions.ConnectionString))
                 throw new InvalidOperationException("Database connection string is missing.");
@@ -133,7 +134,7 @@ public static class InjectInfrastructure
         services.AddDbContext<AccountDbContext>((sp, options) =>
         {
             var dbOptions = sp.GetRequiredService<
-                Microsoft.Extensions.Options.IOptions<DataBaseOptions>>().Value;
+                IOptions<DataBaseOptions>>().Value;
 
             if (string.IsNullOrWhiteSpace(dbOptions.ConnectionString))
                 throw new InvalidOperationException("Database connection string is missing.");
@@ -181,11 +182,10 @@ public static class InjectInfrastructure
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-
             })
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
@@ -194,8 +194,8 @@ public static class InjectInfrastructure
                     ValidIssuer = jwtOptions.Issuer,
                     ValidAudience = jwtOptions.Audience,
                     IssuerSigningKey =
-                        new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-                            System.Text.Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
+                        new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
                 };
             });
         return services;
@@ -204,18 +204,19 @@ public static class InjectInfrastructure
     private static IServiceCollection AddIdentityService(this IServiceCollection services)
     {
         services.AddIdentity<User, Role>(options =>
-        {
-            // Password settings
-            options.Password.RequireDigit = true;
-            options.Password.RequireLowercase = true;
-            options.Password.RequireUppercase = true;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequiredLength = 8;
-            // User settings
-            options.User.RequireUniqueEmail = true;
-        })
-        .AddEntityFrameworkStores<AccountDbContext>()
-        .AddDefaultTokenProviders(); ;
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 8;
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<AccountDbContext>()
+            .AddDefaultTokenProviders();
+        ;
         return services;
     }
 }

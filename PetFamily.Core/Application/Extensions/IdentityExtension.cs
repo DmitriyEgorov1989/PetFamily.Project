@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Primitives;
-using static Primitives.Error;
+using PetFamily.SharedKernel.Errors;
+using static PetFamily.SharedKernel.Errors.Error;
 
 namespace PetFamily.Core.Application.Extensions;
 

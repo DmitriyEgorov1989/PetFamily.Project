@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Ports;
 using Serilog;
 
 namespace PetFamily.Infrastructure.Adapters.Minio.BackgroundServices;

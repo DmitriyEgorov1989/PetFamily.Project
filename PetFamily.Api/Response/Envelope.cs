@@ -1,34 +1,41 @@
-﻿namespace PetFamily.Api.Response
+﻿namespace PetFamily.Api.Response;
+
+public record ResponseError(string? ErrorCode, string? ErrorMessage, string? InvalidField);
+
+/// <summary>
+///     Шаблон ответа
+/// </summary>
+public record Envelope
 {
-    public record ResponseError(string? ErrorCode, string? ErrorMessage, string? InvalidField);
-    /// <summary>
-    /// Шаблон ответа
-    /// </summary>
-    public record Envelope
+    public Envelope(object? result, IEnumerable<ResponseError> errors)
     {
-        public Envelope(object? result, IEnumerable<ResponseError> errors)
-        {
-            Result = result;
-            ListErrors = errors.ToList();
-            CreatedOtc = DateTime.UtcNow;
-        }
-        /// <summary>
-        /// Результат если есть
-        /// </summary>
-        public object? Result { get; }
-        /// <summary>
-        /// Если есть ошибка,то статус код ошибки
-        /// </summary>
-        public List<ResponseError> ListErrors { get; }
-        /// <summary>
-        /// Дата запроса
-        /// </summary>
-        public DateTime CreatedOtc { get; }
+        Result = result;
+        ListErrors = errors.ToList();
+        CreatedOtc = DateTime.UtcNow;
+    }
 
-        public static Envelope Ok(object? result = null) =>
-            new Envelope(result, []);
+    /// <summary>
+    ///     Результат если есть
+    /// </summary>
+    public object? Result { get; }
 
-        public static Envelope Errors(IEnumerable<ResponseError> errors) =>
-            new Envelope(null, errors);
+    /// <summary>
+    ///     Если есть ошибка,то статус код ошибки
+    /// </summary>
+    public List<ResponseError> ListErrors { get; }
+
+    /// <summary>
+    ///     Дата запроса
+    /// </summary>
+    public DateTime CreatedOtc { get; }
+
+    public static Envelope Ok(object? result = null)
+    {
+        return new Envelope(result, []);
+    }
+
+    public static Envelope Errors(IEnumerable<ResponseError> errors)
+    {
+        return new Envelope(null, errors);
     }
 }

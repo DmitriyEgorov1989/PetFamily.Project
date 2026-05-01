@@ -1,12 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using PetFamily.Core.Application.Extensions;
 using PetFamily.Core.Domain.Models.AccountAggregate;
 using PetFamily.Core.Ports;
+using PetFamily.SharedKernel.Extensions.Validations;
 using Serilog;
-using static Primitives.Error;
+using static PetFamily.SharedKernel.Errors.Error;
 
 namespace PetFamily.Core.Application.UseCases.AccountManager.Commands.RegistrationUser;
 
@@ -49,6 +49,7 @@ public class RegistrationUserHandler : IRequestHandler<RegistrationUserCommand, 
             var result = resultRegistration.ToErrorList();
             return result;
         }
+
         _logger.Information("User registration succeeded: {UserId}",
             user.Id);
 

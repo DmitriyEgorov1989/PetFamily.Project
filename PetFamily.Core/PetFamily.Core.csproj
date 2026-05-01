@@ -11,14 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Application\UseCases\Commands\FileCommands\DeleteFile\DeleteFileCommand.cs" />
-    <None Include="Application\UseCases\Commands\VolunteerCommands\DeleteVolunteer\DeleteVolunteerCommand.cs" />
-    <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />
-    <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateMainInfo\UpdateMainInfoVolunteerCommand.cs" />
-    <None Include="Domain\Models\VolunteerAggregate\Entity\Pet\Pet.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="CSharpFunctionalExtensions" Version="3.7.0" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
@@ -26,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Primitives\Primitives.csproj" />
+    <ProjectReference Include="..\PetFamily.SharedKernel\PetFamily.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>

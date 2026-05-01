@@ -2,12 +2,13 @@
 using FluentValidation;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeleteVolunteer;
-using PetFamily.Core.Domain.Models.SharedKernel.VO;
 using PetFamily.Core.Domain.Models.VolunteerAggregate;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Core.Ports;
+using PetFamily.SharedKernel.DomainModels.Ids;
+using PetFamily.SharedKernel.DomainModels.VO;
 using Serilog;
 using Xunit;
+using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.DeleteVolunteer;

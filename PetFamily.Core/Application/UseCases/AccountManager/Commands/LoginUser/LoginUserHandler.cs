@@ -1,22 +1,21 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
-using PetFamily.Core.Application.Extensions;
 using PetFamily.Core.Domain.Models.AccountAggregate;
 using PetFamily.Core.Ports;
-using Primitives;
+using PetFamily.SharedKernel.Errors;
+using PetFamily.SharedKernel.Extensions.Validations;
 using Serilog;
-using static Primitives.Error;
+using static PetFamily.SharedKernel.Errors.Error;
 
 namespace PetFamily.Core.Application.UseCases.AccountManager.Commands.LoginUser;
 
 public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<string, ErrorList>>
 {
     private readonly ILogger _logger;
+    private readonly ITokenProvider _tokenProvider;
     private readonly UserManager<User> _userManager;
     private readonly IValidator<LoginUserCommand> _validator;
-    private readonly ITokenProvider _tokenProvider;
 
     public LoginUserHandler(ILogger logger,
         UserManager<User> userManager,
@@ -53,6 +52,7 @@ public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<string,
                 command.Email);
             return (ErrorList)GeneralErrors.InvalidCredentials();
         }
+
         _logger.Information("User with email {Email} logged in successfully",
             command.Email);
 

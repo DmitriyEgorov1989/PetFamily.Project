@@ -7,11 +7,11 @@ namespace PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase;
 
 public class AccountDbContext : IdentityDbContext<User, Role, Guid>
 {
-
     public AccountDbContext(DbContextOptions<AccountDbContext> options)
         : base(options)
     {
     }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

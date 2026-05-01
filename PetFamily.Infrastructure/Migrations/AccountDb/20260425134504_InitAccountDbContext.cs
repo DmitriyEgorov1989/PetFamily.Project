@@ -1,223 +1,215 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-#nullable disable
+namespace PetFamily.Infrastructure.Migrations.AccountDb;
 
-namespace PetFamily.Infrastructure.Migrations.AccountDb
+/// <inheritdoc />
+public partial class InitAccountDbContext : Migration
 {
     /// <inheritdoc />
-    public partial class InitAccountDbContext : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateTable(
-                name: "roles",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    normalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    concurrencyStamp = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pK_roles", x => x.id);
-                });
+        migrationBuilder.CreateTable(
+            "roles",
+            table => new
+            {
+                id = table.Column<Guid>("uuid", nullable: false),
+                name = table.Column<string>("character varying(256)", maxLength: 256, nullable: true),
+                normalizedName = table.Column<string>("character varying(256)", maxLength: 256, nullable: true),
+                concurrencyStamp = table.Column<string>("text", nullable: true)
+            },
+            constraints: table => { table.PrimaryKey("pK_roles", x => x.id); });
 
-            migrationBuilder.CreateTable(
-                name: "users",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    userName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    normalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    normalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    emailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    passwordHash = table.Column<string>(type: "text", nullable: true),
-                    securityStamp = table.Column<string>(type: "text", nullable: true),
-                    concurrencyStamp = table.Column<string>(type: "text", nullable: true),
-                    phoneNumber = table.Column<string>(type: "text", nullable: true),
-                    phoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    twoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    lockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    lockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    accessFailedCount = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pK_users", x => x.id);
-                });
+        migrationBuilder.CreateTable(
+            "users",
+            table => new
+            {
+                id = table.Column<Guid>("uuid", nullable: false),
+                userName = table.Column<string>("character varying(256)", maxLength: 256, nullable: true),
+                normalizedUserName = table.Column<string>("character varying(256)", maxLength: 256, nullable: true),
+                email = table.Column<string>("character varying(256)", maxLength: 256, nullable: true),
+                normalizedEmail = table.Column<string>("character varying(256)", maxLength: 256, nullable: true),
+                emailConfirmed = table.Column<bool>("boolean", nullable: false),
+                passwordHash = table.Column<string>("text", nullable: true),
+                securityStamp = table.Column<string>("text", nullable: true),
+                concurrencyStamp = table.Column<string>("text", nullable: true),
+                phoneNumber = table.Column<string>("text", nullable: true),
+                phoneNumberConfirmed = table.Column<bool>("boolean", nullable: false),
+                twoFactorEnabled = table.Column<bool>("boolean", nullable: false),
+                lockoutEnd = table.Column<DateTimeOffset>("timestamp with time zone", nullable: true),
+                lockoutEnabled = table.Column<bool>("boolean", nullable: false),
+                accessFailedCount = table.Column<int>("integer", nullable: false)
+            },
+            constraints: table => { table.PrimaryKey("pK_users", x => x.id); });
 
-            migrationBuilder.CreateTable(
-                name: "role_claims",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    roleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    claimType = table.Column<string>(type: "text", nullable: true),
-                    claimValue = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pK_role_claims", x => x.id);
-                    table.ForeignKey(
-                        name: "fK_role_claims_roles_roleId",
-                        column: x => x.roleId,
-                        principalTable: "roles",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+        migrationBuilder.CreateTable(
+            "role_claims",
+            table => new
+            {
+                id = table.Column<int>("integer", nullable: false)
+                    .Annotation("Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                roleId = table.Column<Guid>("uuid", nullable: false),
+                claimType = table.Column<string>("text", nullable: true),
+                claimValue = table.Column<string>("text", nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("pK_role_claims", x => x.id);
+                table.ForeignKey(
+                    "fK_role_claims_roles_roleId",
+                    x => x.roleId,
+                    "roles",
+                    "id",
+                    onDelete: ReferentialAction.Cascade);
+            });
 
-            migrationBuilder.CreateTable(
-                name: "user_claims",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    userId = table.Column<Guid>(type: "uuid", nullable: false),
-                    claimType = table.Column<string>(type: "text", nullable: true),
-                    claimValue = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pK_user_claims", x => x.id);
-                    table.ForeignKey(
-                        name: "fK_user_claims_users_userId",
-                        column: x => x.userId,
-                        principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+        migrationBuilder.CreateTable(
+            "user_claims",
+            table => new
+            {
+                id = table.Column<int>("integer", nullable: false)
+                    .Annotation("Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                userId = table.Column<Guid>("uuid", nullable: false),
+                claimType = table.Column<string>("text", nullable: true),
+                claimValue = table.Column<string>("text", nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("pK_user_claims", x => x.id);
+                table.ForeignKey(
+                    "fK_user_claims_users_userId",
+                    x => x.userId,
+                    "users",
+                    "id",
+                    onDelete: ReferentialAction.Cascade);
+            });
 
-            migrationBuilder.CreateTable(
-                name: "user_logins",
-                columns: table => new
-                {
-                    loginProvider = table.Column<string>(type: "text", nullable: false),
-                    providerKey = table.Column<string>(type: "text", nullable: false),
-                    providerDisplayName = table.Column<string>(type: "text", nullable: true),
-                    userId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pK_user_logins", x => new { x.loginProvider, x.providerKey });
-                    table.ForeignKey(
-                        name: "fK_user_logins_users_userId",
-                        column: x => x.userId,
-                        principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+        migrationBuilder.CreateTable(
+            "user_logins",
+            table => new
+            {
+                loginProvider = table.Column<string>("text", nullable: false),
+                providerKey = table.Column<string>("text", nullable: false),
+                providerDisplayName = table.Column<string>("text", nullable: true),
+                userId = table.Column<Guid>("uuid", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("pK_user_logins", x => new { x.loginProvider, x.providerKey });
+                table.ForeignKey(
+                    "fK_user_logins_users_userId",
+                    x => x.userId,
+                    "users",
+                    "id",
+                    onDelete: ReferentialAction.Cascade);
+            });
 
-            migrationBuilder.CreateTable(
-                name: "user_roles",
-                columns: table => new
-                {
-                    userId = table.Column<Guid>(type: "uuid", nullable: false),
-                    roleId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pK_user_roles", x => new { x.userId, x.roleId });
-                    table.ForeignKey(
-                        name: "fK_user_roles_roles_roleId",
-                        column: x => x.roleId,
-                        principalTable: "roles",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fK_user_roles_users_userId",
-                        column: x => x.userId,
-                        principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+        migrationBuilder.CreateTable(
+            "user_roles",
+            table => new
+            {
+                userId = table.Column<Guid>("uuid", nullable: false),
+                roleId = table.Column<Guid>("uuid", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("pK_user_roles", x => new { x.userId, x.roleId });
+                table.ForeignKey(
+                    "fK_user_roles_roles_roleId",
+                    x => x.roleId,
+                    "roles",
+                    "id",
+                    onDelete: ReferentialAction.Cascade);
+                table.ForeignKey(
+                    "fK_user_roles_users_userId",
+                    x => x.userId,
+                    "users",
+                    "id",
+                    onDelete: ReferentialAction.Cascade);
+            });
 
-            migrationBuilder.CreateTable(
-                name: "user_tokens",
-                columns: table => new
-                {
-                    userId = table.Column<Guid>(type: "uuid", nullable: false),
-                    loginProvider = table.Column<string>(type: "text", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    value = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pK_user_tokens", x => new { x.userId, x.loginProvider, x.name });
-                    table.ForeignKey(
-                        name: "fK_user_tokens_users_userId",
-                        column: x => x.userId,
-                        principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+        migrationBuilder.CreateTable(
+            "user_tokens",
+            table => new
+            {
+                userId = table.Column<Guid>("uuid", nullable: false),
+                loginProvider = table.Column<string>("text", nullable: false),
+                name = table.Column<string>("text", nullable: false),
+                value = table.Column<string>("text", nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("pK_user_tokens", x => new { x.userId, x.loginProvider, x.name });
+                table.ForeignKey(
+                    "fK_user_tokens_users_userId",
+                    x => x.userId,
+                    "users",
+                    "id",
+                    onDelete: ReferentialAction.Cascade);
+            });
 
-            migrationBuilder.CreateIndex(
-                name: "iX_role_claims_roleId",
-                table: "role_claims",
-                column: "roleId");
+        migrationBuilder.CreateIndex(
+            "iX_role_claims_roleId",
+            "role_claims",
+            "roleId");
 
-            migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "roles",
-                column: "normalizedName",
-                unique: true);
+        migrationBuilder.CreateIndex(
+            "RoleNameIndex",
+            "roles",
+            "normalizedName",
+            unique: true);
 
-            migrationBuilder.CreateIndex(
-                name: "iX_user_claims_userId",
-                table: "user_claims",
-                column: "userId");
+        migrationBuilder.CreateIndex(
+            "iX_user_claims_userId",
+            "user_claims",
+            "userId");
 
-            migrationBuilder.CreateIndex(
-                name: "iX_user_logins_userId",
-                table: "user_logins",
-                column: "userId");
+        migrationBuilder.CreateIndex(
+            "iX_user_logins_userId",
+            "user_logins",
+            "userId");
 
-            migrationBuilder.CreateIndex(
-                name: "iX_user_roles_roleId",
-                table: "user_roles",
-                column: "roleId");
+        migrationBuilder.CreateIndex(
+            "iX_user_roles_roleId",
+            "user_roles",
+            "roleId");
 
-            migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "users",
-                column: "normalizedEmail");
+        migrationBuilder.CreateIndex(
+            "EmailIndex",
+            "users",
+            "normalizedEmail");
 
-            migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "users",
-                column: "normalizedUserName",
-                unique: true);
-        }
+        migrationBuilder.CreateIndex(
+            "UserNameIndex",
+            "users",
+            "normalizedUserName",
+            unique: true);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "role_claims");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            "role_claims");
 
-            migrationBuilder.DropTable(
-                name: "user_claims");
+        migrationBuilder.DropTable(
+            "user_claims");
 
-            migrationBuilder.DropTable(
-                name: "user_logins");
+        migrationBuilder.DropTable(
+            "user_logins");
 
-            migrationBuilder.DropTable(
-                name: "user_roles");
+        migrationBuilder.DropTable(
+            "user_roles");
 
-            migrationBuilder.DropTable(
-                name: "user_tokens");
+        migrationBuilder.DropTable(
+            "user_tokens");
 
-            migrationBuilder.DropTable(
-                name: "roles");
+        migrationBuilder.DropTable(
+            "roles");
 
-            migrationBuilder.DropTable(
-                name: "users");
-        }
+        migrationBuilder.DropTable(
+            "users");
     }
 }

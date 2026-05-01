@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\Models\VolunteerController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Controllers\VolunteerController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PetFamily.Api\PetFamily.Api.csproj" />
+    <ProjectReference Include="..\Volunteers\PetFamily.Volunteers.Core\PetFamily.Volunteers.Core.csproj" />
+  </ItemGroup>
+
+</Project>

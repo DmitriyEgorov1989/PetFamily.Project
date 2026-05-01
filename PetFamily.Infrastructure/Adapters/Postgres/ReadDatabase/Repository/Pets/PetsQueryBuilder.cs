@@ -1,10 +1,11 @@
-﻿using Dapper;
-using System.Data;
+﻿using System.Data;
 using System.Text;
+using Dapper;
 
 namespace PetFamily.Infrastructure.Adapters.Postgres.ReadDatabase.Repository.Pets;
+
 /// <summary>
-/// C
+///     C
 /// </summary>
 public class PetsQueryBuilder
 {
@@ -66,6 +67,7 @@ public class PetsQueryBuilder
             _dynamicParameters.Add("@BreedId", breedId, DbType.Guid);
             _sql.Append(" AND p.breed_id = @BreedId");
         }
+
         return this;
     }
 
@@ -76,6 +78,7 @@ public class PetsQueryBuilder
             _dynamicParameters.Add("@Name", name, DbType.String);
             _sql.Append(" AND p.name = @Name");
         }
+
         return this;
     }
 
