@@ -1,11 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel.Errors;
 
-namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
+namespace PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 
 public record HealthInfo
 {
-    public HealthInfo(string description)
+    private HealthInfo(string description)
     {
         Description = description;
     }

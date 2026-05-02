@@ -1,7 +1,7 @@
-﻿using PetFamily.Core.Domain.Models.VolunteerAggregate;
-using PetFamily.SharedKernel.DomainModels.Ids;
+﻿using PetFamily.SharedKernel.DomainModels.Ids;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
 
-namespace PetFamily.Core.Ports;
+namespace PetFamily.Volunteers.Core.Ports;
 
 public interface IVolunteerRepository
 {

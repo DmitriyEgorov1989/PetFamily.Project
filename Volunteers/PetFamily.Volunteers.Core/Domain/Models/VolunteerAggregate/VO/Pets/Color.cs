@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel.Errors;
 
-namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
+namespace PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 
 public record Color
 {

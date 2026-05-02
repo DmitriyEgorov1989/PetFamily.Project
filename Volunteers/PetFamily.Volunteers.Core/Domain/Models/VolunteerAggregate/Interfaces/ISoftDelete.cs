@@ -1,4 +1,4 @@
-﻿namespace PetFamily.Core.Domain.Models.VolunteerAggregate.Interfaces;
+﻿namespace PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Interfaces;
 
 /// <summary>
 ///     Интерфейс для мягкого удаления,

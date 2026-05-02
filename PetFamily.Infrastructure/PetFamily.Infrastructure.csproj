@@ -29,4 +29,9 @@
     <ProjectReference Include="..\PetFamily.Core\PetFamily.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Adapters\Postgres\ReadDatabase\Common\" />
+    <Folder Include="Adapters\Postgres\WriteDataBase\BackgroundJobs\" />
+  </ItemGroup>
+
 </Project>

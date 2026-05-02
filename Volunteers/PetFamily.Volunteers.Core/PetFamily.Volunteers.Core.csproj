@@ -10,14 +10,12 @@
     <Compile Remove="Application\UseCases\Commands\VolunteerCommands\DeleteVolunteer\DeleteVolunteerCommand.cs" />
     <Compile Remove="Application\UseCases\Commands\VolunteerCommands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />
     <Compile Remove="Application\UseCases\Commands\VolunteerCommands\UpdateMainInfo\UpdateMainInfoVolunteerCommand.cs" />
-    <Compile Remove="Domain\Models\VolunteerAggregate\Entity\Pet\Pet.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Application\UseCases\Commands\VolunteerCommands\DeleteVolunteer\DeleteVolunteerCommand.cs" />
     <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />
     <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateMainInfo\UpdateMainInfoVolunteerCommand.cs" />
-    <None Include="Domain\Models\VolunteerAggregate\Entity\Pet\Pet.cs" />
   </ItemGroup>
 
   <ItemGroup>

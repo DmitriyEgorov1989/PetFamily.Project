@@ -1,8 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using Dapper;
 using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Ports.DataBaseForRead;
 using PetFamily.SharedKernel.Errors;
+using PetFamily.Volunteers.Core.Ports.DataBaseForRead;
+using Serilog;
 
 namespace PetFamily.Volunteers.Infrastructure.Adapters.Postgres.ReadDatabase.Repository.Pets;
 

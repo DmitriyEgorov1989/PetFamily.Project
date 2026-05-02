@@ -1,8 +1,9 @@
 using Microsoft.OpenApi.Models;
 using PetFamily.Api.Middlewares;
 using PetFamily.Core.Application.Inject;
-using PetFamily.Infrastructure.Adapters.Inject;
 using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase;
+using PetFamily.Volunteers.Core.Inject;
+using PetFamily.Volunteers.Infrastructure.DependencyInjection;
 using Serilog;
 
 namespace PetFamily.Api;
@@ -26,7 +27,8 @@ public class Program
 
         builder.Host.UseSerilog();
         //Infrastructure
-        builder.Services.AddInfrastructure(builder.Configuration);
+        builder.Services.AddVolunteersApplication()
+            .AddVolunteersInfrastructure(builder.Configuration);
         //Application           
         builder.Services.AddApplication();
 

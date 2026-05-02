@@ -2,11 +2,12 @@
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Args;
-using PetFamily.Core.Ports;
 using PetFamily.Infrastructure.Options;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.SharedKernelDto;
+using PetFamily.Volunteers.Core.Ports;
 using PetFamily.Volunteers.Infrastructure.Adapters.Minio.ExceptionHandling;
+using Serilog;
 
 namespace PetFamily.Volunteers.Infrastructure.Adapters.Minio;
 

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Channels;
 using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Ports;
+using PetFamily.Volunteers.Core.Ports;
 
 namespace PetFamily.Volunteers.Infrastructure.Adapters.MessageQueues;
 

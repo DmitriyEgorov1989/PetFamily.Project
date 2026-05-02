@@ -1,17 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
-using PetFamily.Core.Domain.Models.SharedKernel.VO;
-using PetFamily.Core.Domain.Models.VolunteerAggregate;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.Enum;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.Interfaces;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
-using Primitives;
-using System.Diagnostics.CodeAnalysis;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Enum;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Interfaces;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
+using System.Diagnostics.CodeAnalysis;
 
-namespace PetFamily.Core.Domain.Models.PetAggregate;
+namespace PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Entity.Pet;
 
 /// <summary>
 ///     Аггрегат животное
@@ -38,7 +34,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
         DateTime birthDate,
         bool isVaccined,
         PetHelpStatus helpStatus,
-        HelpRequisites petHelpRequisites,
+        IEnumerable<HelpRequisite> petHelpRequisites,
         VolunteerId volunteerId
     )
     {
@@ -56,10 +52,8 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
         BirthDate = birthDate;
         IsVaccined = isVaccined;
         PetHelpStatus = helpStatus;
-        PetHelpRequisites = petHelpRequisites.ListHelpRequisites;
+        PetHelpRequisites = petHelpRequisites.ToList();
         CreatedUtc = DateTime.UtcNow;
-
-
         VolunteerId = volunteerId;
     }
 
@@ -71,7 +65,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
     /// <summary>
     ///     Позиция питомца у волонтера
     /// </summary>
-    public Position Position { get; private set; }
+    public Position Position { get; set; }
 
     /// <summary>
     ///     Общее описание
@@ -149,7 +143,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
     public Volunteer VolunteerNavigation { get; private set; }
 
     /// <summary>
-    ///     VolunteerId волантера за которым закреплено животное
+    ///     VolunteerId волонтера за которым закреплено животное
     /// </summary>
     public VolunteerId VolunteerId { get; private set; }
 
@@ -192,9 +186,9 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
         PhoneNumber phoneNumber,
         bool isSterilized,
         DateTime birthDate,
-        bool isVaccined,
+        bool isVaccines,
         PetHelpStatus helpStatus,
-        HelpRequisites petHelpRequisite,
+        IEnumerable<HelpRequisite> helpRequisites,
         VolunteerId volunteerId
     )
     {
@@ -209,7 +203,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
                 return GeneralErrors.ValueIsInvalid(nameof(birthDate));
 
         return new Pet(id, name, description, speciesInfo, color, healthInfo, address,
-            weight, height, phoneNumber, isSterilized, birthDate, isVaccined, helpStatus, petHelpRequisite,
+            weight, height, phoneNumber, isSterilized, birthDate, isVaccines, helpStatus, helpRequisites,
             volunteerId);
     }
 
@@ -224,7 +218,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
         int? height,
         bool? isSterilized,
         DateTime? birthdate,
-        bool? isVacined)
+        bool? isVaccines)
     {
         if (!string.IsNullOrWhiteSpace(name))
             Name = name;
@@ -241,8 +235,8 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
             IsSterilized = isSterilized.Value;
         if (birthdate is not null)
             BirthDate = birthdate.Value;
-        if (isVacined is not null)
-            isVacined = isVacined.Value;
+        if (isVaccines is not null)
+            isVaccines = isVaccines.Value;
     }
 
     public void ChangeStatus(PetHelpStatus newStatus)
@@ -286,9 +280,9 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
     }
 
     /// <summary>
-    ///     Добавдение фото пиоомца
+    ///     Добавление фото питомца
     /// </summary>
-    /// <param name="photos">список фото</param>
+    /// <param name="photos">Список фото</param>
     /// <returns>Success or Error</returns>
     public UnitResult<Error> UploadPetPhotos(IEnumerable<PetPhoto> photos)
     {
@@ -301,13 +295,13 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
     }
 
     /// <summary>
-    ///     Удаление фото пиоомца
+    ///     Удаление фото питомца
     /// </summary>
-    /// <param name="petPhoto">название фото</param>
+    /// <param name="petPhoto">Название фото</param>
     /// <returns>Success or Error</returns>
-    public UnitResult<Error> DeletePetPhotos(PetPhoto petPhoto)
+    public UnitResult<Error> DeletePetPhotos(PetPhoto? petPhoto)
     {
-        if (petPhoto == null)
+        if (petPhoto is null)
             return GeneralErrors.ValueIsInvalid(nameof(petPhoto));
 
         _photos.Remove(petPhoto);
@@ -318,7 +312,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
     /// <summary>
     ///     Изменение позиции питомца на одну вперед
     /// </summary>
-    /// <returns>Sucess or Error</returns>
+    /// <returns>Success or Error</returns>
     public UnitResult<Error> MoveForward()
     {
         var newPosition = Position.Forward();
@@ -331,7 +325,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
     /// <summary>
     ///     Изменение позиции питомца на одну назад
     /// </summary>
-    /// <returns>Sucess or Error</returns>
+    /// <returns>Success or Error</returns>
     public UnitResult<Error> MoveBackward()
     {
         var newPosition = Position.Backward();
@@ -372,7 +366,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
         if (photo == null)
         {
             return GeneralErrors.InternalServerError(
-                $"photos with pathstorage {pathStorage} not found");
+                $"photos with path storage {pathStorage} not found");
         }
         for (var i = 0; i < _photos.Count; i++)
         {

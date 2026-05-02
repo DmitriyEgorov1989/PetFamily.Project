@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
-using PetFamily.Core.Ports;
 using PetFamily.Infrastructure.Options;
+using PetFamily.Volunteers.Core.Ports;
 using Quartz;
+using Serilog;
 
 namespace PetFamily.Volunteers.Infrastructure.Adapters.Postgres.WriteDataBase.BackgroundJobs;
 

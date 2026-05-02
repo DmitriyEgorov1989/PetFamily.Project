@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PetFamily.Core.Domain.Models.VolunteerAggregate;
-using PetFamily.Core.Ports;
 using PetFamily.SharedKernel.DomainModels.Ids;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
+using PetFamily.Volunteers.Core.Ports;
 
 namespace PetFamily.Volunteers.Infrastructure.Adapters.Postgres.WriteDataBase.Repository;
 
 public class VolunteerRepository : IVolunteerRepository
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly VolunteersDbContext _dbContext;
 
-    public VolunteerRepository(ApplicationDbContext dbContext)
+    public VolunteerRepository(VolunteersDbContext dbContext)
     {
         _dbContext = dbContext;
     }

@@ -3,7 +3,7 @@ using PetFamily.SharedKernel.Errors;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
+namespace PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 
 public class PetPhoto : ValueObject
 {

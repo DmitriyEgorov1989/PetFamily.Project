@@ -4,14 +4,15 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Domain.Models.VolunteerAggregate;
-using PetFamily.Core.Ports;
+using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
+using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
+using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using Xunit;
-using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
-using PetWriteDto = PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPet.PetWriteDto;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 
@@ -84,8 +85,8 @@ public class AddPetHandlerShould
             "description",
             Experience.Create(5).Value,
             PhoneNumber.Create("89258761315").Value,
-            HelpRequisites.Create(null),
-            SocialNetworks.Create(null)).Value;
+            [],
+            [];
     }
 
     private Maybe<PetWriteDto> ExistedPetDto()

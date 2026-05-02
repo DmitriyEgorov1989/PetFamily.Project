@@ -26,7 +26,7 @@ public record SpeciesId : IComparable<SpeciesId>
 
     public static Result<SpeciesId, Error> Create(Guid id)
     {
-        if (id == default)
+        if (id == Guid.Empty)
             return GeneralErrors.ValueIsInvalid(nameof(id));
         return new SpeciesId(id);
     }

@@ -2,10 +2,10 @@
 using FluentValidation;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeleteVolunteer;
-using PetFamily.Core.Domain.Models.VolunteerAggregate;
-using PetFamily.Core.Ports;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
+using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using Xunit;
 using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;

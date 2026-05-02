@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace PetFamily.Core.Ports;
+namespace PetFamily.Volunteers.Core.Ports;
 
 public interface IUnitOfWork
 {

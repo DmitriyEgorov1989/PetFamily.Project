@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using MediatR;
-using PetFamily.Core.Ports.DataBaseForRead;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
+using PetFamily.Volunteers.Core.Ports.DataBaseForRead;
 using static PetFamily.SharedKernel.Errors.Error;
 
 namespace PetFamily.Core.Application.UseCases.Queries.GetVolunteerById;

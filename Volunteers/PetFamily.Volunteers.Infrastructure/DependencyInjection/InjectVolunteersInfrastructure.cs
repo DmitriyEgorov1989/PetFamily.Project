@@ -6,9 +6,9 @@ using Microsoft.Extensions.Options;
 using Minio;
 using Npgsql;
 using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Ports;
-using PetFamily.Core.Ports.DataBaseForRead;
 using PetFamily.Infrastructure.Options;
+using PetFamily.Volunteers.Core.Ports;
+using PetFamily.Volunteers.Core.Ports.DataBaseForRead;
 using PetFamily.Volunteers.Infrastructure.Adapters.MessageQueues;
 using PetFamily.Volunteers.Infrastructure.Adapters.Minio;
 using PetFamily.Volunteers.Infrastructure.Adapters.Minio.BackgroundServices;
@@ -25,7 +25,7 @@ namespace PetFamily.Volunteers.Infrastructure.DependencyInjection;
 
 public static class InjectVolunteersInfrastructure
 {
-    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddVolunteersInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDataBaseForWrite(configuration)
             .AddDataBaseForRead(configuration)
@@ -110,7 +110,7 @@ public static class InjectVolunteersInfrastructure
         services.Configure<DataBaseOptions>(
             configure.GetSection(DataBaseOptions.SECTION_NAME));
 
-        services.AddDbContext<ApplicationDbContext>((sp, options) =>
+        services.AddDbContext<VolunteersDbContext>((sp, options) =>
         {
             var dbOptions = sp.GetRequiredService<
                 IOptions<DataBaseOptions>>().Value;
@@ -125,19 +125,6 @@ public static class InjectVolunteersInfrastructure
 
         services.AddScoped<IVolunteerRepository, VolunteerRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddDbContext<AccountDbContext>((sp, options) =>
-        {
-            var dbOptions = sp.GetRequiredService<
-                IOptions<DataBaseOptions>>().Value;
-
-            if (string.IsNullOrWhiteSpace(dbOptions.ConnectionString))
-                throw new InvalidOperationException("Database connection string is missing.");
-
-            options.UseNpgsql(dbOptions.ConnectionString);
-            options.UseCamelCaseNamingConvention();
-            options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
-        });
-
         return services;
     }
 

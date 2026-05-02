@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace PetFamily.Core.Ports.DataBaseForRead;
+namespace PetFamily.Volunteers.Core.Ports.DataBaseForRead;
 
 public interface IDbConnectionFactory
 {

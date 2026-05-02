@@ -1,15 +1,17 @@
 ﻿using CSharpFunctionalExtensions;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.Enum;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.Interfaces;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.SharedKernel.DomainModels;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Entity.Pet;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Enum;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Interfaces;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 using System.Diagnostics.CodeAnalysis;
 
-namespace PetFamily.Core.Domain.Models.VolunteerAggregate;
+namespace PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
 
 /// <summary>
 ///     Аггрегат волонтер
@@ -29,8 +31,8 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
         string description,
         Experience experience,
         PhoneNumber phoneNumber,
-        HelpRequisites helpRequisites,
-        SocialNetworks socialNetworks
+        List<HelpRequisite> helpRequisites,
+        List<SocialNetwork> socialNetworks
     )
     {
         Id = volunteerId;
@@ -39,8 +41,8 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
         Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
-        HelpRequisites = helpRequisites.ListHelpRequisites;
-        SocialNetworks = socialNetworks.ListSocialNetworks;
+        HelpRequisites = helpRequisites;
+        SocialNetworks = socialNetworks;
     }
 
     /// <summary>
@@ -112,8 +114,8 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
         string description,
         Experience experience,
         PhoneNumber phoneNumber,
-        HelpRequisites helpRequisites,
-        SocialNetworks socialNetworks)
+        List<HelpRequisite> helpRequisites,
+        List<SocialNetwork> socialNetworks)
     {
         if (string.IsNullOrWhiteSpace(description))
             return GeneralErrors.ValueIsRequired(nameof(description));
@@ -255,14 +257,14 @@ public sealed class Volunteer : Aggregate<VolunteerId>, ISoftDelete
         if (experience is not null) Experience = Experience.Create(experience.Value).Value;
     }
 
-    public void UpdateSocialNetworks(SocialNetworks socialNetworks)
+    public void UpdateSocialNetworks(IEnumerable<SocialNetwork> socialNetworks)
     {
-        SocialNetworks = socialNetworks.ListSocialNetworks;
+        SocialNetworks = socialNetworks.ToList();
     }
 
-    public void UpdateHelpRequisites(HelpRequisites helpRequisites)
+    public void UpdateHelpRequisites(IEnumerable<HelpRequisite> helpRequisites)
     {
-        HelpRequisites = helpRequisites.ListHelpRequisites;
+        HelpRequisites = helpRequisites.ToList();
     }
 
     /// <summary>

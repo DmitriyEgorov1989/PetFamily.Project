@@ -1,19 +1,16 @@
-﻿using System.Reflection;
-using Microsoft.EntityFrameworkCore;
-using PetFamily.Core.Domain.Models.VolunteerAggregate;
+﻿using Microsoft.EntityFrameworkCore;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
+using System.Reflection;
 
 namespace PetFamily.Volunteers.Infrastructure.Adapters.Postgres.WriteDataBase;
 
-public class ApplicationDbContext : DbContext
+public class VolunteersDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public VolunteersDbContext(DbContextOptions<VolunteersDbContext> options)
         : base(options)
     {
     }
-
     public DbSet<Volunteer> Volunteers { get; set; }
-    public DbSet<Species> Species { get; set; }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

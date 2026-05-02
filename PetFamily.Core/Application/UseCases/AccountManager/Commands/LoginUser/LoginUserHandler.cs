@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using PetFamily.Core.Domain.Models.AccountAggregate;
 using PetFamily.Core.Ports;

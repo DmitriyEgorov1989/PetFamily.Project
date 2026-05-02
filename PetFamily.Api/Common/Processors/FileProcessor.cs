@@ -1,4 +1,6 @@
-﻿namespace PetFamily.Api.Common.Processors;
+﻿using PetFamily.Volunteers.Core.Application.UseCases.Commands.SharedKernelDto;
+
+namespace PetFamily.Api.Common.Processors;
 
 public class FileProcessor : IAsyncDisposable
 {

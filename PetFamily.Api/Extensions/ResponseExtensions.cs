@@ -10,9 +10,9 @@ public static class ResponseExtensions
 {
     /// <summary>
     /// </summary>
-    /// <typeparam name="T">Какой то обьект</typeparam>
-    /// <param name="result">Хранится либо успешный резульат либо ошибка</param>
-    /// <returns>Возращаем либо обьект,либо список ошибок</returns>
+    /// <typeparam name="T">Какой-то объект</typeparam>
+    /// <param name="result">Хранится либо успешный результат, либо ошибка</param>
+    /// <returns>Возращаем либо объект, либо список ошибок</returns>
     public static ActionResult<T> ToResponseErrorOrResult<T>(this Result<T, ErrorList> result)
     {
         if (result.IsSuccess)

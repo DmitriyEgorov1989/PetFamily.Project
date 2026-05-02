@@ -1,4 +1,6 @@
-﻿namespace PetFamily.SharedKernel.DomainModels;
+﻿using MediatR;
+
+namespace PetFamily.SharedKernel.DomainModels;
 
 public abstract record DomainEvent : INotification
 {

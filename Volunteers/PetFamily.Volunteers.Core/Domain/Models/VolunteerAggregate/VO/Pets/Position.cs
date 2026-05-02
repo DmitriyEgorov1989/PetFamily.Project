@@ -2,7 +2,7 @@
 using PetFamily.SharedKernel.Errors;
 using System.Diagnostics.CodeAnalysis;
 
-namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
+namespace PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 
 /// <summary>
 ///     VO позиция питомца в списке волонтера

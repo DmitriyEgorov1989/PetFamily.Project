@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
 
 namespace PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateMainInfo;
 

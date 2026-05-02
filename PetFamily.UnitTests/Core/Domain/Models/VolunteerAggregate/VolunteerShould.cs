@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using PetFamily.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.Enum;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
 using Xunit;
 using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
 

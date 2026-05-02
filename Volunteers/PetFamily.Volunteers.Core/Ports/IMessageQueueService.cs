@@ -1,4 +1,4 @@
-﻿namespace PetFamily.Core.Ports;
+﻿namespace PetFamily.Volunteers.Core.Ports;
 
 public interface IMessageQueueService<TMessage>
 {

@@ -2,7 +2,7 @@
 using PetFamily.SharedKernel.Errors;
 using System.Diagnostics.CodeAnalysis;
 
-namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
+namespace PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
 
 /// <summary>
 ///     Value Object - Опыт в годах

@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using Npgsql;
-using PetFamily.Core.Ports.DataBaseForRead;
+using PetFamily.Volunteers.Core.Ports.DataBaseForRead;
 
 namespace PetFamily.Volunteers.Infrastructure.Adapters.Postgres.ReadDatabase.ConnectionFactory;
 
