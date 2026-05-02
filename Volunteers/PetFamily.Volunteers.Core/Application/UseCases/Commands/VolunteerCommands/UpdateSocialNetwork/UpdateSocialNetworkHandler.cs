@@ -6,9 +6,10 @@ using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Ports;
+using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetwork;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateSocialNetwork;
 
 public class UpdateSocialNetworkHandler : IRequestHandler<UpdateSocialNetworkCommand, UnitResult<ErrorList>>
 {
@@ -48,8 +49,7 @@ public class UpdateSocialNetworkHandler : IRequestHandler<UpdateSocialNetworkCom
         }
 
         var socialNetWorks =
-            SocialNetworks.Create(
-                command.SocialNetworks.Select(sn => SocialNetwork.Create(sn.Name, sn.Link).Value));
+            command.SocialNetworks.Select(sn => SocialNetwork.Create(sn.Name, sn.Link).Value);
 
         volunteer.UpdateSocialNetworks(socialNetWorks);
 

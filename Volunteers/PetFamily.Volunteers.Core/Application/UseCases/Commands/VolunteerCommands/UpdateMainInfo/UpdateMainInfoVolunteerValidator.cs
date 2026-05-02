@@ -4,7 +4,7 @@ using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
 
-namespace PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateMainInfo;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateMainInfo;
 
 public class UpdateMainInfoVolunteerValidator : AbstractValidator<UpdateMainInfoVolunteerCommand>
 {

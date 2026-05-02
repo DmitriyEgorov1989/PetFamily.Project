@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PetFamily.Api.Controllers.Models.Pets.ReadModels;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using PetFamily.Api.Extensions;
+using PetFamily.Volunteers.Contracts.Controllers.Models.Pets.ReadModels;
+using PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
 
 namespace PetFamily.Api.Controllers;
 

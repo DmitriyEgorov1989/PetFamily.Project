@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
 
 public class UpdatePetValidator : AbstractValidator<UpdatePetCommand>
 {

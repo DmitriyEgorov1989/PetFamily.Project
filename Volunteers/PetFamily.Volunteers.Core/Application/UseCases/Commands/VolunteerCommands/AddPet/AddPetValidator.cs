@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Entity.Pet;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 
 namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 

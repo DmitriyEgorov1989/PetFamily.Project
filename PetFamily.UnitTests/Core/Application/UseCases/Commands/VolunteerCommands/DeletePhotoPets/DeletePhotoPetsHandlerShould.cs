@@ -3,18 +3,19 @@ using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
-using PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeletePhotoPets;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.Enum;
-using PetFamily.Core.Ports;
+using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.DeletePhotoPets;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Entity.Pet;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Enum;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using Xunit;
-using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.DeletePhotoPets;
 
@@ -83,8 +84,8 @@ public class DeletePhotoPetsHandlerShould
             "description",
             Experience.Create(5).Value,
             PhoneNumber.Create("89258761315").Value,
-            HelpRequisites.Create(null),
-            SocialNetworks.Create(null)).Value;
+            [],
+            []).Value;
     }
 
     private Pet ExictedPet()
@@ -104,7 +105,7 @@ public class DeletePhotoPetsHandlerShould
             DateTime.UtcNow,
             true,
             PetHelpStatus.OnTreatment,
-            HelpRequisites.Create(null),
+            [],
             VolunteerId.NewId()).Value;
     }
 }

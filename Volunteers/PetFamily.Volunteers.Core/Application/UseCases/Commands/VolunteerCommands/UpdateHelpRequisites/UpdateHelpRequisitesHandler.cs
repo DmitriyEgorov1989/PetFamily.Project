@@ -1,15 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using MediatR;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Ports;
+using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.UpdateHelpRequisites;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateHelpRequisites;
 
 public class UpdateHelpRequisitesHandler :
     IRequestHandler<UpdateHelpRequisitesCommand, UnitResult<ErrorList>>
@@ -54,8 +54,7 @@ public class UpdateHelpRequisitesHandler :
         }
 
         var helpRequisites =
-            HelpRequisites.Create(
-                command.HelpRequisites.Select(hr => HelpRequisite.Create(hr.Name, hr.Description).Value));
+           command.HelpRequisites.Select(hr => HelpRequisite.Create(hr.Name, hr.Description).Value);
 
         volunteer.UpdateHelpRequisites(helpRequisites);
 

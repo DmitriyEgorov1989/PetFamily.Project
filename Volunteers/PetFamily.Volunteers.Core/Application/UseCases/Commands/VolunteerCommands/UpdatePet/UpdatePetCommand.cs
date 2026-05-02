@@ -3,7 +3,7 @@ using MediatR;
 using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
 
 public record UpdatePetCommand(
     Guid PetId,

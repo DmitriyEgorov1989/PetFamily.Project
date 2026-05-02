@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PetFamily.Infrastructure\PetFamily.Infrastructure.csproj" />
     <ProjectReference Include="..\Volunteers\PetFamily.Volunteers.Core\PetFamily.Volunteers.Core.csproj" />
     <ProjectReference Include="..\Volunteers\PetFamily.Volunteers.Infrastructure\PetFamily.Volunteers.Infrastructure.csproj" />
   </ItemGroup>

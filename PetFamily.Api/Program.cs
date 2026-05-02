@@ -1,6 +1,5 @@
 using Microsoft.OpenApi.Models;
 using PetFamily.Api.Middlewares;
-using PetFamily.Core.Application.Inject;
 using PetFamily.Volunteers.Core.Inject;
 using PetFamily.Volunteers.Infrastructure.Adapters.Postgres.WriteDataBase;
 using PetFamily.Volunteers.Infrastructure.DependencyInjection;
@@ -30,7 +29,6 @@ public class Program
         builder.Services.AddVolunteersApplication()
             .AddVolunteersInfrastructure(builder.Configuration);
         //Application           
-        builder.Services.AddApplication();
 
         builder.Services.AddSwaggerGen(options =>
         {

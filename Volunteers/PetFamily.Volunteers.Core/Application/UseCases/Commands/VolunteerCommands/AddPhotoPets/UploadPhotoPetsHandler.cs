@@ -6,6 +6,7 @@ using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.SharedKernelDto;
 using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;

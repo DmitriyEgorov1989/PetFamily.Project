@@ -3,16 +3,19 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
-using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.Enum;
-using PetFamily.Core.Ports;
+using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
+using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
+using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Entity.Pet;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Enum;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using Xunit;
-using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
 
@@ -43,7 +46,7 @@ public class UpdatePetShould
         var newRegion = "новый регион";
 
         _volunteerRepository
-            .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())
+            .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())!
             .Returns(Task.FromResult(volunteer));
 
         _validator.ValidateAsync(Arg.Any<UpdatePetCommand>(),
@@ -97,7 +100,7 @@ public class UpdatePetShould
             new DateTime(2020, 1, 1),
             true,
             PetHelpStatus.FoundHome,
-            HelpRequisites.Create(null),
+            [],
             VolunteerId.NewId()
         ).Value;
     }
@@ -111,7 +114,7 @@ public class UpdatePetShould
             "description",
             Experience.Create(5).Value,
             PhoneNumber.Create("89258761315").Value,
-            HelpRequisites.Create(null),
-            SocialNetworks.Create(null)).Value;
+            [],
+            []).Value;
     }
 }

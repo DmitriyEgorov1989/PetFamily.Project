@@ -1,16 +1,16 @@
 ﻿using FluentAssertions;
 using FluentValidation;
 using NSubstitute;
-using PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetwork;
-using PetFamily.Core.Ports;
+using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
+using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateSocialNetwork;
 using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using Xunit;
-using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.UpdateMainInfo;
@@ -38,7 +38,7 @@ public class UpdateMainInfoShould
         List<SocialNetworkDto> newSocialNetworkDtos = [newSocialNetworkDto];
 
         _volunteerRepository
-            .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())
+            .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())!
             .Returns(Task.FromResult(volunteer));
 
         _validator.ValidateAsync(Arg.Any<UpdateSocialNetworkCommand>(),
@@ -73,7 +73,7 @@ public class UpdateMainInfoShould
             "description",
             Experience.Create(5).Value,
             PhoneNumber.Create("89258761315").Value,
-            HelpRequisites.Create(null),
-            SocialNetworks.Create(null)).Value;
+            [],
+            []).Value;
     }
 }

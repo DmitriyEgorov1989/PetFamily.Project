@@ -4,7 +4,7 @@ using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 
-namespace PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetwork;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateSocialNetwork;
 
 public class UpdateSocialNetworkValidator : AbstractValidator<UpdateSocialNetworkCommand>
 {
@@ -15,7 +15,8 @@ public class UpdateSocialNetworkValidator : AbstractValidator<UpdateSocialNetwor
         RuleFor(c => c.SocialNetworks).Custom((socialNetworks, context) =>
         {
             if (socialNetworks is null || !socialNetworks.Any())
-                context.AddFailure(GeneralErrors.ValueIsInvalid(nameof(SocialNetworks)).Serialize());
+                context.AddFailure(GeneralErrors.ValueIsInvalid(
+                    nameof(UpdateSocialNetworkCommand.SocialNetworks)).Serialize());
         });
 
         RuleForEach(c => c.SocialNetworks)

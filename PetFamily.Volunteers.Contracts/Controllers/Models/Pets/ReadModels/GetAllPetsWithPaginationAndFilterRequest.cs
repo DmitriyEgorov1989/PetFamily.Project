@@ -1,7 +1,7 @@
-﻿using PetFamily.Core.Application.UseCases.CommonDto;
+﻿using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 using PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
 
-namespace PetFamily.Api.Controllers.Models.Pets.ReadModels;
+namespace PetFamily.Volunteers.Contracts.Controllers.Models.Pets.ReadModels;
 
 public class GetAllPetsWithPaginationAndFilterRequest
 {

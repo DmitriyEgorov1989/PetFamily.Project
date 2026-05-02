@@ -1,10 +1,13 @@
 ﻿using FluentAssertions;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.Enum;
+using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Entity.Pet;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Enum;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 using Xunit;
-using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
 
 namespace PetFamily.UnitTests.Core.Domain.Models.VolunteerAggregate;
 
@@ -163,8 +166,8 @@ public class VolunteerShould
             "description",
             Experience.Create(5).Value,
             PhoneNumber.Create("89258761315").Value,
-            HelpRequisites.Create(null),
-            SocialNetworks.Create(null)).Value;
+            [],
+            []).Value;
     }
 
     private Pet CreateTestPet()
@@ -184,7 +187,7 @@ public class VolunteerShould
             DateTime.UtcNow,
             true,
             PetHelpStatus.OnTreatment,
-            HelpRequisites.Create(null),
+            [],
             VolunteerId.NewId()).Value;
     }
 }

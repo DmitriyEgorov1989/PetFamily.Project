@@ -1,6 +1,9 @@
-﻿using PetFamily.Core.Domain.Models.VolunteerAggregate.Enum;
+﻿using FluentAssertions;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Entity.Pet;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Enum;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 using Xunit;
 
 namespace PetFamily.UnitTests.Core.Domain.Models.VolunteerAggregate.Entity;
@@ -56,7 +59,7 @@ public class PetShould
             DateTime.UtcNow,
             true,
             PetHelpStatus.OnTreatment,
-            HelpRequisites.Create(null),
+            [],
             VolunteerId.NewId()).Value;
     }
 }

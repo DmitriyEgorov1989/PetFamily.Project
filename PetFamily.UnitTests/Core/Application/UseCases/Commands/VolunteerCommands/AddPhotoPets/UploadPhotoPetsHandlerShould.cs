@@ -3,10 +3,12 @@
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using FluentValidation;
+using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
+using PetFamily.SharedKernel.Errors;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.SharedKernelDto;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
 using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
@@ -102,8 +104,8 @@ public class UploadPhotoPetsHandlerShould
             "description",
             Experience.Create(5).Value,
             PhoneNumber.Create("89258761315").Value,
-            HelpRequisites.Create(null),
-            SocialNetworks.Create(null)).Value;
+            [],
+            []).Value;
     }
 
     private Pet ExictedPet()
@@ -123,7 +125,7 @@ public class UploadPhotoPetsHandlerShould
             DateTime.UtcNow,
             true,
             PetHelpStatus.OnTreatment,
-            HelpRequisites.Create(null),
+            [],
             VolunteerId.NewId()).Value;
     }
 }

@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
-using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateHelpRequisites;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.UpdateHelpRequisites;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateHelpRequisites;
 
 public class UpdateHelpRequisitesValidator : AbstractValidator<UpdateHelpRequisitesCommand>
 {
@@ -16,7 +14,7 @@ public class UpdateHelpRequisitesValidator : AbstractValidator<UpdateHelpRequisi
         RuleFor(c => c.HelpRequisites).Custom((socialNetworks, context) =>
         {
             if (socialNetworks is null || !socialNetworks.Any())
-                context.AddFailure(GeneralErrors.ValueIsInvalid(nameof(HelpRequisites)).Serialize());
+                context.AddFailure(GeneralErrors.ValueIsInvalid(nameof(UpdateHelpRequisitesCommand.HelpRequisites)).Serialize());
         });
 
         RuleForEach(c => c.HelpRequisites)

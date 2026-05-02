@@ -3,8 +3,8 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
-using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
+using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;
@@ -24,7 +24,7 @@ public class CreateVolunteerHandlerShould
         Substitute.For<IVolunteerRepository>();
 
     [Fact]
-    public async Task BeCreateVolunteerReturnGuidVolunteerAndSucess()
+    public async Task BeCreateVolunteerReturnGuidVolunteerAndSuccess()
     {
         //arrange
         var volunteerId = Guid.NewGuid();

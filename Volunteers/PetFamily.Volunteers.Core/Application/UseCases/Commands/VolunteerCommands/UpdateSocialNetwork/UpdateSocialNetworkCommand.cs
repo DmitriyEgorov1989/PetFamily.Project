@@ -3,7 +3,7 @@ using MediatR;
 using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateSocialNetwork;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateSocialNetwork;
 
 public record UpdateSocialNetworkCommand(Guid VolunteerId, List<SocialNetworkDto> SocialNetworks)
     : IRequest<UnitResult<ErrorList>>;

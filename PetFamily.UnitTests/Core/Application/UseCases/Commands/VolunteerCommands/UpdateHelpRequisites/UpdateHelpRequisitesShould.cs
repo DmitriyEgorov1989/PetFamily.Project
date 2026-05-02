@@ -2,16 +2,16 @@
 using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
-using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.UpdateHelpRequisites;
-using PetFamily.Core.Ports;
+using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
+using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateHelpRequisites;
 using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using Xunit;
-using Email = PetFamily.Core.Domain.Models.SharedKernel.VO.Email;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.UpdateHelpRequisites;
 
@@ -38,7 +38,7 @@ public class UpdateHelpRequisitesShould
         List<HelpRequisiteDto> newHelpRequisites = [newHelpRequisiteDto];
 
         _volunteerRepository
-            .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())
+            .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())!
             .Returns(Task.FromResult(volunteer));
 
         _validator.ValidateAsync(Arg.Any<UpdateHelpRequisitesCommand>(),
@@ -73,7 +73,7 @@ public class UpdateHelpRequisitesShould
             "description",
             Experience.Create(5).Value,
             PhoneNumber.Create("89258761315").Value,
-            HelpRequisites.Create(null),
-            SocialNetworks.Create(null)).Value;
+            [],
+            []).Value;
     }
 }
