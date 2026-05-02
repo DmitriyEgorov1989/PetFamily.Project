@@ -1,7 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Api.Common.Processors;
-using PetFamily.Api.Extensions;
+using PetFamily.Framework.Response;
+using PetFamily.SharedKernel.Controller;
 using PetFamily.Volunteers.Contracts.Controllers.Models.Volunteers.ReadModels;
 using PetFamily.Volunteers.Contracts.Controllers.Models.Volunteers.WriteModels.VolunteerRequests;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
@@ -21,7 +22,6 @@ namespace PetFamily.Api.Controllers;
 public class VolunteerController(IMediator mediator) : ApplicationController
 {
     private readonly IMediator _mediator = mediator;
-
     [HttpPost("Create")]
     public async Task<ActionResult<Guid>> CreateVolunteerAsync(
         [FromBody] CreateVolunteerRequest request,

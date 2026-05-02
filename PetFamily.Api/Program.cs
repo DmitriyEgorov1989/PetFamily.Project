@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using PetFamily.Api.Controllers;
 using PetFamily.Api.Middlewares;
 using PetFamily.Volunteers.Core.Inject;
 using PetFamily.Volunteers.Infrastructure.Adapters.Postgres.WriteDataBase;
@@ -66,7 +67,8 @@ public class Program
         });
 
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .AddApplicationPart(typeof(VolunteerController).Assembly);
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 

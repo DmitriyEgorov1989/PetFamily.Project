@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PetFamily.Api\PetFamily.Api.csproj" />
+    <ProjectReference Include="..\PetFamily.Framework\PetFamily.Framework.csproj" />
     <ProjectReference Include="..\Volunteers\PetFamily.Volunteers.Core\PetFamily.Volunteers.Core.csproj" />
   </ItemGroup>
 

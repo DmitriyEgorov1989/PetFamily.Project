@@ -1,11 +1,11 @@
-﻿using PetFamily.Core.Application.UseCases.AccountManager.Commands.LoginUser;
+﻿//using PetFamily.Core.Application.UseCases.AccountManager.Commands.LoginUser;
 
-namespace PetFamily.Api.Controllers.Models.Accounts;
+//namespace PetFamily.Api.Controllers.Models.Accounts;
 
-public record LoginUserRequest(string Email, string Password)
-{
-    public LoginUserCommand ToCommand()
-    {
-        return new LoginUserCommand(Email, Password);
-    }
-}
+//public record LoginUserRequest(string Email, string Password)
+//{
+//    public LoginUserCommand ToCommand()
+//    {
+//        return new LoginUserCommand(Email, Password);
+//    }
+//}

@@ -8,13 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="3.7.0" />
-    <PackageReference Include="FluentValidation" Version="12.1.1" />
-    <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.9" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UnitOfWork\" />
+    <ProjectReference Include="..\PetFamily.SharedKernel\PetFamily.SharedKernel.csproj" />
+    <ProjectReference Include="..\Volunteers\PetFamily.Volunteers.Core\PetFamily.Volunteers.Core.csproj" />
   </ItemGroup>
 
 </Project>

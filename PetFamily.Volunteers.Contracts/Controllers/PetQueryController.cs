@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PetFamily.Api.Extensions;
+using PetFamily.Framework.Response;
+using PetFamily.SharedKernel.Controller;
 using PetFamily.Volunteers.Contracts.Controllers.Models.Pets.ReadModels;
 using PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
 
-namespace PetFamily.Api.Controllers;
+namespace PetFamily.Volunteers.Presentation.Controllers;
 
 public class PetQueryController(IMediator mediator) : ApplicationController
 {

@@ -1,10 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Api.Response;
 using PetFamily.SharedKernel.Errors;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Api.Extensions;
+namespace PetFamily.Framework.Response;
 
 public static class ResponseExtensions
 {
