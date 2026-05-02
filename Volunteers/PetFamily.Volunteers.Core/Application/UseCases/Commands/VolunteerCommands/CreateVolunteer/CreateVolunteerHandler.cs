@@ -6,9 +6,11 @@ using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
+using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Volunteers.Core.Ports;
+using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
 
 namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
@@ -76,14 +78,12 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
         var email = Email.Create(request.Email).Value;
         var experience = Experience.Create(request.Experience).Value;
         var phoneNumber = PhoneNumber.Create(request.PhoneNumber).Value;
-        var helpRequisites = HelpRequisites.Create(request.HelpRequisites.Select(hr =>
-        {
-            return HelpRequisite.Create(hr.Name, hr.Description).Value;
-        }));
-        var socialNetworks = SocialNetworks.Create(request.SocialNetworks.Select(s =>
-        {
-            return SocialNetwork.Create(s.Name, s.Link).Value;
-        }));
+        var helpRequisites = request.HelpRequisites.Select(hr =>
+            HelpRequisite.Create(hr.Name, hr.Description).Value).ToList();
+        ;
+        var socialNetworks = request.SocialNetworks.Select(s =>
+            SocialNetwork.Create(s.Name, s.Link).Value).ToList();
+
         var volunteerId = VolunteerId.NewId();
         var resultCreateVolunteer = Volunteer.Create(
             volunteerId,

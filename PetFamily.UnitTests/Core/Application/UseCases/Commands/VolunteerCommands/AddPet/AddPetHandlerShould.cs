@@ -1,18 +1,20 @@
-﻿using CSharpFunctionalExtensions;
+﻿
+
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
-using PetFamily.Core.Application.UseCases.CommonDto;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
+using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using Xunit;
+using PetWriteDto = PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.AddPet.PetWriteDto;
 
 namespace PetFamily.UnitTests.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;
 
@@ -26,11 +28,11 @@ public class AddPetHandlerShould
     public async Task BeAddPetIfValidationFailedReturnErrorList()
     {
         //arrange
-        var volunteer = ExistedVolunteer().Value;
-        var pet = ExistedPetDto().Value;
+        var volunteer = ExistedVolunteer();
+        var pet = ExistedPetDto();
 
         _volunteerRepository
-            .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())
+            .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())!
             .Returns(Task.FromResult(volunteer));
 
         _validator.ValidateAsync(Arg.Any<AddPetCommand>(), Arg.Any<CancellationToken>())
@@ -54,11 +56,11 @@ public class AddPetHandlerShould
     public async Task BeAddPetIfValidationSuccessReturnSuccessAndGuidPet()
     {
         //arrange
-        var volunteer = ExistedVolunteer().Value;
-        var pet = ExistedPetDto().Value;
+        var volunteer = ExistedVolunteer();
+        var pet = ExistedPetDto();
 
         _volunteerRepository
-            .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())
+            .GetByIdAsync(Arg.Any<VolunteerId>(), Arg.Any<CancellationToken>())!
             .Returns(Task.FromResult(volunteer));
 
         _validator.ValidateAsync(Arg.Any<AddPetCommand>(), Arg.Any<CancellationToken>())
@@ -76,7 +78,7 @@ public class AddPetHandlerShould
         volunteer.Pets.Count.Should().Be(1);
     }
 
-    private Maybe<Volunteer> ExistedVolunteer()
+    private Volunteer ExistedVolunteer()
     {
         return Volunteer.Create(
             VolunteerId.NewId(),
@@ -86,10 +88,10 @@ public class AddPetHandlerShould
             Experience.Create(5).Value,
             PhoneNumber.Create("89258761315").Value,
             [],
-            [];
+            []).Value;
     }
 
-    private Maybe<PetWriteDto> ExistedPetDto()
+    private PetWriteDto ExistedPetDto()
     {
         return new PetWriteDto(
             "test",

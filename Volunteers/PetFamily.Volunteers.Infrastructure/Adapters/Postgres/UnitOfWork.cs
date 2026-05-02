@@ -1,14 +1,15 @@
-﻿using System.Data;
-using Microsoft.EntityFrameworkCore.Storage;
-using PetFamily.Core.Ports;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using PetFamily.Volunteers.Core.Ports;
+using PetFamily.Volunteers.Infrastructure.Adapters.Postgres.WriteDataBase;
+using System.Data;
 
-namespace PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase;
+namespace PetFamily.Volunteers.Infrastructure.Adapters.Postgres;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly VolunteersDbContext _dbContext;
 
-    public UnitOfWork(ApplicationDbContext dbContext)
+    public UnitOfWork(VolunteersDbContext dbContext)
     {
         _dbContext = dbContext;
     }

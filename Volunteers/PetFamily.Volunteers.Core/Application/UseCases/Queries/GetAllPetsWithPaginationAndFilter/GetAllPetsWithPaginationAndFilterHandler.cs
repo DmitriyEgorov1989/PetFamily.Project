@@ -3,9 +3,10 @@ using FluentValidation;
 using MediatR;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Ports.DataBaseForRead;
+using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
 
 public class GetAllPetsWithPaginationAndFilterHandler :
     IRequestHandler<GetAllPetsWithPaginationAndFilterQuery,

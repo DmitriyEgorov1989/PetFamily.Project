@@ -1,11 +1,10 @@
 ﻿using FluentValidation;
-using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.SharedKernelDto;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.AddPhotoPets;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
 
 public class UploadPhotoPetsValidator : AbstractValidator<UploadPhotoPetsCommand>
 {

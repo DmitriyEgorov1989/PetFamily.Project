@@ -2,7 +2,7 @@
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 
-namespace PetFamily.Core.Application.UseCases.Queries.GetVolunteerById;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Queries.GetVolunteerById;
 
 public class GetVolunteerByIdValidator : AbstractValidator<GetVolunteerByIdQuery>
 {

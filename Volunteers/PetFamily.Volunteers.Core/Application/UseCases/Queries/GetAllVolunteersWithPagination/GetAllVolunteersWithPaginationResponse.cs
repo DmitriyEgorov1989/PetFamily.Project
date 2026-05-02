@@ -1,5 +1,5 @@
-﻿using PetFamily.Core.Application.UseCases.CommonDto;
+﻿using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 
-namespace PetFamily.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
 
 public record GetAllVolunteersWithPaginationResponse(List<VolunteerDto> Volunteers);

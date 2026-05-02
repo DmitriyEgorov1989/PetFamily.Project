@@ -1,5 +1,5 @@
 ﻿using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
+using PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
 
 namespace PetFamily.Api.Controllers.Models.Pets.ReadModels;
 

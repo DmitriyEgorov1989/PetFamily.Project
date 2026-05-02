@@ -5,9 +5,10 @@ using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Ports;
+using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.DeletePet;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.DeletePet;
 
 /// <summary>
 ///     Хендлер для обработки команды удаления питомца у волонтера.

@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
+using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 
-namespace PetFamily.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
 
 public class GetAllPetsWithPaginationAndFilterValidator :
     AbstractValidator<GetAllPetsWithPaginationAndFilterQuery>

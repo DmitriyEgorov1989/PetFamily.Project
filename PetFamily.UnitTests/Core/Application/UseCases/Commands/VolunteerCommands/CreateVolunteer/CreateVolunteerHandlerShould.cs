@@ -4,6 +4,7 @@ using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
 using PetFamily.Core.Application.UseCases.CommonDto;
+using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;

@@ -7,6 +7,7 @@ using PetFamily.Core.Domain.Models.VolunteerAggregate.Enum;
 using PetFamily.Core.Ports;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
+using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.DeletePet;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;

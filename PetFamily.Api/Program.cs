@@ -1,8 +1,8 @@
 using Microsoft.OpenApi.Models;
 using PetFamily.Api.Middlewares;
 using PetFamily.Core.Application.Inject;
-using PetFamily.Infrastructure.Adapters.Postgres.WriteDataBase;
 using PetFamily.Volunteers.Core.Inject;
+using PetFamily.Volunteers.Infrastructure.Adapters.Postgres.WriteDataBase;
 using PetFamily.Volunteers.Infrastructure.DependencyInjection;
 using Serilog;
 
@@ -72,7 +72,7 @@ public class Program
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 
-        builder.Services.AddDbContext<ApplicationDbContext>();
+        builder.Services.AddDbContext<VolunteersDbContext>();
 
         builder.Logging.ClearProviders();
 

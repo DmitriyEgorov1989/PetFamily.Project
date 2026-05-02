@@ -5,7 +5,7 @@ using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.CreateVolunteer;
 
 /// <summary>
 ///     Класс валидации с помощью FluenValidation волонтера

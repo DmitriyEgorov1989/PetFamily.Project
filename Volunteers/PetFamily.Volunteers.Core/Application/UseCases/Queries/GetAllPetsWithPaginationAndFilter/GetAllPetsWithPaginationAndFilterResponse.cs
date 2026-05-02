@@ -1,5 +1,5 @@
-﻿using PetFamily.Core.Application.UseCases.CommonDto;
+﻿using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 
-namespace PetFamily.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
 
 public record GetAllPetsWithPaginationAndFilterResponse(List<PetDto> PetList);

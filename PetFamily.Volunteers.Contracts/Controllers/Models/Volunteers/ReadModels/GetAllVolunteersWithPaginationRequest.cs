@@ -1,4 +1,4 @@
-﻿using PetFamily.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
+﻿using PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
 
 namespace PetFamily.Volunteers.Contracts.Controllers.Models.Volunteers.ReadModels;
 

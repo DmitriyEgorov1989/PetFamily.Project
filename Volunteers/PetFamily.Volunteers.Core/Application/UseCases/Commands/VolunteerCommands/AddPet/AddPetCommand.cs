@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
-using PetFamily.Core.Application.UseCases.CommonDto;
+using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 using static PetFamily.SharedKernel.Errors.Error;
 
 namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.AddPet;

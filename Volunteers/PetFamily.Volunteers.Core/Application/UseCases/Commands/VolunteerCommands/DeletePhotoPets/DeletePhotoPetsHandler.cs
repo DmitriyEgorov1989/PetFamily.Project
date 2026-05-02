@@ -1,14 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using MediatR;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO.Pet;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
+using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 using PetFamily.Volunteers.Core.Ports;
+using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeletePhotoPets;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.DeletePhotoPets;
 
 public class DeletePhotoPetsHandler : IRequestHandler<DeletePhotoPetsCommand, Result<string, ErrorList>>
 {

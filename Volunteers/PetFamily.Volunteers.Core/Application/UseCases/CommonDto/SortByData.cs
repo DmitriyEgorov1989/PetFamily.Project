@@ -1,4 +1,4 @@
-﻿namespace PetFamily.Core.Application.UseCases.CommonDto;
+﻿namespace PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 
 public record SortByData(
     string SortBy,

@@ -4,7 +4,7 @@ using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.ChangeStatusPet;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.ChangeStatusPet;
 
 public class ChangeStatusPetValidator : AbstractValidator<ChangeStatusPetCommand>
 {

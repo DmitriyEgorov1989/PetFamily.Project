@@ -1,5 +1,5 @@
 ﻿using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
-using PetFamily.Core.Application.UseCases.CommonDto;
+using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 
 namespace PetFamily.Volunteers.Contracts.Controllers.Models.Volunteers.WriteModels.VolunteerRequests;
 

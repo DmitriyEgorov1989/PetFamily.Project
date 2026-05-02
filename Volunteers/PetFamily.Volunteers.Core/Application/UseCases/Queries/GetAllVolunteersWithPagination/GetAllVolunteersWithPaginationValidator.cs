@@ -2,7 +2,7 @@
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 
-namespace PetFamily.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
 
 public class GetAllVolunteersWithPaginationValidator :
     AbstractValidator<GetAllVolunteersWithPaginationQuery>

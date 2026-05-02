@@ -5,9 +5,10 @@ using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Ports;
+using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.DeleteVolunteer;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.DeleteVolunteer;
 
 public class DeleteVolunteerHandler : IRequestHandler<DeleteVolunteerCommand, UnitResult<ErrorList>>
 {

@@ -1,5 +1,5 @@
-﻿using PetFamily.Core.Application.UseCases.CommonDto;
+﻿using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 
-namespace PetFamily.Core.Application.UseCases.Queries.GetVolunteerById;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Queries.GetVolunteerById;
 
 public record GetVolunteerByIdResponse(VolunteerDto Volunteer);

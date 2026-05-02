@@ -1,4 +1,4 @@
-﻿using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.ChangeStatusPet;
+﻿using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.ChangeStatusPet;
 
 namespace PetFamily.Volunteers.Contracts.Controllers.Models.Volunteers.WriteModels.VolunteerRequests;
 

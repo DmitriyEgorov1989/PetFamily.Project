@@ -2,7 +2,7 @@
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Extensions.Validations;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.DeletePet;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.DeletePet;
 
 public class DeletePetValidator : AbstractValidator<DeletePetCommand>
 {

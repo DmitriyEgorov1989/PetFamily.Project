@@ -2,8 +2,8 @@
 using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
-using PetFamily.Core.Application.UseCases.CommonDto;
-using PetFamily.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
+using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
+using PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllVolunteersWithPagination;
 using PetFamily.Volunteers.Core.Ports.DataBaseForRead;
 using Serilog;
 using Xunit;
