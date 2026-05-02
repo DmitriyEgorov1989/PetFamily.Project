@@ -2,7 +2,7 @@
 using MediatR;
 using PetFamily.SharedKernel.Errors;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
 
 public record MakeMainPhotoPetCommand(
     Guid VolunteerId,

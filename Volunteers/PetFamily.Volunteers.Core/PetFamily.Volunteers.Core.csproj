@@ -7,16 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Application\UseCases\Commands\VolunteerCommands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />
-    <Compile Remove="Application\UseCases\Commands\VolunteerCommands\UpdateMainInfo\UpdateMainInfoVolunteerCommand.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateHelpRequisites\UpdateHelpRequisitesCommand.cs" />
-    <None Include="Application\UseCases\Commands\VolunteerCommands\UpdateMainInfo\UpdateMainInfoVolunteerCommand.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="3.7.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
     <PackageReference Include="MediatR" Version="14.1.0" />

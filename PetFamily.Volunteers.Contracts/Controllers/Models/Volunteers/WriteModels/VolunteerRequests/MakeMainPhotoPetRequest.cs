@@ -1,4 +1,4 @@
-﻿using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
+﻿using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
 
 namespace PetFamily.Volunteers.Contracts.Controllers.Models.Volunteers.WriteModels.VolunteerRequests;
 

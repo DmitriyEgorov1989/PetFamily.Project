@@ -3,7 +3,7 @@ using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
 
 public class MakeMainPhotoPetValidator : AbstractValidator<MakeMainPhotoPetCommand>
 {

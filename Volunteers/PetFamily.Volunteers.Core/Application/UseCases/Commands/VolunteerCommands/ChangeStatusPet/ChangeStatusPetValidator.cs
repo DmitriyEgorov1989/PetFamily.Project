@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
+using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
 
 namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.ChangeStatusPet;
 

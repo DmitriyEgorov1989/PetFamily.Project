@@ -5,9 +5,10 @@ using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Ports;
+using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
 
 public class MakeMainPhotoPetHandler :
     IRequestHandler<MakeMainPhotoPetCommand, Result<string, ErrorList>>

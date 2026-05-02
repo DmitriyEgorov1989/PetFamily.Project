@@ -4,6 +4,7 @@ using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
+using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateHelpRequisites;
 
 namespace PetFamily.Core.Application.UseCases.Comands.VolunteerComands.UpdateHelpRequisites;
 

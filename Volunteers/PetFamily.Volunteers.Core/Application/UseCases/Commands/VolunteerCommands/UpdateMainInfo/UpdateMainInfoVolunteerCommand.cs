@@ -1,19 +1,6 @@
-﻿using CSharpFunctionalExtensions;
-using MediatR;
-using PetFamily.Core.Application.UseCases.CommonDto;
-using static PetFamily.SharedKernel.Errors.Error;
-
-namespace PetFamily.Core.Application.UseCases.Comands.Volunteer.UpdateMainInfo
+﻿namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdateMainInfo
 {
-    public record UpdateMainInfoVolunteerCommand(
-        Guid VolunteerId,
-        UpdateMainInfoVolunteerDto UpdateMainInfo) : IRequest<UnitResult<ErrorList>>;
-
-    public record UpdateMainInfoVolunteerDto(
-    FullNameDto FullName,
-    string Email,
-    string Description,
-    int? Experience,
-    string PhoneNumber
-    );
+    internal class UpdateMainInfoVolunteerCommand
+    {
+    }
 }
