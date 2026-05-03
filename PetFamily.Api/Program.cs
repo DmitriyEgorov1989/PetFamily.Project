@@ -1,4 +1,6 @@
 using Microsoft.OpenApi.Models;
+using PetFamily.Accounts.Core.Application.Inject;
+using PetFamily.Accounts.Presentation.Controllers;
 using PetFamily.Api.Controllers;
 using PetFamily.Api.Middlewares;
 using PetFamily.Volunteers.Core.Inject;
@@ -28,7 +30,9 @@ public class Program
         builder.Host.UseSerilog();
         //Infrastructure
         builder.Services.AddVolunteersApplication()
-            .AddVolunteersInfrastructure(builder.Configuration);
+               .AddVolunteersInfrastructure(builder.Configuration);
+
+        builder.Services.AddAccountsApplication();
         //Application           
 
         builder.Services.AddSwaggerGen(options =>
@@ -68,12 +72,11 @@ public class Program
 
 
         builder.Services.AddControllers()
-            .AddApplicationPart(typeof(VolunteerController).Assembly);
+            .AddApplicationPart(typeof(VolunteerController).Assembly)
+            .AddApplicationPart(typeof(AccountController).Assembly);
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-
         builder.Services.AddDbContext<VolunteersDbContext>();
-
         builder.Logging.ClearProviders();
 
 
