@@ -1,15 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using PetFamily.Core.Abstractions;
-using PetFamily.Volunteers.Infrastructure.Adapters.Postgres.WriteDataBase;
 using System.Data;
 
-namespace PetFamily.Volunteers.Infrastructure.Adapters.Postgres;
+namespace PetFamily.Accounts.Infrastructure.Adapters.Postgres;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly VolunteersDbContext _dbContext;
+    private readonly AccountDbContext _dbContext;
 
-    public UnitOfWork(VolunteersDbContext dbContext)
+    public UnitOfWork(AccountDbContext dbContext)
     {
         _dbContext = dbContext;
     }

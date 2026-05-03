@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetFamily.Accounts.Presenta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetFamily.Accounts.Core", "Accounts\PetFamily.Accounts.Core\PetFamily.Accounts.Core.csproj", "{501815A6-A0A2-45E8-970A-432D6B2D8C25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetFamily.Core", "PetFamily.Core\PetFamily.Core.csproj", "{F5912CAE-CDA3-4F90-AD34-661C13B7E191}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{501815A6-A0A2-45E8-970A-432D6B2D8C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{501815A6-A0A2-45E8-970A-432D6B2D8C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{501815A6-A0A2-45E8-970A-432D6B2D8C25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5912CAE-CDA3-4F90-AD34-661C13B7E191}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5912CAE-CDA3-4F90-AD34-661C13B7E191}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5912CAE-CDA3-4F90-AD34-661C13B7E191}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5912CAE-CDA3-4F90-AD34-661C13B7E191}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +128,7 @@ Global
 		{C40D5FB1-E916-40C9-BD78-38B9C63E3BA4} = {C51B5F7D-0DCE-419C-89C8-46611775C5A4}
 		{408B75F6-E46F-48D1-ABE4-57D4E1143571} = {C51B5F7D-0DCE-419C-89C8-46611775C5A4}
 		{501815A6-A0A2-45E8-970A-432D6B2D8C25} = {C51B5F7D-0DCE-419C-89C8-46611775C5A4}
+		{F5912CAE-CDA3-4F90-AD34-661C13B7E191} = {E16C9700-2752-43FD-8D51-4C38A419CBBA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {01461398-A100-4546-962B-4C45CD2289E3}

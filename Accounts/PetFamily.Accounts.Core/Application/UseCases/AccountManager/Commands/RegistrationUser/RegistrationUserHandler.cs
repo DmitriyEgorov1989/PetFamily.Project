@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using PetFamily.Accounts.Core.Application.Extensions;
 using PetFamily.Accounts.Core.Domain.Models.AccountAggregate;
-using PetFamily.Accounts.Core.Ports;
+using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Extensions.Validations;
 using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;

@@ -1,15 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using MediatR;
+using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
-using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
 
-namespace PetFamily.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
+namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.UpdatePet;
 
 public class UpdatePetHandler : IRequestHandler<UpdatePetCommand, UnitResult<ErrorList>>
 {

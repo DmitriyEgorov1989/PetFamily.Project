@@ -26,6 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\PetFamily.Core\PetFamily.Core.csproj" />
+    <ProjectReference Include="..\..\Species\PetFamily.Species.Core\PetFamily.Species.Core.csproj" />
     <ProjectReference Include="..\PetFamily.Volunteers.Core\PetFamily.Volunteers.Core.csproj" />
   </ItemGroup>
 

@@ -6,7 +6,6 @@ using PetFamily.Accounts.Presentation.Controllers;
 using PetFamily.Api.Controllers;
 using PetFamily.Api.Middlewares;
 using PetFamily.Volunteers.Core.Inject;
-using PetFamily.Volunteers.Infrastructure.Adapters.Postgres.WriteDataBase;
 using PetFamily.Volunteers.Infrastructure.DependencyInjection;
 using Serilog;
 
@@ -81,7 +80,6 @@ public class Program
             .AddApplicationPart(typeof(AccountController).Assembly);
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-        builder.Services.AddDbContext<VolunteersDbContext>();
         builder.Services.AddDbContext<AccountDbContext>();
         builder.Logging.ClearProviders();
 

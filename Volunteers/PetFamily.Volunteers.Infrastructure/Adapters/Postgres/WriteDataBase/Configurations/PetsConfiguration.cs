@@ -12,7 +12,7 @@ public class PetsConfiguration : IEntityTypeConfiguration<Pet>
 {
     public void Configure(EntityTypeBuilder<Pet> builder)
     {
-        builder.ToTable("pets");
+        builder.ToTable("pets", "Volunteers");
 
         builder.HasKey(p => p.Id);
 

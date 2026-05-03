@@ -2,6 +2,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
+using PetFamily.Core.Abstractions;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
@@ -50,7 +51,7 @@ public class UpdateSocialNetworkShould
 
 
         _volunteerRepository
-            .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())
+            .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())!
             .Returns(Task.FromResult(volunteer));
 
         _validator.ValidateAsync(Arg.Any<UpdateMainInfoVolunteerCommand>(),
@@ -105,7 +106,7 @@ public class UpdateSocialNetworkShould
 
 
         _volunteerRepository
-            .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())
+            .GetByIdAsync(volunteer.Id, Arg.Any<CancellationToken>())!
             .Returns(Task.FromResult(volunteer));
 
         _validator.ValidateAsync(Arg.Any<UpdateMainInfoVolunteerCommand>(),

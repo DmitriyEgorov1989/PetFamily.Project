@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UnitOfWork\" />
+    <ProjectReference Include="..\PetFamily.Core\PetFamily.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PetFamily.Accounts.Core.Domain.Models.AccountAggregate;
 using PetFamily.Accounts.Core.Ports;
 using PetFamily.Accounts.Infrastructure.Adapters.Jwt;
 using PetFamily.Accounts.Infrastructure.Adapters.Postgres;
+using PetFamily.Core.Abstractions;
 using PetFamily.Infrastructure.Options;
 using System.Text;
 
@@ -17,7 +21,32 @@ namespace PetFamily.Accounts.Infrastructure.DependencyInjection
             this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentificationWithJwt(configuration)
-                  .AddIdentityService();
+                .AddIdentityService()
+                .AddDataBaseForWrite(configuration);
+
+            return services;
+        }
+
+        private static IServiceCollection AddDataBaseForWrite
+            (this IServiceCollection services, IConfiguration configure)
+        {
+            services.Configure<DataBaseOptions>(
+                configure.GetSection(DataBaseOptions.SECTION_NAME));
+
+            services.AddDbContext<AccountDbContext>((sp, options) =>
+            {
+                var dbOptions = sp.GetRequiredService<
+                    IOptions<DataBaseOptions>>().Value;
+
+                if (string.IsNullOrWhiteSpace(dbOptions.ConnectionString))
+                    throw new InvalidOperationException("Database connection string is missing.");
+
+                options.UseNpgsql(dbOptions.ConnectionString);
+                options.UseCamelCaseNamingConvention();
+                options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+            });
+
+            services.AddScoped<IUnitOfWork, Adapters.Postgres.UnitOfWork>();
             return services;
         }
 

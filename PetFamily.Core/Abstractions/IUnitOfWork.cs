@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace PetFamily.Accounts.Core.Ports;
+namespace PetFamily.Core.Abstractions;
 
 public interface IUnitOfWork
 {

@@ -2,6 +2,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
+using PetFamily.Core.Abstractions;
 using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;

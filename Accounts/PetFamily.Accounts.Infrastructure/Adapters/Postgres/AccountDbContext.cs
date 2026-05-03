@@ -14,8 +14,9 @@ public class AccountDbContext : IdentityDbContext<User, Role, Guid>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(builder);
 
+        base.OnModelCreating(builder);
+        builder.HasDefaultSchema("accounts");
         builder.Entity<User>()
             .ToTable("users");
 
