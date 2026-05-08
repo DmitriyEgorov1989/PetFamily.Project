@@ -3,25 +3,25 @@ using PetFamily.SharedKernel.Errors;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
+namespace PetFamily.SharedKernel.DomainModels.VO;
 
-public class PetPhoto : ValueObject
+public class Photo : ValueObject
 {
     private const long MAX_SIZE = 5 * 1024 * 1024;
 
     [ExcludeFromCodeCoverage]
-    private PetPhoto()
+    private Photo()
     {
     }
 
-    private PetPhoto(string pathStorage)
+    private Photo(string pathStorage)
     {
         PathStorage = pathStorage;
         IsMain = false;
     }
 
     [JsonConstructor]
-    private PetPhoto(string pathStorage, bool isMain)
+    private Photo(string pathStorage, bool isMain)
     {
         PathStorage = pathStorage;
         IsMain = isMain;
@@ -30,7 +30,7 @@ public class PetPhoto : ValueObject
     public bool IsMain { get; }
     public string PathStorage { get; }
 
-    public static Result<PetPhoto, Error> Create(long size, string pathStorage)
+    public static Result<Photo, Error> Create(long size, string pathStorage)
     {
         if (size > MAX_SIZE)
             return GeneralErrors.InvalidSize(nameof(size));
@@ -39,15 +39,15 @@ public class PetPhoto : ValueObject
 
         var path = Guid.NewGuid() + pathStorage;
 
-        return new PetPhoto(path);
+        return new Photo(path);
     }
 
-    public static Result<PetPhoto, Error> Create(string pathStorage)
+    public static Result<Photo, Error> Create(string pathStorage)
     {
         if (string.IsNullOrWhiteSpace(pathStorage))
             return GeneralErrors.ValueIsInvalid(nameof(pathStorage));
 
-        return new PetPhoto(pathStorage);
+        return new Photo(pathStorage);
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
@@ -60,17 +60,17 @@ public class PetPhoto : ValueObject
     ///     если она не является таковой.
     ///     Если же она уже главная, то ничего не происходит.
     /// </summary>
-    public PetPhoto MakeMain()
+    public Photo MakeMain()
     {
-        return new PetPhoto(PathStorage, true);
+        return new Photo(PathStorage, true);
     }
 
     /// <summary>
     ///     Убирает статус главной фотографии,
     ///     если она таковой является.
     /// </summary>
-    public PetPhoto RemoveMain()
+    public Photo RemoveMain()
     {
-        return new PetPhoto(PathStorage);
+        return new Photo(PathStorage);
     }
 }

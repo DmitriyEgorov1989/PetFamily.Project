@@ -84,13 +84,13 @@ public class PetsConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.Ignore(p => p.Photos);
 
-        builder.Property<List<PetPhoto>>("_photos")
+        builder.Property<List<Photo>>("_photos")
             .HasColumnName("photos")
             .HasColumnType("jsonb")
             .HasConversion(
                 photos => JsonSerializer.Serialize(photos, JsonSerializerOptions.Default),
-                value => JsonSerializer.Deserialize<List<PetPhoto>>(value, JsonSerializerOptions.Default)
-                         ?? new List<PetPhoto>());
+                value => JsonSerializer.Deserialize<List<Photo>>(value, JsonSerializerOptions.Default)
+                         ?? new List<Photo>());
 
         builder.Property(p => p.Weight)
             .IsRequired();

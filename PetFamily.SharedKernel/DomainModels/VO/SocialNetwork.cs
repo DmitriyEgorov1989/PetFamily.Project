@@ -2,7 +2,7 @@
 using PetFamily.SharedKernel.Errors;
 using System.Diagnostics.CodeAnalysis;
 
-namespace PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
+namespace PetFamily.SharedKernel.DomainModels.VO;
 
 /// <summary>
 ///     Value Object - социальная сеть,содержащие название соц.сети и ссылку

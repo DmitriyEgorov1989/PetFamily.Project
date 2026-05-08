@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models;
 using PetFamily.Accounts.Core.Application.Inject;
 using PetFamily.Accounts.Infrastructure.Adapters.Postgres;
+using PetFamily.Accounts.Infrastructure.Adapters.Seed;
 using PetFamily.Accounts.Infrastructure.DependencyInjection;
 using PetFamily.Accounts.Presentation.Controllers;
 using PetFamily.Api.Controllers;
@@ -13,7 +14,7 @@ namespace PetFamily.Api;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +86,13 @@ public class Program
 
 
         var app = builder.Build();
+
+        //seeding data roles and permissions
+        using (var scope = app.Services.CreateScope())
+        {
+            var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
+            await seeder.SeedAsync();
+        }
 
         app.UseSwagger();
 

@@ -1,0 +1,99 @@
+{
+  "Roles": {
+    "Admin": [
+      "pet.create",
+      "pet.read",
+      "pet.update",
+      "pet.delete",
+      "pet.restore",
+      "pet.archive",
+
+      "volunteer.create",
+      "volunteer.read",
+      "volunteer.update",
+      "volunteer.delete",
+      "volunteer.ban",
+      "volunteer.assign-pet",
+
+      "participant.create",
+      "participant.read",
+      "participant.update",
+      "participant.delete",
+
+      "user.create",
+      "user.read",
+      "user.update",
+      "user.delete",
+      "user.change-password",
+      "user.assign-role",
+
+      "file.upload",
+      "file.read",
+      "file.delete",
+
+      "moderation.approve",
+      "moderation.reject",
+      "moderation.block"
+    ],
+    "Volunteer": [
+      "pet.create",
+      "pet.read",
+      "pet.update",
+      "pet.archive",
+
+      "volunteer.read",
+      "volunteer.update",
+
+      "file.upload",
+      "file.read"
+    ],
+    "Participant": [
+      "pet.read",
+      "volunteer.read",
+      "file.read"
+    ]
+  },
+
+  "Permissions": {
+    "Pet": [
+      "pet.create",
+      "pet.read",
+      "pet.update",
+      "pet.delete",
+      "pet.restore",
+      "pet.archive"
+    ],
+    "Volunteer": [
+      "volunteer.create",
+      "volunteer.read",
+      "volunteer.update",
+      "volunteer.delete",
+      "volunteer.ban",
+      "volunteer.assign-pet"
+    ],
+    "Participant": [
+      "participant.create",
+      "participant.read",
+      "participant.update",
+      "participant.delete"
+    ],
+    "User": [
+      "user.create",
+      "user.read",
+      "user.update",
+      "user.delete",
+      "user.change-password",
+      "user.assign-role"
+    ],
+    "File": [
+      "file.upload",
+      "file.read",
+      "file.delete"
+    ],
+    "Moderation": [
+      "moderation.approve",
+      "moderation.reject",
+      "moderation.block"
+    ]
+  }
+}

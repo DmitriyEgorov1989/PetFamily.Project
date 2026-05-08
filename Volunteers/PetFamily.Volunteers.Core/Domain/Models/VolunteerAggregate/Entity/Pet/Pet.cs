@@ -14,7 +14,7 @@ namespace PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.Entity.Pet;
 /// </summary>
 public sealed class Pet : Entity<PetId>, ISoftDelete
 {
-    private readonly List<PetPhoto> _photos = new();
+    private readonly List<Photo> _photos = new();
 
     [ExcludeFromCodeCoverage]
     private Pet()
@@ -150,7 +150,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
     /// <summary>
     ///     Коллекция фото питомца
     /// </summary>
-    public IReadOnlyCollection<PetPhoto> Photos => _photos;
+    public IReadOnlyCollection<Photo> Photos => _photos;
 
     public bool IsDelete { get; private set; }
 
@@ -284,7 +284,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
     /// </summary>
     /// <param name="photos">Список фото</param>
     /// <returns>Success or Error</returns>
-    public UnitResult<Error> UploadPetPhotos(IEnumerable<PetPhoto> photos)
+    public UnitResult<Error> UploadPetPhotos(IEnumerable<Photo> photos)
     {
         if (photos == null || !photos.Any())
             return GeneralErrors.ValueIsInvalid(nameof(photos));
@@ -299,7 +299,7 @@ public sealed class Pet : Entity<PetId>, ISoftDelete
     /// </summary>
     /// <param name="petPhoto">Название фото</param>
     /// <returns>Success or Error</returns>
-    public UnitResult<Error> DeletePetPhotos(PetPhoto? petPhoto)
+    public UnitResult<Error> DeletePetPhotos(Photo? petPhoto)
     {
         if (petPhoto is null)
             return GeneralErrors.ValueIsInvalid(nameof(petPhoto));

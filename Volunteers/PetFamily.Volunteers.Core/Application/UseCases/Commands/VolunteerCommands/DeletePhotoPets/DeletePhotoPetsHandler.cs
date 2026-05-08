@@ -3,9 +3,9 @@ using FluentValidation;
 using MediatR;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.DomainModels.Ids;
+using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
-using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
@@ -64,7 +64,7 @@ public class DeletePhotoPetsHandler : IRequestHandler<DeletePhotoPetsCommand, Re
         var pet = resultGetPet.Value;
 
         var resultDeletePhoto =
-            pet.DeletePetPhotos(PetPhoto.Create(command.FileName).Value);
+            pet.DeletePetPhotos(Photo.Create(command.FileName).Value);
 
         cancellationToken.ThrowIfCancellationRequested();
         await _unitOfWork.SaveChangesAsync(cancellationToken);

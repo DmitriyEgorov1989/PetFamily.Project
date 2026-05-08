@@ -3,11 +3,11 @@ using FluentValidation;
 using MediatR;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.DomainModels.Ids;
+using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.SharedKernelDto;
 using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
-using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 using PetFamily.Volunteers.Core.Ports;
 using Serilog;
 using static PetFamily.SharedKernel.Errors.Error;
@@ -71,7 +71,7 @@ public class UploadPhotoPetsHandler : IRequestHandler<UploadPhotoPetsCommand, Re
         var listUploadPhotos =
             resultUploadPathsPhoto.Value.Select(p =>
             {
-                var photo = PetPhoto.Create(p.Size, p.PathStorage).Value;
+                var photo = Photo.Create(p.Size, p.PathStorage).Value;
                 return photo;
             }).ToList();
         pet.UploadPetPhotos(listUploadPhotos);

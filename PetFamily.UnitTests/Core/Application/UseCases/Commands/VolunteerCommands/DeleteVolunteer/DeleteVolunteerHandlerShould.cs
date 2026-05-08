@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using FluentValidation;
 using NSubstitute;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.DeleteVolunteer;

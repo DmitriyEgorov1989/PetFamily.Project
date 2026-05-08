@@ -4,7 +4,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
@@ -41,7 +40,7 @@ public class DeletePhotoPetsHandlerShould
         var volunteer = ExistedVolunteer().Value;
         var pet = ExictedPet();
         volunteer.AddPet(pet);
-        var petPhoto = PetPhoto.Create("testPath.jpg").Value;
+        var petPhoto = Photo.Create("testPath.jpg").Value;
         pet.UploadPetPhotos([petPhoto]);
         pet.Photos.ToList().Count.Should().Be(1);
 

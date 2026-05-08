@@ -1,4 +1,4 @@
-﻿using PetFamily.Accounts.Core.Domain.Models.AccountAggregate;
+﻿using PetFamily.Accounts.Core.Domain.Models;
 
 namespace PetFamily.Accounts.Core.Ports;
 

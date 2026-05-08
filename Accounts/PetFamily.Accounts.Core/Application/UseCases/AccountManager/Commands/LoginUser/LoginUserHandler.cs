@@ -2,7 +2,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using PetFamily.Accounts.Core.Domain.Models.AccountAggregate;
+using PetFamily.Accounts.Core.Domain.Models;
 using PetFamily.Accounts.Core.Ports;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;

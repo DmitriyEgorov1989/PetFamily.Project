@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
+using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.SharedKernelDto;
-using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate.VO.Pets;
 
 namespace PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.AddPhotoPets;
 
@@ -48,7 +48,7 @@ public class CreateFileDtoValidator : AbstractValidator<CreateFileDto>
                 var sizePhoto = dto.Stream.Length;
                 var extension = Path.GetExtension(dto.FileData.FileName);
 
-                var result = PetPhoto.Create(sizePhoto, extension);
+                var result = Photo.Create(sizePhoto, extension);
 
                 return result.IsSuccess;
             })

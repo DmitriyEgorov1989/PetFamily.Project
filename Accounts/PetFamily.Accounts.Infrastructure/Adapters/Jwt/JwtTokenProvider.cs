@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using PetFamily.Accounts.Core.Domain.Models.AccountAggregate;
+using PetFamily.Accounts.Core.Domain.Models;
 using PetFamily.Accounts.Core.Ports;
 using PetFamily.Infrastructure.Options;
 using System.IdentityModel.Tokens.Jwt;

@@ -3,7 +3,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.VolunteerCommands.MakeMainPhotoPets;
@@ -46,9 +45,9 @@ public class MakeMainPetPhotoShould
         //arrange
         var volunteer = ExistedVolunteer();
         var pet = ExistedPet();
-        var photo1 = PetPhoto.Create(100, "shdghs).jpg").Value;
-        var photo2 = PetPhoto.Create(100, "photo2.jpg").Value;
-        var photo3 = PetPhoto.Create(100, "photo3.jpg").Value;
+        var photo1 = Photo.Create(100, "shdghs).jpg").Value;
+        var photo2 = Photo.Create(100, "photo2.jpg").Value;
+        var photo3 = Photo.Create(100, "photo3.jpg").Value;
         ;
         photo1 = photo1.MakeMain();
         pet.UploadPetPhotos([photo1, photo2, photo3]);

@@ -15,7 +15,7 @@ public class PetShould
     {
         //arrange
         var pet = CreateTestPet();
-        var petPhoto1 = PetPhoto.Create(100, "testPathStorage.jpg").Value;
+        var petPhoto1 = Photo.Create(100, "testPathStorage.jpg").Value;
 
         //act
         var result = pet.UploadPetPhotos([petPhoto1]);
@@ -30,7 +30,7 @@ public class PetShould
     {
         //arrange
         var pet = CreateTestPet();
-        var petPhoto1 = PetPhoto.Create(100, "testPathStorage.jpg").Value;
+        var petPhoto1 = Photo.Create(100, "testPathStorage.jpg").Value;
         pet.UploadPetPhotos([petPhoto1]);
 
         //act

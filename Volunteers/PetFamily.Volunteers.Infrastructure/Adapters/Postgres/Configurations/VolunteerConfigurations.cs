@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.Core.Domain.Models.VolunteerAggregate.VO;
 using PetFamily.SharedKernel.DomainModels.Ids;
 using PetFamily.SharedKernel.DomainModels.VO;
 using PetFamily.Volunteers.Core.Domain.Models.VolunteerAggregate;
@@ -72,7 +71,7 @@ namespace PetFamily.Volunteers.Infrastructure.Adapters.Postgres.Configurations
                     value => JsonSerializer.Deserialize<IReadOnlyCollection<SocialNetwork>>(
                         value, JsonSerializerOptions.Default) ?? new List<SocialNetwork>())
                 .HasColumnName("social_networks")
-                .HasColumnType("jsonb"); ;
+                .HasColumnType("jsonb");
 
 
             builder.Property(v => v.IsDelete)

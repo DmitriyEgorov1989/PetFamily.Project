@@ -5,88 +5,98 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PetFamily.Accounts.Core.Domain.Models.AccountAggregate;
+using Microsoft.IdentityModel.Tokens;
+using PetFamily.Accounts.Core.Domain.Models;
 using PetFamily.Accounts.Core.Ports;
 using PetFamily.Accounts.Infrastructure.Adapters.Jwt;
 using PetFamily.Accounts.Infrastructure.Adapters.Postgres;
+using PetFamily.Accounts.Infrastructure.Adapters.Seed;
 using PetFamily.Core.Abstractions;
 using PetFamily.Infrastructure.Options;
 using System.Text;
 
-namespace PetFamily.Accounts.Infrastructure.DependencyInjection
+namespace PetFamily.Accounts.Infrastructure.DependencyInjection;
+
+public static class InjectAccountsInfrastructure
 {
-    public static class InjectAccountsInfrastructure
+    public static IServiceCollection AddAccountsInfrastructure(
+        this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddAccountsInfrastructure(
-            this IServiceCollection services, IConfiguration configuration)
+        services.AddAuthentificationWithJwt(configuration)
+            .AddIdentityService()
+            .AddDataBaseForWrite(configuration)
+            .AddSeeder(configuration);
+
+        return services;
+    }
+
+    private static IServiceCollection AddSeeder(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<SeederOptions>(
+            configuration.GetSection(SeederOptions.SECTION_NAME));
+        services.AddScoped<ISeeder, Seeder>();
+        return services;
+    }
+
+    private static IServiceCollection AddDataBaseForWrite
+        (this IServiceCollection services, IConfiguration configure)
+    {
+        services.Configure<DataBaseOptions>(
+            configure.GetSection(DataBaseOptions.SECTION_NAME));
+
+        services.AddDbContext<AccountDbContext>((sp, options) =>
         {
-            services.AddAuthentificationWithJwt(configuration)
-                .AddIdentityService()
-                .AddDataBaseForWrite(configuration);
+            var dbOptions = sp.GetRequiredService<
+                IOptions<DataBaseOptions>>().Value;
 
-            return services;
-        }
+            if (string.IsNullOrWhiteSpace(dbOptions.ConnectionString))
+                throw new InvalidOperationException("Database connection string is missing.");
 
-        private static IServiceCollection AddDataBaseForWrite
-            (this IServiceCollection services, IConfiguration configure)
-        {
-            services.Configure<DataBaseOptions>(
-                configure.GetSection(DataBaseOptions.SECTION_NAME));
+            options.UseNpgsql(dbOptions.ConnectionString);
+            options.UseCamelCaseNamingConvention();
+            options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+        });
 
-            services.AddDbContext<AccountDbContext>((sp, options) =>
-            {
-                var dbOptions = sp.GetRequiredService<
-                    IOptions<DataBaseOptions>>().Value;
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        return services;
+    }
 
-                if (string.IsNullOrWhiteSpace(dbOptions.ConnectionString))
-                    throw new InvalidOperationException("Database connection string is missing.");
-
-                options.UseNpgsql(dbOptions.ConnectionString);
-                options.UseCamelCaseNamingConvention();
-                options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
-            });
-
-            services.AddScoped<IUnitOfWork, Adapters.Postgres.UnitOfWork>();
-            return services;
-        }
-
-        private static IServiceCollection AddAuthentificationWithJwt(this IServiceCollection services,
+    private static IServiceCollection AddAuthentificationWithJwt(this IServiceCollection services,
         IConfiguration configuration)
-        {
-            services.Configure<JwtOptions>(
-                configuration.GetSection(JwtOptions.SECTION_NAME));
-            services.AddScoped<ITokenProvider, JwtTokenProvider>();
+    {
+        services.Configure<JwtOptions>(
+            configuration.GetSection(JwtOptions.SECTION_NAME));
+        services.AddScoped<ITokenProvider, JwtTokenProvider>();
 
-            var jwtOptions = configuration.GetSection(JwtOptions.SECTION_NAME)
-                .Get<JwtOptions>();
-            services.AddAuthentication(options =>
+        var jwtOptions = configuration.GetSection(JwtOptions.SECTION_NAME)
+            .Get<JwtOptions>();
+        services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-
             })
-                .AddJwtBearer(options =>
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = jwtOptions.Issuer,
-                        ValidAudience = jwtOptions.Audience,
-                        IssuerSigningKey =
-                            new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-                                Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
-                    };
-                });
-            return services;
-        }
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
+                };
+            });
+        return services;
+    }
 
-        private static IServiceCollection AddIdentityService(this IServiceCollection services)
-        {
-            services.AddIdentity<User, Role>(options =>
+    private static IServiceCollection AddIdentityService(this IServiceCollection services)
+    {
+        services.AddIdentity<User, Role>(options =>
             {
                 // Password settings
                 options.Password.RequireDigit = true;
@@ -98,8 +108,8 @@ namespace PetFamily.Accounts.Infrastructure.DependencyInjection
                 options.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<AccountDbContext>()
-            .AddDefaultTokenProviders(); ;
-            return services;
-        }
+            .AddDefaultTokenProviders();
+        ;
+        return services;
     }
 }

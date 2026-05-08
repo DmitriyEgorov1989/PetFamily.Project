@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel.Errors;
-using System.Text.Json.Serialization;
 
 namespace PetFamily.SharedKernel.DomainModels.VO;
 
@@ -12,8 +11,6 @@ public sealed class HelpRequisite : ValueObject
     private HelpRequisite()
     {
     }
-
-    [JsonConstructor]
     private HelpRequisite(string name, string description)
     {
         Name = name;
