@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Identity;
 using PetFamily.Accounts.Core.Domain.Models.Accounts;
 using PetFamily.SharedKernel.DomainModels.VO;
+using PetFamily.SharedKernel.Errors;
 using System.Diagnostics.CodeAnalysis;
 
 namespace PetFamily.Accounts.Core.Domain.Models;
@@ -17,6 +19,7 @@ public class User : IdentityUser<Guid>
     private User()
     {
     }
+
     /// <summary>
     ///     Фотографии пользователя.
     /// </summary>
@@ -38,21 +41,56 @@ public class User : IdentityUser<Guid>
     ///     Полное имя пользователя, представленное в виде объекта FullName.
     /// </summary>
     public FullName FullName { get; set; }
+
     public Admin? Admin { get; set; }
     public Participant? Participant { get; set; }
     public Volunteer? Volunteer { get; set; }
 
-    private static User Create(Guid id, Guid roleId, FullName fullName)
+    public static Result<User, Error> Create(Guid id, FullName fullName, string email,
+        string userName, string phoneNumber)
     {
+        if (id == Guid.Empty)
+            return GeneralErrors.ValueIsInvalid(nameof(id));
+
         return new User
         {
             Id = id,
-            RoleId = roleId,
-            FullName = fullName
+            FullName = fullName,
+            Email = email,
+            UserName = userName,
+            PhoneNumber = phoneNumber
         };
     }
+
     public void AddPhoto(Photo photo)
     {
         Photos.Add(photo);
+    }
+
+    public UnitResult<Error> AddRole(Role role, Admin? admin, Participant? participant, Volunteer? volunteer)
+    {
+        if (admin != null)
+        {
+            RoleId = role.Id;
+            Admin = admin;
+            return UnitResult.Success<Error>();
+        }
+
+        if (participant != null)
+        {
+            RoleId = role.Id;
+            Participant = participant;
+            return UnitResult.Success<Error>();
+        }
+
+        if (volunteer != null)
+        {
+            RoleId = role.Id;
+            Volunteer = volunteer;
+            return UnitResult.Success<Error>();
+        }
+
+        return UnitResult.Failure<Error>(
+            GeneralErrors.Failure("Error add role"));
     }
 }

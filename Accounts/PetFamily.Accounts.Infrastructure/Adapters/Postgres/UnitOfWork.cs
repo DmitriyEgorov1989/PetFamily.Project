@@ -21,7 +21,6 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var trecker = _dbContext.ChangeTracker;
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

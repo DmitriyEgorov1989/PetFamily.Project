@@ -110,15 +110,15 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 {
                     table.PrimaryKey("pK_role_permissions", x => new { x.role_id, x.permission_id });
                     table.ForeignKey(
-                        name: "fK_role_permissions_permissions_role_id",
-                        column: x => x.role_id,
+                        name: "fK_role_permissions_permissions_permissionId",
+                        column: x => x.permission_id,
                         principalSchema: "accounts",
                         principalTable: "permissions",
                         principalColumn: "permission_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fK_role_permissions_roles_permission_id",
-                        column: x => x.permission_id,
+                        name: "fK_role_permissions_roles_roleId",
+                        column: x => x.role_id,
                         principalSchema: "accounts",
                         principalTable: "roles",
                         principalColumn: "id",

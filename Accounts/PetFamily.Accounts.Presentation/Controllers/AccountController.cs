@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Accounts.Presentation.Controllers.Models.Accounts;
+using PetFamily.Framework;
 using PetFamily.Framework.Response;
-using PetFamily.SharedKernel.Controller;
 
 namespace PetFamily.Accounts.Presentation.Controllers;
 
@@ -18,7 +17,6 @@ public class AccountController : ApplicationController
         _mediator = mediator;
     }
 
-    [Authorize]
     [HttpGet]
     public ActionResult Test()
     {
@@ -33,7 +31,6 @@ public class AccountController : ApplicationController
         var result = await _mediator.Send(request.ToCommand(), cancellationToken);
         return result.ToResponseErrorOrResult();
     }
-
 
     [HttpPatch("login")]
     public async Task<ActionResult<string>> LoginAsync(

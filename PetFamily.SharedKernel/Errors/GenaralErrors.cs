@@ -77,4 +77,10 @@ public static class GeneralErrors
             "Invalid password or login",
             ErrorType.IdentityUser);
     }
+    public static Error Failure(string message)
+    {
+        if (string.IsNullOrEmpty(message)) throw new ArgumentException(message);
+
+        return new Error("invalid.operation", message, ErrorType.Failure);
+    }
 }

@@ -22,8 +22,9 @@ internal class JwtTokenProvider : ITokenProvider
     {
         var claims = new List<Claim>
         {
-            new("Id", user.Id.ToString()),
-            new("Email", user.Email ?? "")
+            new(CustomClaims.UserId, user.Id.ToString()),
+            new(CustomClaims.Email, user.Email ?? ""),
+            new(CustomClaims.Role, user.RoleId.ToString() ?? "")
         };
         var jwt = new JwtSecurityToken(
             _options.Issuer,

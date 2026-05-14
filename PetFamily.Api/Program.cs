@@ -1,11 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using PetFamily.Accounts.Core.Application.Inject;
 using PetFamily.Accounts.Infrastructure.Adapters.Postgres;
 using PetFamily.Accounts.Infrastructure.Adapters.Seed;
 using PetFamily.Accounts.Infrastructure.DependencyInjection;
 using PetFamily.Accounts.Presentation.Controllers;
+using PetFamily.Accounts.Presentation.Controllers.Services;
 using PetFamily.Api.Controllers;
 using PetFamily.Api.Middlewares;
+using PetFamily.Core.Abstractions;
+using PetFamily.Framework.Authorization;
 using PetFamily.Volunteers.Core.Inject;
 using PetFamily.Volunteers.Infrastructure.DependencyInjection;
 using Serilog;
@@ -74,7 +78,9 @@ public class Program
                 }
             });
         });
-
+        //Authorization
+        builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicy>();
+        builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(VolunteerController).Assembly)
@@ -84,7 +90,8 @@ public class Program
         builder.Services.AddDbContext<AccountDbContext>();
         builder.Logging.ClearProviders();
 
-
+        //ports
+        builder.Services.AddScoped<IAccountServiceProvider, AccountService>();
         var app = builder.Build();
 
         //seeding data roles and permissions

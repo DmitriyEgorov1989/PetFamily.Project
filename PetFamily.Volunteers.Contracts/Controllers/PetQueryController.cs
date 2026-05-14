@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PetFamily.Framework;
 using PetFamily.Framework.Response;
-using PetFamily.SharedKernel.Controller;
 using PetFamily.Volunteers.Contracts.Controllers.Models.Pets.ReadModels;
 using PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
 

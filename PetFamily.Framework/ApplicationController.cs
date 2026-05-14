@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace PetFamily.SharedKernel.Controller;
+namespace PetFamily.Framework;
 
 [ApiController]
 [Route("api/[controller]")]

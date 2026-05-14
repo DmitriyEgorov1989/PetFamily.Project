@@ -13,7 +13,7 @@ using PetFamily.Accounts.Infrastructure.Adapters.Postgres;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountDbContext))]
-    [Migration("20260508120336_InitAccountDbContext")]
+    [Migration("20260512152913_InitAccountDbContext")]
     partial class InitAccountDbContext
     {
         /// <inheritdoc />
@@ -516,19 +516,19 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
 
             modelBuilder.Entity("PetFamily.Accounts.Core.Domain.Models.RolePermission", b =>
                 {
-                    b.HasOne("PetFamily.Accounts.Core.Domain.Models.Role", "Role")
+                    b.HasOne("PetFamily.Accounts.Core.Domain.Models.Permission", "Permission")
                         .WithMany("RolePermissions")
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fK_role_permissions_roles_permission_id");
+                        .HasConstraintName("fK_role_permissions_permissions_permissionId");
 
-                    b.HasOne("PetFamily.Accounts.Core.Domain.Models.Permission", "Permission")
+                    b.HasOne("PetFamily.Accounts.Core.Domain.Models.Role", "Role")
                         .WithMany("RolePermissions")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fK_role_permissions_permissions_role_id");
+                        .HasConstraintName("fK_role_permissions_roles_roleId");
 
                     b.Navigation("Permission");
 

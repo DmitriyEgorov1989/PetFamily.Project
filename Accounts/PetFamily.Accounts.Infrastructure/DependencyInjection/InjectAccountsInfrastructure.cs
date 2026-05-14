@@ -6,13 +6,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using PetFamily.Accounts.Core.Domain.Models;
 using PetFamily.Accounts.Core.Ports;
 using PetFamily.Accounts.Infrastructure.Adapters.Jwt;
 using PetFamily.Accounts.Infrastructure.Adapters.Postgres;
+using PetFamily.Accounts.Infrastructure.Adapters.Postgres.Repositories.Read;
+using PetFamily.Accounts.Infrastructure.Adapters.Postgres.Repositories.Read.ConnectionFactory;
 using PetFamily.Accounts.Infrastructure.Adapters.Seed;
 using PetFamily.Core.Abstractions;
 using PetFamily.Infrastructure.Options;
+using PetFamily.Volunteers.Core.Ports.DataBaseForRead;
 using System.Text;
 
 namespace PetFamily.Accounts.Infrastructure.DependencyInjection;
@@ -25,7 +29,8 @@ public static class InjectAccountsInfrastructure
         services.AddAuthentificationWithJwt(configuration)
             .AddIdentityService()
             .AddDataBaseForWrite(configuration)
-            .AddSeeder(configuration);
+            .AddSeeder(configuration)
+            .AddDataBaseForRead(configuration);
 
         return services;
     }
@@ -74,7 +79,6 @@ public static class InjectAccountsInfrastructure
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -110,6 +114,20 @@ public static class InjectAccountsInfrastructure
             .AddEntityFrameworkStores<AccountDbContext>()
             .AddDefaultTokenProviders();
         ;
+        return services;
+    }
+
+    private static IServiceCollection AddDataBaseForRead
+        (this IServiceCollection services, IConfiguration configure)
+    {
+        var options = configure.GetSection(DataBaseOptions.SECTION_NAME)
+                          .Get<DataBaseOptions>()
+                      ?? throw new ArgumentNullException($"{nameof(DataBaseOptions.SECTION_NAME)} is null");
+
+        var dataSource = new NpgsqlDataSourceBuilder(options.ConnectionString).Build();
+        services.AddSingleton(dataSource);
+        services.AddScoped<IReadDataProvider, ReadRepository>();
+        services.AddSingleton<IDbConnectionFactory, NpgSqlConnectionFactory>();
         return services;
     }
 }
