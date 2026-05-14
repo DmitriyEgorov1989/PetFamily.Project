@@ -1,10 +1,10 @@
-﻿namespace PetFamily.Infrastructure.Options;
+﻿namespace PetFamily.Core.Options;
 
 public class QuartzJobOptions
 {
     public const string SECTION_NAME = "QuartzJob";
-    public string HardDeleteVolunteerIdentity { get; set; }
-    public string HardDeleteVolunteerTrigger { get; set; }
-    public string CronShedule { get; set; }
+    public required string HardDeleteVolunteerIdentity { get; set; }
+    public required string HardDeleteVolunteerTrigger { get; set; }
+    public required string CronShedule { get; set; }
     public int StorageTimeDays { get; set; }
 }

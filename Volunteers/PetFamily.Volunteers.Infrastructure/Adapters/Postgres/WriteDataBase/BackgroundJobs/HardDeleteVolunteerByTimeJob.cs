@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using PetFamily.Infrastructure.Options;
+using PetFamily.Core.Options;
 using PetFamily.Volunteers.Core.Ports;
 using Quartz;
 using Serilog;

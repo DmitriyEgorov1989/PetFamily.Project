@@ -1,7 +1,7 @@
-﻿namespace PetFamily.Infrastructure.Options;
+﻿namespace PetFamily.Core.Options;
 
 public class DataBaseOptions
 {
     public const string SECTION_NAME = "Database";
-    public string ConnectionString { get; init; }
+    public required string ConnectionString { get; init; }
 }

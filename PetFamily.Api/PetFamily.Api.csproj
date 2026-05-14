@@ -12,12 +12,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include=".env" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="etc\JsonFileSeeding\roles_and_permissions.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="dotenv.net" Version="4.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

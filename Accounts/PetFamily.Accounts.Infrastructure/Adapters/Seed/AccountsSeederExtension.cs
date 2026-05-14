@@ -1,26 +1,36 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using PetFamily.Accounts.Core.Domain.Models;
+using PetFamily.Accounts.Core.Domain.Models.Accounts;
 using PetFamily.Accounts.Infrastructure.Adapters.Postgres;
-using Serilog;
+using PetFamily.Core.Options;
+using PetFamily.SharedKernel.Constants;
+using PetFamily.SharedKernel.DomainModels.VO;
 
 namespace PetFamily.Accounts.Infrastructure.Adapters.Seed;
 
 public static class AccountsSeederExtension
 {
     public static async Task SeedAsync(this AccountDbContext context,
-        RoleManager<Role> roleManager, RolePermissionConfig seedData)
+        RoleManager<Role> roleManager,
+        RolePermissionConfig seedData,
+        IOptions<AdminOptions> options,
+        UserManager<User> userManager)
     {
         var permissionsToAdd =
             seedData.Permissions
                 .SelectMany(permissionGroup => permissionGroup.Value);
 
         var permissions = await EnsurePermissionsExistAsync(context, permissionsToAdd);
-        await context.Permissions.AddRangeAsync(permissions);
 
+        if (permissions.Any())
+        {
+            await context.Permissions.AddRangeAsync(permissions);
+        }
+        permissions = context.Permissions.ToList();
         await EnsureRoleAndPermissionsAsync(context, roleManager, seedData, permissions);
+        await EnsureAdminAccountAsync(context, options, userManager);
         await context.SaveChangesAsync();
     }
 
@@ -65,7 +75,8 @@ public static class AccountsSeederExtension
                 var resultCreateRole = await roleManager
                     .CreateAsync(role);
                 if (!resultCreateRole.Succeeded)
-                    throw new Exception("Error create new role"); ;
+                    throw new Exception("Error create new role");
+                ;
             }
 
             foreach (var permission in roleData.Value)
@@ -85,64 +96,36 @@ public static class AccountsSeederExtension
             }
         }
     }
-}
 
-public class Seeder : ISeeder
-{
-    private readonly AccountDbContext _dbContext;
-    private readonly ILogger _logger;
-    private readonly SeederOptions _options;
-    private readonly RoleManager<Role> _roleManager;
-
-    public Seeder(
-        IOptions<SeederOptions> options,
-        ILogger logger,
-        RoleManager<Role> roleManager, AccountDbContext dbContext)
+    private static async Task EnsureAdminAccountAsync(
+        AccountDbContext context, IOptions<AdminOptions> options, UserManager<User> userManager)
     {
-        _options = options.Value;
-        _logger = logger;
-        _roleManager = roleManager;
-        _dbContext = dbContext;
-    }
+        var adminOptions = options.Value;
 
-    public async Task SeedAsync()
-    {
-        try
-        {
-            var seedData = await GetSeedData();
-            _logger.Information("Starting seeding process...");
-            await _dbContext.SeedAsync(_roleManager, seedData);
-            _logger.Information("Seeding completed successfully.");
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "An error occurred during seeding.");
-        }
-    }
+        var role =
+            await context.Roles.FirstOrDefaultAsync(r => r.Name == RolesName.Admin);
+        if (role is null)
+            throw new ArgumentNullException(nameof(RolesName.Admin));
 
-    private async Task<RolePermissionConfig> GetSeedData()
-    {
-        var filePath = Path.Combine(AppContext.BaseDirectory,
-            _options.JsonFilePath.Replace('/', Path.DirectorySeparatorChar));
-        if (!File.Exists(filePath))
-            throw new FileNotFoundException($"Seed file not found: {filePath}");
+        var isAdminExist =
+            await context.Users.AnyAsync(u => u.RoleId == role.Id);
+        if (isAdminExist)
+            return;
 
-        var json =
-            await File.ReadAllTextAsync(
-                filePath);
+        var fullName =
+            FullName.Create(adminOptions.FirstName, adminOptions.MiddleName, adminOptions.LastName).Value;
+        var user =
+            User.Create(
+                Guid.NewGuid(),
+                fullName,
+                adminOptions.Email,
+                adminOptions.UserName,
+                adminOptions.PhoneNumber).Value;
 
-        var seedData = JsonConvert.DeserializeObject<RolePermissionConfig>(json)
-                       ?? throw new Exception("Error read json at seeding");
-        return seedData;
+        var accountAdmin = Admin.Create(user.Id);
+
+        user.AddRole(role, accountAdmin, null, null);
+
+        await userManager.CreateAsync(user, adminOptions.Password);
     }
 }
-
-public class SeederOptions
-{
-    public const string SECTION_NAME = "Seeder";
-    public string JsonFilePath { get; set; } = string.Empty;
-}
-
-public record class RolePermissionConfig(
-    Dictionary<string, string[]> Roles,
-    Dictionary<string, string[]> Permissions);

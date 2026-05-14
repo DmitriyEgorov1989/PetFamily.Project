@@ -1,10 +1,10 @@
-﻿namespace PetFamily.Infrastructure.Options;
+﻿namespace PetFamily.Core.Options;
 
 public class MinioOptions
 {
     public const string SECTION_NAME = "Minio";
-    public string ConnectionString { get; init; }
-    public string Login { get; init; }
-    public string Password { get; init; }
-    public string DefaultBucket { get; init; }
+    public required string ConnectionString { get; init; }
+    public required string Login { get; init; }
+    public required string Password { get; init; }
+    public required string DefaultBucket { get; init; }
 }

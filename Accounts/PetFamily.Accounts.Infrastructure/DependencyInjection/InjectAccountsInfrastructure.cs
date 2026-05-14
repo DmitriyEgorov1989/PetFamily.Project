@@ -15,7 +15,7 @@ using PetFamily.Accounts.Infrastructure.Adapters.Postgres.Repositories.Read;
 using PetFamily.Accounts.Infrastructure.Adapters.Postgres.Repositories.Read.ConnectionFactory;
 using PetFamily.Accounts.Infrastructure.Adapters.Seed;
 using PetFamily.Core.Abstractions;
-using PetFamily.Infrastructure.Options;
+using PetFamily.Core.Options;
 using PetFamily.Volunteers.Core.Ports.DataBaseForRead;
 using System.Text;
 
@@ -39,6 +39,8 @@ public static class InjectAccountsInfrastructure
     {
         services.Configure<SeederOptions>(
             configuration.GetSection(SeederOptions.SECTION_NAME));
+        services.Configure<AdminOptions>(
+            configuration.GetSection(AdminOptions.ADMIN));
         services.AddScoped<ISeeder, Seeder>();
         return services;
     }

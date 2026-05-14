@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Core.Domain.Models;
 using PetFamily.Accounts.Core.Ports;
-using PetFamily.Infrastructure.Options;
+using PetFamily.Core.Options;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

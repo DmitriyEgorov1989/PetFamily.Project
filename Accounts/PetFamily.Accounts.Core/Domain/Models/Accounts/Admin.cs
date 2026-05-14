@@ -19,4 +19,12 @@ public class Admin
     /// </summary>
     public Guid UserId { get; set; }
     public User User { get; set; }
+
+    public static Admin Create(Guid userId)
+    {
+        return new Admin
+        {
+            UserId = userId
+        };
+    }
 }

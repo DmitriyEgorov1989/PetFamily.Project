@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Minio;
 using Npgsql;
 using PetFamily.Core.Abstractions;
-using PetFamily.Infrastructure.Options;
+using PetFamily.Core.Options;
 using PetFamily.Volunteers.Core.Application.UseCases.CommonDto;
 using PetFamily.Volunteers.Core.Ports;
 using PetFamily.Volunteers.Core.Ports.DataBaseForRead;

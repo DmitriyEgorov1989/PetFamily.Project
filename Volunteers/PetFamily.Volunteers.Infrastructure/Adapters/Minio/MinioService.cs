@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Args;
-using PetFamily.Infrastructure.Options;
+using PetFamily.Core.Options;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.Volunteers.Core.Application.UseCases.Commands.SharedKernelDto;
 using PetFamily.Volunteers.Core.Ports;

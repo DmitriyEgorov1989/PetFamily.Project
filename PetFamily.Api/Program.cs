@@ -1,3 +1,4 @@
+using dotenv.net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using PetFamily.Accounts.Core.Application.Inject;
@@ -20,8 +21,11 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
+        DotEnv.Load();
+
         var builder = WebApplication.CreateBuilder(args);
 
+        var c = builder.Configuration;
         //serilog
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Information()
