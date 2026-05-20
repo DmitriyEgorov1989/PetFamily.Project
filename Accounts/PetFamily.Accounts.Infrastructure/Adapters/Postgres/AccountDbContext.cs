@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Core.Domain.Models;
+using PetFamily.Accounts.Core.Domain.Models.Token;
 
 namespace PetFamily.Accounts.Infrastructure.Adapters.Postgres;
 
@@ -11,6 +12,7 @@ public class AccountDbContext : IdentityDbContext<User, Role, Guid>
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<Permission> Permissions => Set<Permission>();
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public AccountDbContext(DbContextOptions<AccountDbContext> options)
         : base(options)
     {

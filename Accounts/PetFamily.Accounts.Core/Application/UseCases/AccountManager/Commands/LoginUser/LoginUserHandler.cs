@@ -2,15 +2,17 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using PetFamily.Accounts.Core.Application.UseCases.AccountManager.CommonDto;
 using PetFamily.Accounts.Core.Domain.Models;
 using PetFamily.Accounts.Core.Ports;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using Serilog;
+using static PetFamily.SharedKernel.Errors.Error;
 
 namespace PetFamily.Accounts.Core.Application.UseCases.AccountManager.Commands.LoginUser;
 
-public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<string, Error.ErrorList>>
+public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<LoginResponse, Error.ErrorList>>
 {
     private readonly ILogger _logger;
     private readonly ITokenProvider _tokenProvider;
@@ -27,7 +29,7 @@ public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<string,
         _tokenProvider = tokenProvider;
     }
 
-    public async Task<Result<string, Error.ErrorList>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
+    public async Task<Result<LoginResponse, ErrorList>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
     {
         var resultValidation = await _validator.ValidateAsync(command, cancellationToken);
 
@@ -38,7 +40,7 @@ public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<string,
         if (user == null)
         {
             _logger.Warning("User with email {Email} not found", command.Email);
-            return (Error.ErrorList)new Error(
+            return (ErrorList)new Error(
                 "user.not.found",
                 $"User witt Email{command.Email} not found",
                 ErrorType.NotFound);
@@ -50,14 +52,24 @@ public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<string,
         {
             _logger.Warning("Invalid password for user with email {Email}",
                 command.Email);
-            return (Error.ErrorList)GeneralErrors.InvalidCredentials();
+            return (ErrorList)GeneralErrors.InvalidCredentials();
         }
 
         _logger.Information("User with email {Email} logged in successfully",
             command.Email);
 
-        var token = _tokenProvider.GenerateAccessToken(user);
+        var acessToken = _tokenProvider.GenerateAccessToken(user);
 
-        return token;
+        var resultGenerateRefreshToken =
+            await _tokenProvider.GenerateRefreshToken(acessToken, user, null, cancellationToken);
+
+        if (resultGenerateRefreshToken.IsFailure)
+        {
+            _logger.Error(resultGenerateRefreshToken.Error.Message);
+            return (ErrorList)resultGenerateRefreshToken.Error;
+        }
+        var refreshToken = resultGenerateRefreshToken.Value;
+
+        return new LoginResponse(acessToken, refreshToken);
     }
 }

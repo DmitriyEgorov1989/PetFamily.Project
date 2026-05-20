@@ -13,7 +13,7 @@ using PetFamily.Accounts.Infrastructure.Adapters.Postgres;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountDbContext))]
-    [Migration("20260512152913_InitAccountDbContext")]
+    [Migration("20260520172731_InitAccountDbContext")]
     partial class InitAccountDbContext
     {
         /// <inheritdoc />
@@ -303,6 +303,56 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                     b.ToTable("role_permissions", "accounts");
                 });
 
+            modelBuilder.Entity("PetFamily.Accounts.Core.Domain.Models.Token.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expiry_date");
+
+                    b.Property<bool>("Invalidated")
+                        .HasColumnType("boolean")
+                        .HasColumnName("invalidated");
+
+                    b.Property<string>("JwtId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("jwt_id");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pK_refresh_tokens");
+
+                    b.HasIndex("Token")
+                        .IsUnique()
+                        .HasDatabaseName("iX_refresh_tokens_token");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("iX_refresh_tokens_userId");
+
+                    b.ToTable("refresh_tokens", "accounts");
+                });
+
             modelBuilder.Entity("PetFamily.Accounts.Core.Domain.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -533,6 +583,18 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                     b.Navigation("Permission");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("PetFamily.Accounts.Core.Domain.Models.Token.RefreshToken", b =>
+                {
+                    b.HasOne("PetFamily.Accounts.Core.Domain.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fK_refresh_tokens_AspNetUsers_userId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PetFamily.Accounts.Core.Domain.Models.Permission", b =>

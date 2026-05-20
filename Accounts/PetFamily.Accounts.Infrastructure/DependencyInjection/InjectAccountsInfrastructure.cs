@@ -13,11 +13,12 @@ using PetFamily.Accounts.Infrastructure.Adapters.Jwt;
 using PetFamily.Accounts.Infrastructure.Adapters.Postgres;
 using PetFamily.Accounts.Infrastructure.Adapters.Postgres.Repositories.Read;
 using PetFamily.Accounts.Infrastructure.Adapters.Postgres.Repositories.Read.ConnectionFactory;
+using PetFamily.Accounts.Infrastructure.Adapters.Postgres.Repositories.Write;
 using PetFamily.Accounts.Infrastructure.Adapters.Seed;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Options;
+using PetFamily.SharedKernel.Extensions.Validations;
 using PetFamily.Volunteers.Core.Ports.DataBaseForRead;
-using System.Text;
 
 namespace PetFamily.Accounts.Infrastructure.DependencyInjection;
 
@@ -50,6 +51,8 @@ public static class InjectAccountsInfrastructure
     {
         services.Configure<DataBaseOptions>(
             configure.GetSection(DataBaseOptions.SECTION_NAME));
+        services.Configure<RefreshTokenOptions>(
+            configure.GetSection(RefreshTokenOptions.SECTION_NAME));
 
         services.AddDbContext<AccountDbContext>((sp, options) =>
         {
@@ -65,6 +68,7 @@ public static class InjectAccountsInfrastructure
         });
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         return services;
     }
 
@@ -73,10 +77,12 @@ public static class InjectAccountsInfrastructure
     {
         services.Configure<JwtOptions>(
             configuration.GetSection(JwtOptions.SECTION_NAME));
-        services.AddScoped<ITokenProvider, JwtTokenProvider>();
+        services.AddScoped<ITokenProvider, TokenProvider>();
 
         var jwtOptions = configuration.GetSection(JwtOptions.SECTION_NAME)
-            .Get<JwtOptions>();
+            .Get<JwtOptions>()
+            ?? throw new ArgumentNullException($"{nameof(JwtOptions.SECTION_NAME)} is null");
+
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -84,18 +90,8 @@ public static class InjectAccountsInfrastructure
             })
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtOptions.Issuer,
-                    ValidAudience = jwtOptions.Audience,
-                    IssuerSigningKey =
-                        new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
-                };
+                options.TokenValidationParameters =
+                new TokenValidationParameters().GetValidationsParametersWithLifeTime(jwtOptions);
             });
         return services;
     }

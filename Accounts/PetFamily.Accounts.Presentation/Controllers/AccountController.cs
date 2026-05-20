@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PetFamily.Accounts.Core.Application.UseCases.AccountManager.CommonDto;
 using PetFamily.Accounts.Presentation.Controllers.Models.Accounts;
 using PetFamily.Framework;
 using PetFamily.Framework.Response;
@@ -17,6 +19,7 @@ public class AccountController : ApplicationController
         _mediator = mediator;
     }
 
+    [Authorize]
     [HttpGet]
     public ActionResult Test()
     {
@@ -33,11 +36,21 @@ public class AccountController : ApplicationController
     }
 
     [HttpPatch("login")]
-    public async Task<ActionResult<string>> LoginAsync(
+    public async Task<ActionResult<LoginResponse>> LoginAsync(
         [FromBody] LoginUserRequest request,
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(request.ToCommand(), cancellationToken);
+        return result.ToResponseErrorOrResult();
+    }
+
+    [HttpPatch("refresh-token")]
+    public async Task<ActionResult<LoginResponse>> RefreshTokenAsync(
+        [FromBody] RefreshTokenRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result =
+            await _mediator.Send(request.ToCommand(), cancellationToken);
         return result.ToResponseErrorOrResult();
     }
 }

@@ -234,6 +234,32 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "refresh_tokens",
+                schema: "accounts",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    token = table.Column<string>(type: "text", nullable: false),
+                    jwt_id = table.Column<string>(type: "text", nullable: false),
+                    expiry_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    invalidated = table.Column<bool>(type: "boolean", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pK_refresh_tokens", x => x.id);
+                    table.ForeignKey(
+                        name: "fK_refresh_tokens_AspNetUsers_userId",
+                        column: x => x.user_id,
+                        principalSchema: "accounts",
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "user_roles",
                 schema: "accounts",
                 columns: table => new
@@ -315,6 +341,19 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "iX_refresh_tokens_token",
+                schema: "accounts",
+                table: "refresh_tokens",
+                column: "token",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "iX_refresh_tokens_userId",
+                schema: "accounts",
+                table: "refresh_tokens",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "iX_role_permissions_permissionId",
                 schema: "accounts",
                 table: "role_permissions",
@@ -379,6 +418,10 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "participants",
+                schema: "accounts");
+
+            migrationBuilder.DropTable(
+                name: "refresh_tokens",
                 schema: "accounts");
 
             migrationBuilder.DropTable(
