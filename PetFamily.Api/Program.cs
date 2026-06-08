@@ -2,7 +2,6 @@ using dotenv.net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using PetFamily.Accounts.Core.Application.Inject;
-using PetFamily.Accounts.Infrastructure.Adapters.Postgres;
 using PetFamily.Accounts.Infrastructure.Adapters.Seed;
 using PetFamily.Accounts.Infrastructure.DependencyInjection;
 using PetFamily.Accounts.Presentation.Controllers;
@@ -36,6 +35,16 @@ public class Program
             .CreateLogger();
 
         builder.Services.AddSerilog(Log.Logger);
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("FrontendPolicy", policy =>
+            policy
+                .WithOrigins("http://localhost:5173")
+                .AllowCredentials()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+        });
 
         builder.Host.UseSerilog();
 
@@ -91,7 +100,6 @@ public class Program
             .AddApplicationPart(typeof(AccountController).Assembly);
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-        builder.Services.AddDbContext<AccountDbContext>();
         builder.Logging.ClearProviders();
 
         //ports
@@ -111,6 +119,8 @@ public class Program
 
         //custom exception handling middleware
         app.UseExceptionHandling();
+
+        app.UseCors("FrontendPolicy");
 
         app.UseHttpsRedirection();
         app.UseAuthentication();

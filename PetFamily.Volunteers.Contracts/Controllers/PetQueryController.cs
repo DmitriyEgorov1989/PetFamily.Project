@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
 using PetFamily.Framework.Response;
 using PetFamily.Volunteers.Contracts.Controllers.Models.Pets.ReadModels;
+using PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllPetsByVolunteerId;
 using PetFamily.Volunteers.Core.Application.UseCases.Queries.GetAllPetsWithPaginationAndFilter;
 
 namespace PetFamily.Volunteers.Presentation.Controllers;
@@ -15,6 +16,18 @@ public class PetQueryController(IMediator mediator) : ApplicationController
         CancellationToken cancellationToken)
     {
         var query = request.ToQuery();
+
+        var result = await mediator.Send(query, cancellationToken);
+
+        return result.ToResponseErrorOrResult();
+    }
+
+    [HttpGet("all-pets-by-volunteer/{volunteerId}")]
+    public async Task<ActionResult<GetAllPetsByVolunteerIdResponse>> GetAllPetsByVolunteerId(
+        [FromRoute] Guid volunteerId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetAllPetsByVolunteerIdQuery(volunteerId);
 
         var result = await mediator.Send(query, cancellationToken);
 

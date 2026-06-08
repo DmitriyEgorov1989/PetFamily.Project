@@ -1,6 +1,6 @@
-﻿using System.Data;
+﻿using Dapper;
+using System.Data;
 using System.Text;
-using Dapper;
 
 namespace PetFamily.Volunteers.Infrastructure.Adapters.Postgres.ReadDatabase.Repository.Pets;
 
@@ -38,6 +38,13 @@ public class PetsQueryBuilder
         FROM pets as p  
         where p.is_delete = false
         """);
+
+    public PetsQueryBuilder WithVolunteerId(Guid volunteerId)
+    {
+        _dynamicParameters.Add("@VolunteerId", volunteerId, DbType.Guid);
+        _sql.Append(" AND p.volunteer_id = @VolunteerId");
+        return this;
+    }
 
     public PetsQueryBuilder WithPagination(int page, int pageSize)
     {

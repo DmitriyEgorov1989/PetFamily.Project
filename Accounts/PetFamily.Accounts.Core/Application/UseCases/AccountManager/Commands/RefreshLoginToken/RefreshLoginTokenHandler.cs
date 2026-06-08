@@ -2,11 +2,9 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.JsonWebTokens;
 using PetFamily.Accounts.Core.Application.UseCases.AccountManager.CommonDto;
 using PetFamily.Accounts.Core.Domain.Models;
 using PetFamily.Accounts.Core.Ports;
-using PetFamily.Accounts.Infrastructure.Adapters.Jwt;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
@@ -49,31 +47,6 @@ namespace PetFamily.Accounts.Core.Application.UseCases.AccountManager.Commands.R
             if (!resultValidation.IsValid)
                 return resultValidation.ToValidationErrorResponse(command);
 
-            var resultGetValidateToken =
-                await _tokenProvider.GetPrincipalFromToken(command.AccessToken, cancellationToken);
-            if (resultGetValidateToken.IsFailure)
-            {
-                _logger.Error(
-                    resultGetValidateToken.Error.Message, command.AccessToken);
-                return (ErrorList)resultGetValidateToken.Error;
-            }
-
-            var validatedToken = resultGetValidateToken.Value;
-            if (validatedToken == null)
-            {
-                _logger.Error("Error get claims principal for validate token,acess token invalid");
-                return (ErrorList)GeneralErrors.Failure($"Token invalid {command.AccessToken}");
-            }
-
-            var jti = validatedToken.Claims
-             .SingleOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
-
-            if (string.IsNullOrEmpty(jti))
-            {
-                _logger.Error("Error get Jti for validate token,acess token invalid");
-                return (ErrorList)GeneralErrors.Failure($"Token invalid {command.AccessToken}");
-            }
-
             var resultGetStoredRefreshToken =
                 await _refreshTokenRepository.GetByTokenAsync(
                     command.RefreshToken, cancellationToken);
@@ -102,23 +75,10 @@ namespace PetFamily.Accounts.Core.Application.UseCases.AccountManager.Commands.R
                 return (ErrorList)GeneralErrors.Failure("Refresh token invalidated");
             }
 
-            if (storedRefreshToken.JwtId != jti)
-            {
-                _logger.Error("This refresh token does not match this JWT: {RefreshToken}",
-                    command.RefreshToken);
-                return (ErrorList)GeneralErrors.Failure("Refresh token does not match this JWT");
-            }
-
             var userId =
-                validatedToken.Claims.FirstOrDefault(c => c.Type == CustomClaims.UserId);
+                storedRefreshToken.UserId;
 
-            if (userId is null)
-            {
-                _logger.Error("Error get userId for validate token,acess token invalid");
-                return (ErrorList)GeneralErrors.Failure($"Token invalid {command.AccessToken}");
-            }
-
-            var user = await _userManager.FindByIdAsync(userId.Value);
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user is null)
             {
                 _logger.Error("Error get Jti for validate token,acess token invalid");
@@ -126,18 +86,23 @@ namespace PetFamily.Accounts.Core.Application.UseCases.AccountManager.Commands.R
             }
 
             var acessToken = _tokenProvider.GenerateAccessToken(user);
+
+            storedRefreshToken.Invalidate();
+
             var resultGenerateRefreshToken =
                 await _tokenProvider.GenerateRefreshToken(
-                    acessToken, user, command.RefreshToken, cancellationToken);
+                    acessToken, user, cancellationToken);
 
             if (resultGenerateRefreshToken.IsFailure)
             {
                 _logger.Error(resultGenerateRefreshToken.Error.Message);
                 return (ErrorList)resultGenerateRefreshToken.Error;
             }
+            await _refreshTokenRepository.CreateTokenAsync(
+                resultGenerateRefreshToken.Value, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return new LoginResponse(acessToken, resultGenerateRefreshToken.Value);
+            return new LoginResponse(acessToken, resultGenerateRefreshToken.Value.Token);
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using PetFamily.Accounts.Core.Application.UseCases.AccountManager.CommonDto;
 using PetFamily.Accounts.Core.Domain.Models;
 using PetFamily.Accounts.Core.Ports;
+using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Errors;
 using PetFamily.SharedKernel.Extensions.Validations;
 using Serilog;
@@ -18,15 +19,20 @@ public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<LoginRe
     private readonly ITokenProvider _tokenProvider;
     private readonly UserManager<User> _userManager;
     private readonly IValidator<LoginUserCommand> _validator;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public LoginUserHandler(ILogger logger,
         UserManager<User> userManager,
-        IValidator<LoginUserCommand> validator, ITokenProvider tokenProvider)
+        IValidator<LoginUserCommand> validator, ITokenProvider tokenProvider,
+        IRefreshTokenRepository refreshTokenRepository, IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _userManager = userManager;
         _validator = validator;
         _tokenProvider = tokenProvider;
+        _refreshTokenRepository = refreshTokenRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<LoginResponse, ErrorList>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
@@ -61,15 +67,20 @@ public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<LoginRe
         var acessToken = _tokenProvider.GenerateAccessToken(user);
 
         var resultGenerateRefreshToken =
-            await _tokenProvider.GenerateRefreshToken(acessToken, user, null, cancellationToken);
+            await _tokenProvider.GenerateRefreshToken(acessToken, user, cancellationToken);
 
         if (resultGenerateRefreshToken.IsFailure)
         {
             _logger.Error(resultGenerateRefreshToken.Error.Message);
             return (ErrorList)resultGenerateRefreshToken.Error;
         }
+
+        await _refreshTokenRepository.CreateTokenAsync(
+            resultGenerateRefreshToken.Value, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
         var refreshToken = resultGenerateRefreshToken.Value;
 
-        return new LoginResponse(acessToken, refreshToken);
+        return new LoginResponse(acessToken, refreshToken.Token);
     }
 }

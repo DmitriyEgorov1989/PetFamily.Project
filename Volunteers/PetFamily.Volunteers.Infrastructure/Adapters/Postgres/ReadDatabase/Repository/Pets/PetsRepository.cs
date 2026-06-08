@@ -22,6 +22,39 @@ public class PetsRepository : IPetsReadRepository
         _queryBuilder = queryBuilder;
     }
 
+    public async Task<Result<List<PetDto>, Error>> GetAllByVolunteerIdAsync(
+        Guid volunteerId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var sql = _queryBuilder
+                .WithVolunteerId(volunteerId)
+                .Build();
+
+            var command = new CommandDefinition(
+                sql,
+                _queryBuilder.Parameters(),
+                cancellationToken: cancellationToken);
+
+            var connection =
+                await _connectionFactory.CreateConnectionAsync(cancellationToken);
+
+            var query = (await connection.QueryAsync<PetDto>(command)).ToList();
+            if (!query.Any())
+            {
+                _logger.Information("Pets with {volunteerId} not found", volunteerId);
+                return GeneralErrors.NotFound(nameof(volunteerId));
+            }
+            return query;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("Error get pets with pagination.{ex}"
+                , ex.Message);
+            return GeneralErrors.InternalServerError(ex.Message);
+        }
+    }
+
     public async Task<Result<List<PetDto>, Error>> GetAllWithPaginationAndFiltersAsync(
         PaginationData paginationData,
         FilterByData filterByData,
@@ -70,7 +103,7 @@ public class PetsRepository : IPetsReadRepository
         }
     }
 
-    public Task<Maybe<PetDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Maybe<PetDto>> GetByIdAsync(Guid d, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Dapper;
+using PetFamily.Accounts.Core.Application.UseCases.AccountManager.Queries.GetMe;
 using PetFamily.Accounts.Core.Domain.Models;
 using PetFamily.Accounts.Core.Ports;
 using PetFamily.SharedKernel.Errors;
@@ -133,6 +134,49 @@ public class ReadRepository : IReadDataProvider
         catch (Exception e)
         {
             _logger.Error(e, "Error while getting role with name {RoleName}", name);
+            return GeneralErrors.Failure(e.Message);
+        }
+    }
+
+    public async Task<Result<UserInfo, Error>> GetUserInfoByIdAsync(Guid userId,
+        CancellationToken cancellationToken)
+    {
+        const string SQL =
+            """
+            SELECT
+              u.id AS Id,
+              u.email AS Email,
+              u.first_name AS Name,
+              r.name AS RoleName
+          FROM accounts.users u
+          LEFT JOIN accounts.roles r ON r.id = u.role_id
+          WHERE u.id = @UserId;
+        """;
+        try
+        {
+            using var connection =
+                await _dbConnectionFactory.CreateConnectionAsync(cancellationToken);
+            var parameters = new DynamicParameters();
+            parameters.Add("@UserId", userId, DbType.Guid);
+
+            var command = new CommandDefinition(
+                SQL,
+                parameters,
+                cancellationToken: cancellationToken);
+
+            var userInfo = await connection.QueryFirstOrDefaultAsync<UserInfo>(command);
+
+            if (userInfo == null)
+            {
+                _logger.Warning("User with ID {UserId} not found", userId);
+                return GeneralErrors.NotFound(nameof(userId));
+            }
+
+            return userInfo;
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e, "Error while getting user with ID {UserId}", userId);
             return GeneralErrors.Failure(e.Message);
         }
     }

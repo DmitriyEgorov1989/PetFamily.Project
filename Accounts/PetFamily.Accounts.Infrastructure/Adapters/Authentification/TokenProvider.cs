@@ -53,8 +53,8 @@ public class TokenProvider : ITokenProvider
         return new JwtSecurityTokenHandler().WriteToken(jwt);
     }
 
-    public async Task<Result<string, Error>> GenerateRefreshToken(
-        string token, User user, string? existingRefreshToken, CancellationToken cancellationToken)
+    public async Task<Result<RefreshToken, Error>> GenerateRefreshToken(
+        string token, User user, CancellationToken cancellationToken)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtToken = tokenHandler.ReadJwtToken(token);
@@ -71,22 +71,8 @@ public class TokenProvider : ITokenProvider
         if (resultCreateRefreshToken.IsFailure)
             return resultCreateRefreshToken.Error;
 
-        if (!string.IsNullOrEmpty(existingRefreshToken))
-        {
-            var resultGetExistingToken =
-                await _refreshTokenRepository.GetByTokenAsync(
-                    existingRefreshToken, cancellationToken);
-
-            if (resultGetExistingToken.IsSuccess)
-            {
-                _refreshTokenRepository.Delete(resultGetExistingToken.Value!);
-            }
-        }
         var refreshToken = resultCreateRefreshToken.Value;
-        await _refreshTokenRepository.CreateTokenAsync(refreshToken, cancellationToken);
-        await _refreshTokenRepository.SaveAsync(cancellationToken);
-
-        return refreshToken.Token;
+        return refreshToken;
     }
 
     public async Task<Result<ClaimsPrincipal?, Error>> GetPrincipalFromToken(

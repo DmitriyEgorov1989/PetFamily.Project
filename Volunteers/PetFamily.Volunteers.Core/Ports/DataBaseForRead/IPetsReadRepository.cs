@@ -13,4 +13,7 @@ public interface IPetsReadRepository
         CancellationToken cancellationToken = default);
 
     Task<Maybe<PetDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task<Result<List<PetDto>, Error>> GetAllByVolunteerIdAsync
+        (Guid volunteerId, CancellationToken cancellationToken = default);
 }

@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PetFamily.Accounts.Core.Application.UseCases.AccountManager.Commands.RefreshLoginToken;
 using PetFamily.Accounts.Core.Application.UseCases.AccountManager.CommonDto;
+using PetFamily.Accounts.Core.Application.UseCases.AccountManager.Queries.GetMe;
 using PetFamily.Accounts.Presentation.Controllers.Models.Accounts;
 using PetFamily.Framework;
 using PetFamily.Framework.Response;
@@ -9,8 +12,8 @@ using PetFamily.Framework.Response;
 namespace PetFamily.Accounts.Presentation.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class AccountController : ApplicationController
+[Route("api/[controller]")]
+public partial class AccountController : ApplicationController
 {
     private readonly IMediator _mediator;
 
@@ -26,7 +29,7 @@ public class AccountController : ApplicationController
         return Ok("test");
     }
 
-    [HttpPatch("registration")]
+    [HttpPost("register")]
     public async Task<ActionResult<Guid>> RegistrationAsync(
         [FromBody] RegistrationUserRequest request,
         CancellationToken cancellationToken)
@@ -35,22 +38,50 @@ public class AccountController : ApplicationController
         return result.ToResponseErrorOrResult();
     }
 
-    [HttpPatch("login")]
+    [HttpPost("login")]
     public async Task<ActionResult<LoginResponse>> LoginAsync(
         [FromBody] LoginUserRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(request.ToCommand(), cancellationToken);
+        var result =
+            await _mediator.Send(request.ToCommand(), cancellationToken);
+        if (result.IsSuccess)
+        {
+            HttpContext.AddRefreshTokenCookie(result.Value.RefreshToken);
+        }
         return result.ToResponseErrorOrResult();
     }
 
-    [HttpPatch("refresh-token")]
+    [HttpPost("refresh-token")]
     public async Task<ActionResult<LoginResponse>> RefreshTokenAsync(
-        [FromBody] RefreshTokenRequest request,
         CancellationToken cancellationToken)
     {
+        var refreshToken = HttpContext.Request.Cookies["refreshToken"];
+        if (refreshToken == null)
+            return BadRequest("Refresh token is missing");
+
         var result =
-            await _mediator.Send(request.ToCommand(), cancellationToken);
+            await _mediator.Send(new RefreshLoginTokenCommand(refreshToken), cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            HttpContext.AddRefreshTokenCookie(result.Value.RefreshToken);
+        }
+
+        return result.ToResponseErrorOrResult();
+    }
+
+    [HttpGet("get-me")]
+    public async Task<ActionResult<GetMeResponse>> GetMeAsync(
+        CancellationToken cancellationToken)
+    {
+        var refreshToken = HttpContext.Request.Cookies["refreshToken"];
+        if (refreshToken == null)
+            return BadRequest("Refresh token is missing");
+
+        var result =
+            await _mediator.Send(new GetMeRequest(refreshToken), cancellationToken);
+
         return result.ToResponseErrorOrResult();
     }
 }

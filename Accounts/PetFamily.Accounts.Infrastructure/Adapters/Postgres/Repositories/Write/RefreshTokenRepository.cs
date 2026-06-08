@@ -30,7 +30,7 @@ namespace PetFamily.Accounts.Infrastructure.Adapters.Postgres.Repositories.Write
             var refreshToken =
                 await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == token);
 
-            if (token == null)
+            if (refreshToken == null)
             {
                 return GeneralErrors.NotFound(token);
             }
